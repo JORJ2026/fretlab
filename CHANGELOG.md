@@ -1,5 +1,14 @@
 # FretLab changelog
 
+## 11 – Jam Band 5, page ports, Export Hub
+
+* 38 site pages ported into the Beta as sections (lessons, scales, chords, Theory Decks, More pages, Export Studio and more).
+* Jam Band 5: 100 live options in 9 groups; effects now apply to exports.
+* 📤 Export Hub: MIDI, Guitar Pro, Power Tab, ASCII tab, Word, PDF, PNG, SVG and video for every instrument, plus "export everything".
+* 🔄 Reset all button; bass neck opens with the fretboard; every progression is a demo-jam playlist.
+* Default fret window: frets 0–4 on every string except the 3rd (0–3); ↔️ All frets / 🎯 Open position toggle.
+* Tempo range 20–400 BPM; query strings and ES modules work in embedded pages.
+
 ## 10.9 – scale timing, 2,123 more lessons, finger drill
 Scale, interval and lesson-example playback is now scheduled on the audio clock with the sounds prepared in advance, so notes are evenly spaced even when the page is busy and loops restart without a gap (measured: spacing varied by up to ~80 ms before, now exact). 2,123 more full lessons (101–2223, including one on every interval, chord type, scale and chord progression) in eleven new units (the last, Intervals one by one, has a lesson on every interval from unison to octave plus a review): Chord colours, Rhythm styles, Fretboard mastery, Ear training, Lead playing II, Rock/metal/funk, Blues/jazz/country, Fingerstyle II, Songwriting and arranging, Theory/practice/your guitar – every lesson has playable examples and check questions. New **Finger drill** (🖐 Drill, or `#drill`): 8 measures of random 2-, 3- or 4-note patterns of fingers 1–4 in any order (all 60 orderings), the same on every string or different on each, with neck, tab, tempo and repeats.
 
