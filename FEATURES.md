@@ -1,6 +1,6 @@
-# FretLab 10.6 – feature reference
+# FretLab 10.9 – feature reference
 
-189 features, each with what it is, how to use it and when to use it. The same text is shown by the guided demo (Shift+D).
+190 features, each with what it is, how to use it and when to use it. The same text is shown by the guided demo (Shift+D).
 
 ## Getting around
 
@@ -483,7 +483,7 @@
 ## Learn & play
 
 ### 91. Lessons
-- **What it is:** 100 interactive lessons in 10 units, from the very basics to advanced, in a clean separate view with examples that play on the neck.
+- **What it is:** 200 interactive lessons in 20 units, from the very basics to advanced, in a clean separate view with examples that play on the neck.
 - **How to use it:** Click 🎓 Lessons; use ← → for the previous and next lesson and Space to play an example.
 - **When to use it:** When you want a guided path instead of exploring.
 
@@ -506,6 +506,11 @@
 - **What it is:** The complete how-to PDF with screenshots and install instructions.
 - **How to use it:** Click 📖 Guide.
 - **When to use it:** When you want a full reference. (The demo does not open the file.)
+
+### 190. Finger drill
+- **What it is:** Generates 8 measures of random 2-, 3- or 4-note finger patterns from fingers 1–4 in any order (1-3-2-4, 1-3, 2-1-3 …), the same on every string or different on each, with the neck, the tab and sound.
+- **How to use it:** Click 🖐 Drill, choose the notes per pattern, the strings, the starting fret and the tempo, press ↻ New drill, then ▶ Play all.
+- **When to use it:** When you want to build finger independence and a clean left hand.
 
 ## Theory toolkit
 

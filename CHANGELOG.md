@@ -1,5 +1,11 @@
 # FretLab changelog
 
+## 10.9 – scale timing, 100 more lessons, finger drill
+Scale, interval and lesson-example playback is now scheduled on the audio clock with the sounds prepared in advance, so notes are evenly spaced even when the page is busy and loops restart without a gap (measured: spacing varied by up to ~80 ms before, now exact). 100 more full lessons (lessons 101–200) in ten new units: Chord colours, Rhythm styles, Fretboard mastery, Ear training, Lead playing II, Rock/metal/funk, Blues/jazz/country, Fingerstyle II, Songwriting and arranging, Theory/practice/your guitar – every lesson has playable examples and check questions. New **Finger drill** (🖐 Drill, or `#drill`): 8 measures of random 2-, 3- or 4-note patterns of fingers 1–4 in any order (all 60 orderings), the same on every string or different on each, with neck, tab, tempo and repeats.
+
+## 10.8 – volume and Export Studio layout
+Default master volume lowered by 30% (0.8 → 0.56); a one-time migration lowers it for people still on the old default, and the slider now moves in 1% steps. Export Studio › Page: choose diagrams per page (1–24 or custom columns × rows), diagram size (30–100%), paper size and orientation (portrait, landscape or auto), with a live summary of how many fit and how many pages result. PDF, page images, print, preview, Word and HTML follow the choices.
+
 ## 10.7 – polish and features page
 A features landing page with one button per feature (189): in the app (🏠 Features, Shift+H, ?home=1, ?feature=<id>) and on the site (features.html). 100 polishes, each with an automated check (About › Polish & preferences › Run the polish checks): larger touch targets, no double-tap zoom delay, safe-area padding, dialogs that lock the page behind them, section open/closed state for screen readers, number keypad for number boxes, forced-colours and more-contrast styling, calm-motion setting, stop sound when the tab is hidden, offline/online messages, toast de-duplication, screen kept awake during auto-play, focus returned after the demo, / to search, skip-to-controls link, clearer storage-full message, value clamping and cleanup of saved data, and more.
 

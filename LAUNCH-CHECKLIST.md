@@ -16,3 +16,4 @@ Done by the build and tested in a desktop Chrome test browser: self-test, offlin
 - [ ] In About › Diagnostics press Launch check and confirm every line has a tick.
 - [ ] Open `features.html` on a phone and tap a few buttons; each should open that feature in the Beta with its note.
 - [ ] In the Beta, About › Polish & preferences › Run the polish checks; all should pass on your device.
+- [ ] Export Studio › Page: try 6 per page in landscape and export a PDF; check the page size and count match the summary line.
