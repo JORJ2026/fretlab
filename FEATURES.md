@@ -483,7 +483,7 @@
 ## Learn & play
 
 ### 91. Lessons
-- **What it is:** 200 interactive lessons in 20 units, from the very basics to advanced, in a clean separate view with examples that play on the neck.
+- **What it is:** 2,223 interactive lessons in 41 units, from the very basics to advanced, in a clean separate view with examples that play on the neck.
 - **How to use it:** Click 🎓 Lessons; use ← → for the previous and next lesson and Space to play an example.
 - **When to use it:** When you want a guided path instead of exploring.
 

@@ -5,7 +5,7 @@ which version to use:
 
 * **Original** – the full original site (`original/`), with its Navigate menu, Controls, Export Studio, lessons, courses and quizzes.
 * **New Beta – FretLab 10.6** (`beta/index.html`, one self-contained file):
-  * **Lessons mode**: 200 interactive guitar lessons in 20 units, from absolute basics to advanced, in a separate uncluttered view (`beta/index.html#lessons`, or `#lesson-12` for one lesson);
+  * **Lessons mode**: 2,223 interactive guitar lessons in 41 units, from absolute basics to advanced, in a separate uncluttered view (`beta/index.html#lessons`, or `#lesson-12` for one lesson);
   * **Video mode**: animates the current scale, chord, interval, progression, marked notes, quiz question or song with a title, and exports GIF, MP4 or FLV (16:9, square or vertical);
   * **Game mode**: 100 games for notes, intervals, chords, scales, modes, keys and ear training (`beta/index.html#games`);
   * **My library**: make your own scales, chords, progressions, strumming patterns and drum grooves; they appear in the menus;
@@ -83,4 +83,4 @@ Roboto is included under the SIL Open Font License (`Roboto-OFL.txt`).
 * **10.6:** a guided demo (▶ Demo in the header, **Shift+D**, or `beta/index.html?demo=1`) walks through every section, mode, tool and Lab tool with what / how / when text; `?kiosk=1` loops it for a display; `FEATURES.md` and `feature-reference.html` hold the same text.
 * **10.7:** 100 polishes (touch targets, safe areas, accessibility, data safety, small behaviours – listed in the Beta's About › Polish & preferences) and a features landing page: `features.html` on the site and `beta/index.html?home=1` (or **Shift+H**) in the app, with one button per feature; `?feature=<id>` opens one feature directly.
 * **10.8:** the default volume is 30% lower (56%, was 80%; anyone still on the old default is lowered once). Export Studio › Page now has **Diagrams per page**, **Diagram size** and an **Auto** orientation, alongside paper size and portrait/landscape.
-* **10.9:** scale/interval/lesson playback is scheduled on the audio clock (even timing); 100 more lessons (200 in 20 units); a **Finger drill** (🖐 Drill, `beta/index.html#drill`) with random 8-measure patterns of fingers 1–4.
+* **10.9:** scale/interval/lesson playback is scheduled on the audio clock (even timing); 2,123 more lessons (214 in 41 units, including one on every interval, chord type, scale and chord progression); a **Finger drill** (🖐 Drill, `beta/index.html#drill`) with random 8-measure patterns of fingers 1–4.
