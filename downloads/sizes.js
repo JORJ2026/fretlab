@@ -1,1 +1,1 @@
-window.DL_SIZES={"FretLab-10.7-Linux.zip": 15460605, "FretLab-10.7-Mac.zip": 15628876, "FretLab-10.7-Android-Project.zip": 10486926, "FretLab-10.7-Windows.zip": 15548244, "FretLab-10.7-Beta.html": 3616810};
+window.DL_SIZES={"FretLab-11-Beta.html": 7123271};
