@@ -1,5 +1,11 @@
 # FretLab changelog
 
+## 11.1 – Song Strip
+
+* 🎼 **Song Strip** (header button, or the new section under the Song player): the Jam Strip for songs you add. Each song you open in the Song player (MIDI, Guitar Pro 3–8, Power Tab) or drop on the page is kept in a list on this device (IndexedDB) and gets chord blocks (worked out from the notes; per bar, half bar or beat) with beat-by-beat dashes (■ several notes, • one note), paged by bars, and a big current/next chord that follows the Song player while it plays.
+* Same exports as the Jam Strip: video / GIF / MP4 / FLV (with the song's notes for sound), SVG, PNG, PDF and DOCX, for the bars shown or the whole song (split into pages). Plus MIDI, Guitar Pro 5, Power Tab, ASCII tab, copy tab and an all-four zip.
+* 📤 Export Hub: every added song is now a source ("Songs you added"), and *Export every source* includes them.
+
 ## 11 – Jam Band 5, page ports, Export Hub
 
 * 38 site pages ported into the Beta as sections (lessons, scales, chords, Theory Decks, More pages, Export Studio and more).

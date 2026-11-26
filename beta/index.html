@@ -15398,8 +15398,8 @@ const XH={on:false,tl:null};
 const XH_JB=[['g1','Guitar 1'],['g2','Guitar 2'],['g3','Guitar 3'],['kb','Keyboard 1'],['kb2','Keyboard 2'],['kb3','Keyboard 3'],['bass','Bass'],['bass2','Bass 2'],['mel','Melodic pattern 1'],['mel2','Melodic pattern 2'],['mel3','Melodic pattern 3'],['solo','Solo / lead'],['drum','Drums (Jam Band)']];
 const XH_KEY={g1:'chordOn',g2:'g2On',g3:'g3On',kb:'kbOn',kb2:'kb2On',kb3:'kb3On',bass:'bassOn',bass2:'bass2On',mel:'melOn',mel2:'mel2On',mel3:'mel3On',solo:'soloOn',drum:'drumOn'};
 const XH_OTHER=[['board','Main guitar fretboard (current scale, chord or interval)'],['live','Tab · live (the pattern shown under the fretboard)'],['piano','Piano (current scale, chord or interval)'],['bass','Bass neck (current selection)'],['drums','Drums (the pattern chosen in Controls)'],['tab','Tab section'],['mel','Melodic patterns']];
-function xhS(){const v=XS8();if(!v.xh||typeof v.xh!=='object')v.xh={};const X=v.xh;const ok=XH_OTHER.some(x=>x[0]===X.src)||(typeof X.src==='string'&&X.src.startsWith('jb:')&&XH_KEY[X.src.slice(3)]);if(!ok)X.src='jb:g1';X.loops=[1,2,4,8,16].includes(+X.loops)?+X.loops:2;return X}
-const xhLabel=src=>{if(src.startsWith('jb:')){const t=XH_JB.find(x=>x[0]===src.slice(3));return 'Jam Band – '+(t?t[1]:src)}const o=XH_OTHER.find(x=>x[0]===src);return o?o[1].replace(/\s*\(.*$/,''):src};
+function xhS(){const v=XS8();if(!v.xh||typeof v.xh!=='object')v.xh={};const X=v.xh;const ok=XH_OTHER.some(x=>x[0]===X.src)||(typeof X.src==='string'&&X.src.startsWith('jb:')&&XH_KEY[X.src.slice(3)])||(typeof X.src==='string'&&X.src.startsWith('song:')&&ssHas(X.src.slice(5)));if(!ok)X.src='jb:g1';X.loops=[1,2,4,8,16].includes(+X.loops)?+X.loops:2;return X}
+const xhLabel=src=>{if(src.startsWith('song:')){const t=ssItem(src.slice(5));return 'Song – '+(t?t.name.replace(/\.[^.]+$/,''):'')}if(src.startsWith('jb:')){const t=XH_JB.find(x=>x[0]===src.slice(3));return 'Jam Band – '+(t?t[1]:src)}const o=XH_OTHER.find(x=>x[0]===src);return o?o[1].replace(/\s*\(.*$/,''):src};
 function xhJam(id,g){const J=jbS(),J0=JSON.parse(JSON.stringify(J));
  try{Object.values(XH_KEY).forEach(k=>{J[k]=false});J[XH_KEY[id]]=true;if(id==='drum'&&(!DRUMS[J.drum]))J.drum=(state.drum&&DRUMS[state.drum])?state.drum:'rock';const nm=J.drum;
   const s=jbSong(J,{g,drums:true,loops:xhS().loops});s.drumName=nm;return s}finally{jlApply(J0)}}
@@ -15413,6 +15413,7 @@ function xhFromNotes(title,kind,seq,block){const g=4,bn=bnS(),tun=kind==='keys'?
  return{title:('JackRoseGuitar – '+title).slice(0,70),composer:'JackRoseGuitar',bpm:Math.min(200,Math.max(40,state.bpm||90)),num:4,den:4,g,parts:[{name:kind==='keys'?'Piano':kind==='bass'?'Bass':'Guitar',tun,frets:fr,program:kind==='keys'?0:kind==='bass'?33:25,clef:kind==='bass'?'bass':'treble',drum:false,evs}]}}
 function xhPool(){const P=melPool();if(!P||!P.semis||!P.semis.length)return null;const ms=P.semis.map(x=>P.rm+x);return{label:P.label||'current selection',seq:ms.concat([P.rm+12]),block:state.mode==='chords'?ms:null}}
 function xhSong(src,g){g=g||4;
+ if(src.startsWith('song:'))return ssSong(src.slice(5),g);
  if(src.startsWith('jb:'))return xhJam(src.slice(3),g);
  if(src==='board'||src==='live'){try{liveRender10()}catch(e){}const s=liveSong10();if(s)return s;const P=xhPool();return P?xhFromNotes(P.label,'fret',P.seq,P.block):null}
  if(src==='piano'){const P=xhPool();return P?xhFromNotes('Piano – '+P.label,'keys',P.seq,P.block):null}
@@ -15437,7 +15438,7 @@ function xhTL(song){const p=song.parts.find(x=>x.evs.some(e=>e.notes.length));if
 async function xhVideo(src){
  if(src.startsWith('jb:')&&src!=='jb:drum'){const id=src.slice(3),J=jbS();if(!J[XH_KEY[id]]){toast('Switch that instrument on in the Jam Band first');return}jtS().vid=id;save();XH.on=false;JT.vidOn=true;if(!jtVidTL(true)){JT.vidOn=false;toast('That instrument has no notes to show');return}await vidOpen();return}
  const song=xhSong(src,4);if(xhEmpty(song)){toast('Nothing to show yet – pick something for this source first');return}const tl=xhTL(song);if(!tl){toast('Nothing to show yet');return}JT.vidOn=false;XH.tl=tl;XH.on=true;await vidOpen()}
-async function xhAll(){const J=jbS(),enc=s=>new TextEncoder().encode(s),files=[],srcs=[];XH_JB.forEach(([id,l])=>{if(J[XH_KEY[id]])srcs.push(['jb:'+id,l])});XH_OTHER.forEach(([id,l])=>srcs.push([id,l.replace(/\s*\(.*$/,'')]));
+async function xhAll(){const J=jbS(),enc=s=>new TextEncoder().encode(s),files=[],srcs=[];XH_JB.forEach(([id,l])=>{if(J[XH_KEY[id]])srcs.push(['jb:'+id,l])});XH_OTHER.forEach(([id,l])=>srcs.push([id,l.replace(/\s*\(.*$/,'')]));try{SS.list.forEach(x=>srcs.push(['song:'+x.id,'Song - '+x.name.replace(/\.[^.]+$/,'')]))}catch(e){}
  let n=0;for(const [src,label] of srcs){try{const song=xhSong(src,4);if(xhEmpty(song))continue;const sm=xhSong(src,12)||song,nm=(safeName(label)||src).slice(0,40),drumOnly=song.parts.every(p=>p.drum);
   files.push([nm+'.txt',enc(xhText(song,src))]);files.push([nm+'.mid',midiWrite8(sm)]);files.push([nm+'.gp5',gp5Write8(fit7Song10(Object.assign({},song,{parts:song.parts.slice(0,32)})).song)]);
   if(!drumOnly){const s2=Object.assign({},song,{parts:song.parts.filter(p=>!p.drum)});files.push([nm+'.ptb',ptbWrite8(fit7Song10(s2).song)])}n++}catch(e){}}
@@ -15447,7 +15448,7 @@ XA.xhEx=async el=>{const f=el.dataset.f,X=xhS(),src=X.src;
   if(f==='video')return await xhVideo(src);
   if(f==='all')return await xhAll();
   const song=xhSong(src,f==='mid'?12:4);
-  if(xhEmpty(song)){toast(src.startsWith('jb:')?'Switch that instrument on in the Jam Band first (and make sure it has notes)':'Nothing to export yet – pick a scale, chord or pattern first');return}
+  if(xhEmpty(song)){toast(src.startsWith('song:')?'This song has no notes to export':src.startsWith('jb:')?'Switch that instrument on in the Jam Band first (and make sure it has notes)':'Nothing to export yet – pick a scale, chord or pattern first');return}
   const drumOnly=song.parts.every(p=>p.drum),label=xhLabel(src),base=(safeName(song.title||label)||'jackroseguitar').slice(0,60);
   if(['mid','gp5','ptb','txt','copy','zip'].includes(f)){
    if(drumOnly&&f==='ptb'){toast('Power Tab has no drum track – use MIDI, Guitar Pro or the drum text');return}
@@ -15465,9 +15466,9 @@ XA.xhEx=async el=>{const f=el.dataset.f,X=xhS(),src=X.src;
 XA.xhSrc=el=>{xhS().src=el.value;save();xhRender()};
 XA.xhLoops=el=>{xhS().loops=+el.value;save()};
 function xhHTML(){const X=xhS(),J=jbS();
- const jb=XH_JB.map(([id,l])=>so13('jb:'+id,l+(J[XH_KEY[id]]?'':'  (switched off)'),X.src)).join(''),ot=XH_OTHER.map(([id,l])=>so13(id,l,X.src)).join('');
+ const jb=XH_JB.map(([id,l])=>so13('jb:'+id,l+(J[XH_KEY[id]]?'':'  (switched off)'),X.src)).join(''),ot=XH_OTHER.map(([id,l])=>so13(id,l,X.src)).join(''),sg=SS.list.length?'<optgroup label="Songs you added">'+SS.list.map(x=>so13('song:'+x.id,x.name.replace(/\.[^.]+$/,''),X.src)).join('')+'</optgroup>':'';
  const B=(f,t,h)=>'<button class="btn sm" data-x="xhEx" data-f="'+f+'"'+(h?' title="'+xmlEsc(h)+'"':'')+'>'+t+'</button>';
- return '<div class="row"><label>Export <select data-xi="xhSrc">'+'<optgroup label="Jam Band – every instrument">'+jb+'</optgroup><optgroup label="Fretboards, piano, bass, drums and patterns">'+ot+'</optgroup></select></label>'+(X.src.startsWith('jb:')||X.src==='drums'?'<label>Length <select data-xi="xhLoops">'+[1,2,4,8,16].map(n=>so13(n,n+(n===1?' pass':' passes'),X.loops)).join('')+'</select></label>':'')+'</div>'+
+ return '<div class="row"><label>Export <select data-xi="xhSrc">'+'<optgroup label="Jam Band – every instrument">'+jb+'</optgroup><optgroup label="Fretboards, piano, bass, drums and patterns">'+ot+'</optgroup>'+sg+'</select></label>'+(X.src.startsWith('jb:')||X.src==='drums'?'<label>Length <select data-xi="xhLoops">'+[1,2,4,8,16].map(n=>so13(n,n+(n===1?' pass':' passes'),X.loops)).join('')+'</select></label>':'')+'</div>'+
  '<fieldset class="jbfs"><legend>Music files</legend><div class="row">'+B('mid','MIDI (.mid)','Standard MIDI file')+B('gp5','Guitar Pro 5 (.gp5)')+B('ptb','Power Tab (.ptb)','Power Tab has no drum track')+B('txt','ASCII tab (.txt)')+B('copy','Copy ASCII tab')+B('zip','All four (.zip)')+'</div></fieldset>'+
  '<fieldset class="jbfs"><legend>Documents and pictures</legend><div class="row">'+B('docx','Word (.docx)')+B('pdf','PDF')+B('png','PNG')+B('svg','SVG')+'</div></fieldset>'+
  '<fieldset class="jbfs"><legend>Video</legend><div class="row">'+B('video','🎬 Make a video…','Opens the video window with every video option: shape, speed, light or dark, GIF, MP4, WebM …')+'</div></fieldset>'+
@@ -15475,7 +15476,7 @@ function xhHTML(){const X=xhS(),J=jbS();
 function xhRender(){const d=document.getElementById('exporthub'),b=document.getElementById('xhBody');if(!d||!b)return;b.innerHTML=xhHTML()}
 function xhEnsure(){if(document.getElementById('exporthub'))return;const ref=document.getElementById('jamband5')||document.getElementById('jamstrip')||document.getElementById('jamband');if(!ref||!ref.parentNode)return;
  const d=document.createElement('details');d.className='card x7 x7sec';d.id='exporthub';d.innerHTML='<summary><span class="stt">📤 Export Hub – every instrument, every format</span><span class="sth" id="sth_exporthub"></span></summary><div id="xhBody"></div>';ref.after(d);d.addEventListener('toggle',()=>{if(d.open)xhRender()});try{syncLayout8()}catch(e){}}
-XA.xhOpen=(el,e)=>{try{if(e){e.preventDefault();e.stopPropagation()}}catch(x){}xhEnsure();const s=el&&el.dataset&&el.dataset.s;if(s){xhS().src=s;save()}XS8().shown.exporthub=true;try{syncLayout8()}catch(x){}const d=openSec('exporthub');if(d){xhRender();d.scrollIntoView({behavior:'smooth',block:'start'})}};
+XA.xhOpen=(el,e)=>{try{if(e){e.preventDefault();e.stopPropagation()}}catch(x){}xhEnsure();const s=el&&el.dataset&&el.dataset.s;if(s){xhS().src=(s==='song:cur'?ssCurSrc():s);save()}XS8().shown.exporthub=true;try{syncLayout8()}catch(x){}const d=openSec('exporthub');if(d){xhRender();d.scrollIntoView({behavior:'smooth',block:'start'})}};
 /* small Export buttons in the heading of each section */
 const XH_SECS=[['sec_boardCard','board'],['boardCard','board'],['sec_alt','piano'],['alt','piano'],['bassneck','bass'],['melody','mel'],['tabx8','tab'],['sec_controls','drums'],['jamband','jb:g1'],['jamstrip','jb:g1'],['x12jt','jb:g1'],['x10tl','tab'],['x10pl','live'],['nde','board'],['songs8','jb:g1']];
 function xhButtons(){XH_SECS.forEach(([id,src])=>{const d=document.getElementById(id),s=d&&d.querySelector(':scope>summary');if(!s||s.querySelector('.xhsum'))return;const b=document.createElement('button');b.type='button';b.className='btn sm xhsum';b.dataset.x='xhOpen';b.dataset.s=src;b.title='Export this: MIDI, Guitar Pro, Power Tab, ASCII tab, documents, video';b.setAttribute('aria-label','Export');b.textContent='📤';s.appendChild(b)})}
@@ -15510,6 +15511,182 @@ function xpLists(){const A=xpAll(),L=[],cats=[...new Set(A.map(x=>x.cat))];
   if(g&&!document.getElementById('x21xh')){const b=document.createElement('button');b.type='button';b.id='x21xh';b.className='x8b';b.dataset.x='xhOpen';b.title='Export Hub – every instrument in MIDI, Guitar Pro, Power Tab, ASCII tab, documents and video';b.textContent='📤 Export Hub';g.appendChild(b)}
   const ga=document.querySelector('header.top .x10gA')||g;if(ga&&!document.getElementById('x21rst')){const b=document.createElement('button');b.type='button';b.id='x21rst';b.className='x8b';b.dataset.x='resetTop';b.title='Reset everything: all settings, favourites, notes and Jam Band set-ups go back to new';b.textContent='🔄 Reset all';ga.appendChild(b)}}catch(e){}},ms));
  setTimeout(()=>{try{Object.assign(window.__fretlab,{XH,xhSong,xhS,xpLists,xhEmpty})}catch(e){}},0)})();
+
+/* ================= 11.1 Song Strip: chord and beat dashes for the songs you added, with every export ================= */
+const SS={list:[],cur:'',loaded:false,db:null,tab:null,cache:{sig:'',song:null,D:null}};
+const SSK=['maj','min','7','maj7','m7','dim','aug','sus4','sus2','m7b5','dim7','6','m6','pow'];
+function ssS(){const v=XS8();if(!v.ss||typeof v.ss!=='object')v.ss={};const s=v.ss;
+ if(typeof s.who!=='string')s.who='all';
+ if(!['bar','half','beat'].includes(s.win))s.win='bar';
+ s.res=[0,2,3,4,6,8].includes(+s.res)?+s.res:0;
+ s.per=[4,8,16,32,64].includes(+s.per)?+s.per:16;
+ s.page=Math.max(0,s.page|0);
+ if(!['page','all'].includes(s.scope))s.scope='page';
+ if(typeof s.cur==='string'&&s.cur&&!SS.cur)SS.cur=s.cur;
+ return s}
+const ssItem=id=>SS.list.find(x=>x.id===id)||null;
+const ssHas=id=>!SS.loaded||!!ssItem(id);
+function ssCurSrc(){return SS.cur&&ssItem(SS.cur)?'song:'+SS.cur:'jb:g1'}
+function ssActiveId(){try{const v=sv9();if(v.id!=='__imp'||!SG8.imp||!SG8.imp.bytes)return '';if(!SG8.imp._ssid)SG8.imp._ssid='s'+(crc32(SG8.imp.bytes)>>>0).toString(36);return SG8.imp._ssid}catch(e){return ''}}
+/* ---------- the list of added songs, kept on this device (IndexedDB) ---------- */
+function ssDB(){return new Promise((res,rej)=>{try{const r=indexedDB.open('fretlab-songs',1);r.onupgradeneeded=()=>{r.result.createObjectStore('songs',{keyPath:'id'})};r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)}catch(e){rej(e)}})}
+async function ssSave(it){try{const db=SS.db||(SS.db=await ssDB());await new Promise((res,rej)=>{const t=db.transaction('songs','readwrite');t.objectStore('songs').put({id:it.id,name:it.name,bytes:it.bytes,added:it.added});t.oncomplete=res;t.onerror=()=>rej(t.error)})}catch(e){}}
+async function ssDel(id){try{const db=SS.db||(SS.db=await ssDB());await new Promise((res,rej)=>{const t=db.transaction('songs','readwrite');t.objectStore('songs').delete(id);t.oncomplete=res;t.onerror=()=>rej(t.error)})}catch(e){}}
+async function ssParse(it){if(!it.r){try{it.r=await importAny9(it.bytes,it.name)}catch(e){it.err=e&&e.message||String(e)}}return it.r}
+async function ssLoadAll(){try{const db=SS.db||(SS.db=await ssDB());const all=await new Promise((res,rej)=>{const q=db.transaction('songs').objectStore('songs').getAll();q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error)});
+  all.sort((a,b)=>(a.added||0)-(b.added||0));all.forEach(r=>{if(!ssItem(r.id))SS.list.push({id:r.id,name:r.name,bytes:new Uint8Array(r.bytes),added:r.added,r:null})})}catch(e){}
+ SS.loaded=true;try{const s=ssS();if(s.cur&&ssItem(s.cur))SS.cur=s.cur;else if(!ssItem(SS.cur))SS.cur=SS.list.length?SS.list[SS.list.length-1].id:''}catch(e){}
+ for(const it of SS.list){await ssParse(it)}try{ssRender(true)}catch(e){}}
+async function ssAdd(name,u8,r){const id='s'+(crc32(u8)>>>0).toString(36);let it=ssItem(id);
+ if(!it){it={id,name,bytes:u8,added:Date.now(),r:r||null};SS.list.push(it);if(SS.list.length>40){const o=SS.list.shift();ssDel(o.id)}ssSave(it)}else if(r&&!it.r)it.r=r;
+ SS.cur=id;ssS().cur=id;return it}
+(function(){const _if=importFile9;importFile9=async function(file){const ok=await _if.apply(this,arguments);
+ if(ok&&SG8.imp&&SG8.imp.bytes){try{await ssAdd(file.name,SG8.imp.bytes,{kind:SG8.imp.kind,mid:SG8.imp.mid,score:SG8.imp.score});ssS().page=0;save();ssRender(true)}catch(e){}}return ok};
+ const _rt=XA.resetTop;XA.resetTop=function(){if(RSTTOP){try{indexedDB.deleteDatabase('fretlab-songs')}catch(e){}}return _rt.apply(this,arguments)}})();
+async function ssActivate(id){const it=ssItem(id);if(!it)return false;const r=await ssParse(it);if(!r){toast('Could not read '+it.name+(it.err?': '+it.err:''));return false}
+ const v=sv9();SG8.imp={name:it.name.replace(/\.[^.]+$/,''),kind:r.kind,mid:r.mid||null,score:r.score||null,file:it.name,bytes:it.bytes};
+ v.id='__imp';v.use={};v.show={};v.mute={};v.solo=-1;v.from=1;v.to=0;v.mode=r.kind==='midi'?'split':'tracks';v.refinger=false;
+ songStop8();SG8.sig='';SS.cur=id;ssS().cur=id;save();try{songRender8()}catch(e){}return true}
+/* a song built from any added file, without disturbing the Song player */
+function ssSong(id,g){const it=ssItem(id);if(!it||!it.r)return null;const v=sv9(),act=ssActiveId()===id;
+ const K={imp:SG8.imp,id:v.id,sig:SG8.sig,song:SG8.song,evs:SG8.evs,len:SG8.len,grid:v.grid,use:v.use,from:v.from,to:v.to,mode:v.mode,refinger:v.refinger};
+ try{if(!act){SG8.imp={name:it.name.replace(/\.[^.]+$/,''),kind:it.r.kind,mid:it.r.mid||null,score:it.r.score||null,file:it.name,bytes:it.bytes};v.id='__imp';v.use={};v.from=1;v.to=0;v.mode=it.r.kind==='midi'?'split':'tracks';v.refinger=false}
+  if(g)v.grid=g;SG8.sig='';const s=songBuild8();return s&&s.parts&&s.parts.length?s:null}
+ finally{SG8.imp=K.imp;v.id=K.id;SG8.sig=K.sig;SG8.song=K.song;SG8.evs=K.evs;SG8.len=K.len;v.grid=K.grid;v.use=K.use;v.from=K.from;v.to=K.to;v.mode=K.mode;v.refinger=K.refinger}}
+/* ---------- chords from the notes ---------- */
+function ssTable(){if(SS.tab)return SS.tab;const base={1:0,2:2,3:4,4:5,5:7,6:9,7:11,9:2,11:5,13:9};
+ const iv=s=>{const m=/^([b#]*)(\d+)$/.exec(String(s));if(!m||base[+m[2]]==null)return null;let a=0;for(const c of m[1])a+=c==='b'?-1:1;return(((base[+m[2]]+a)%12)+12)%12};
+ SS.tab=SSK.map(k=>CH[k]).filter(Boolean).map(c=>({sym:c.sym||'',pcs:[...new Set(c.t.map(iv).filter(x=>x!=null))]})).filter(c=>c.pcs.length>=2);return SS.tab}
+function ssChord(w,bassPc){let tot=0;for(let i=0;i<12;i++)tot+=w[i];if(tot<0.01)return '';const T=ssTable(),thr=tot*0.07;let best=null,bs=-9;
+ for(let r=0;r<12;r++){if(w[r]<thr&&bassPc!==r)continue;for(const c of T){let inW=0,present=0;c.pcs.forEach(p=>{const x=w[(r+p)%12];inW+=x;if(x>thr)present++});
+  const out=tot-inW,miss=c.pcs.length-present;if(c.pcs.length>=3&&miss>1)continue;if(c.pcs.length===2&&miss>0)continue;
+  const s=(inW-1.1*out)/tot+0.18*(w[r]>thr?1:0)+(bassPc===r?0.25:0)-0.05*(c.pcs.length-3)-0.35*miss;if(s>bs){bs=s;best=dn(pcName(r))+c.sym}}}
+ return best&&bs>0.15?best:'–'}
+/* ---------- strip data ---------- */
+function ssBuild(song){const S=ssS(),g=song.g||4,den=song.den||4,num=song.num||4,bu=Math.max(1,g*4/den),barU=num*bu;
+ const parts=song.parts.map((p,i)=>({p,i})).filter(x=>!x.p.drum&&x.p.evs.length);if(!parts.length)return null;
+ let end=0;parts.forEach(({p})=>p.evs.forEach(e=>{end=Math.max(end,e.t+Math.max(1,e.d))}));
+ const bars=Math.max(1,Math.ceil(end/barU-1e-6)),N=bars*num,src=S.who==='all'?parts:parts.filter(x=>String(x.i)===S.who),dash=src.length?src:parts;
+ const offs=[];dash.forEach(({p})=>p.evs.forEach(e=>{if(offs.length<500&&e.notes.length)offs.push((((e.t%bu)+bu)%bu)/bu)}));
+ const res=S.res||Math.max(2,Math.min(8,jtRes(offs.length?offs:[0,.5])));
+ const sy=Array.from({length:N},()=>Array(res).fill('-')),cn=Array.from({length:N},()=>Array(res).fill(0));
+ dash.forEach(({p})=>p.evs.forEach(e=>{if(!e.notes.length)return;let b=Math.floor(e.t/bu+1e-9),k=Math.round((e.t-b*bu)/bu*res);if(k>=res){k=0;b++}if(b<0||b>=N)return;cn[b][k]+=e.notes.length;sy[b][k]=cn[b][k]>1?'■':'•'}));
+ const wl=S.win==='beat'?1:S.win==='half'?Math.max(1,Math.ceil(num/2)):num,wins=[];
+ for(let bar=0;bar<bars;bar++)for(let b0=0;b0<num;b0+=wl){const l=Math.min(wl,num-b0),u0=(bar*num+b0)*bu,u1=u0+l*bu,w=new Array(12).fill(0);let low=1e9;
+  parts.forEach(({p})=>p.evs.forEach(e=>{if(e.t>=u1)return;const e1=e.t+Math.max(1,e.d),ov=Math.min(e1,u1)-Math.max(e.t,u0);if(ov<=0)return;e.notes.forEach(n=>{const m=n.m;if(!Number.isFinite(m))return;w[((m%12)+12)%12]+=ov+(e.t>=u0?0.5*bu:0);if(m<low)low=m})}));
+  wins.push({bar,b0:bar*num+b0,len:l,name:ssChord(w,low<1e8?((low%12)+12)%12:-1)})}
+ const blocks=[];wins.forEach(x=>{const L=blocks[blocks.length-1];if(L&&L.name===x.name&&L.bar===x.bar){L.len+=x.len}else blocks.push({i:blocks.length,bar:x.bar,name:x.name||'·',b0:x.b0,len:x.len})});
+ blocks.forEach(b=>{b.sec=(b.b0%num===0)?'bar '+(b.bar+1):''});
+ const beats=[];blocks.forEach(b=>{for(let k=0;k<b.len;k++)beats[b.b0+k]={i:b.i,w:k,len:b.len,syms:sy[b.b0+k]}});
+ const sec=60/song.bpm*(4/den);
+ return{song,N,bars,num,bu,res,beats,blocks,who:S.who==='all'?'All parts':(parts.find(x=>String(x.i)===S.who)||parts[0]).p.name,bd:sec,parts}}
+function ssCurSong(){const it=ssItem(SS.cur);if(!it||!it.r)return null;const v=sv9(),S=ssS();
+ const sig=JSON.stringify([it.id,v.grid,v.split,v.splitAt,v.bassInst,v.mode,v.transpose,v.from,v.to,v.use,v.refinger,v.tempo,ssActiveId()===it.id,tn(),state.frets,S.who,S.win,S.res]);
+ if(SS.cache.sig===sig&&SS.cache.D)return SS.cache.D;let song=null,D=null;try{song=ssSong(it.id,0);D=song?ssBuild(song):null}catch(e){D=null}SS.cache={sig,song,D};return D}
+function ssRange(D,scope){const S=ssS(),per=S.per,pages=Math.max(1,Math.ceil(D.bars/per));if(S.page>=pages)S.page=pages-1;
+ return scope==='all'?[0,D.bars]:[S.page*per,Math.min(D.bars,S.page*per+per)]}
+/* ---------- the section ---------- */
+function ssHTML(){const S=ssS(),it=ssItem(SS.cur);
+ const add='<label class="btn sm" style="cursor:pointer">📂 Add a song (MIDI, Guitar Pro, Power Tab)<input type="file" accept=".mid,.midi,.rmi,.kar,.gp3,.gp4,.gp5,.gpx,.gp,.ptb" data-xi="ssFile" hidden></label>';
+ if(!SS.list.length)return '<div class="row">'+add+'</div><div class="mut">Songs you open in the Song player (or drop on the page) are kept here. Each one gets a strip of chords and beat dashes, with the same exports as the Jam Strip, plus MIDI, Guitar Pro, Power Tab and ASCII tab.</div>';
+ const D=ssCurSong(),sel='<label>Song <select data-xi="ssPick" style="max-width:100%">'+SS.list.map(x=>so13(x.id,x.name,SS.cur)).join('')+'</select></label>';
+ const head='<div class="x10bar">'+sel+add+'<button class="btn sm" data-x="ssRemove" title="Remove this song from the list">🗑 Remove</button></div>';
+ if(!it||!it.r)return head+'<div class="mut">'+xmlEsc(it&&it.err?'Could not read this file: '+it.err:'Reading the file …')+'</div>';
+ if(!D)return head+'<div class="mut">This song has no notes to show.</div>';
+ const O=(k,list)=>'<label>'+list[0]+' <select data-xi="ssSel" data-k="'+k+'">'+list[1].map(([a,b])=>so13(a,b,S[k])).join('')+'</select></label>';
+ const pages=Math.max(1,Math.ceil(D.bars/S.per)),[a,b]=ssRange(D,'page');
+ const who=O('who',['Dashes of',[['all','All parts']].concat(D.parts.map(x=>[String(x.i),x.p.name||('Part '+(x.i+1))]))]),win=O('win',['Chord every',[['bar','bar'],['half','half bar'],['beat','beat']]]),res=O('res',['Dashes per beat',[[0,'auto'],[2,'2'],[3,'3'],[4,'4'],[6,'6'],[8,'8']]]),per=O('per',['Bars per page',[[4,'4'],[8,'8'],[16,'16'],[32,'32'],[64,'64']]]);
+ const bar1='<div class="x10bar"><button class="btn main" id="ssPlay" data-x="ssPlay">'+(SG8.playing&&ssActiveId()===SS.cur?'⏸ Pause':'▶ Play')+'</button><button class="btn" data-x="ssStop">⏹ Stop</button>'+who+win+res+'</div>';
+ const bar2='<div class="x10bar"><button class="btn sm" data-x="ssPage" data-d="-1"'+(S.page<=0?' disabled':'')+'>◀ Previous bars</button><span class="mut">Bars '+(a+1)+'–'+b+' of '+D.bars+' · page '+(S.page+1)+' of '+pages+'</span><button class="btn sm" data-x="ssPage" data-d="1"'+(S.page>=pages-1?' disabled':'')+'>Next bars ▶</button>'+per+'</div>';
+ const B=(f,t,h)=>'<button class="btn sm" data-x="ssEx" data-f="'+f+'"'+(h?' title="'+xmlEsc(h)+'"':'')+'>'+t+'</button>';
+ const bar3='<div class="x10bar"><span class="mut">Export:</span>'+B('video','▶ Video / GIF / MP4 …','Opens the video window with every video option')+B('svg','SVG')+B('png','PNG')+B('pdf','PDF')+B('docx','DOCX')+'<label>of <select data-xi="ssSel" data-k="scope">'+so13('page','these bars',S.scope)+so13('all','the whole song',S.scope)+'</select></label></div>'+
+  '<div class="x10bar"><span class="mut">Music files:</span>'+B('mid','MIDI')+B('gp5','Guitar Pro 5')+B('ptb','Power Tab')+B('txt','ASCII tab')+B('copy','📋 Copy tab')+B('zip','All four (.zip)')+B('hub','📤 Export Hub')+'</div>';
+ const first=D.blocks.find(x=>x.bar>=a)||D.blocks[0];
+ const grid=D.blocks.filter(x=>x.bar>=a&&x.bar<b).map(c=>'<div class="jsc" data-i="'+c.i+'"><div class="jsn">'+xmlEsc(c.name)+(c.sec?' <small class="mut">'+xmlEsc(c.sec)+'</small>':'')+'</div><div class="jsbs">'+
+  Array.from({length:c.len},(_,k)=>{const bt=D.beats[c.b0+k];return '<span class="jsb" data-b="'+(c.b0+k)+'"><em>'+(bt.w+1)+'</em><span class="jss">'+bt.syms.map((s,q)=>'<i data-k="'+q+'">'+s+'</i>').join('')+'</span></span>'}).join('')+'</div></div>').join('');
+ return head+bar1+bar2+bar3+'<div class="jsbig"><div id="ssBig" class="jsbigc">'+xmlEsc(first?first.name:'')+'</div><div class="jsmeta"><span id="ssNow" class="mut">Press Play</span><span id="ssNext" class="mut"></span></div></div>'+
+  '<div class="jsgrid" id="ssGrid" data-res="'+D.res+'" data-a="'+a+'" data-b="'+b+'">'+grid+'</div>'+
+  '<p class="mut" style="margin:6px 0 0">'+xmlEsc(D.song.title||it.name)+' · '+D.song.num+'/'+D.song.den+' · '+Math.round(D.song.bpm)+' BPM · dashes of '+xmlEsc(D.who)+' · ■ several notes · • one note · - nothing starts. Chords are worked out from the notes sounding in each '+(S.win==='beat'?'beat':S.win==='half'?'half bar':'bar')+', so treat them as a guide. The Song player’s tempo, hand split and bar range apply here too.</p>'}
+let SSV={sig:''};
+function ssRender(force){const d=document.getElementById('songstrip'),b=document.getElementById('ssBody');if(!d||!b||!d.open)return;
+ let sig='';try{const D=SS.list.length?ssCurSong():null;sig=JSON.stringify([SS.list.map(x=>x.id+(x.r?1:0)),SS.cur,ssS(),D&&D.N,D&&D.blocks.length,SG8.playing,SS.cache.sig])}catch(e){sig=String(Math.random())}
+ if(!force&&sig===SSV.sig&&b.firstChild)return;const a=document.activeElement;if(!force&&a&&b.contains(a)&&a.matches('select'))return;SSV.sig=sig;b.innerHTML=ssHTML();ssClear()}
+function ssEnsure(){if(document.getElementById('songstrip'))return;const ref=document.getElementById('songs8')||document.getElementById('jamstrip');if(!ref||!ref.parentNode)return;
+ const d=document.createElement('details');d.className='card x7 x7sec';d.id='songstrip';d.innerHTML='<summary><span class="stt">🎼 Song Strip – chord and beat dashes for your songs</span><span class="sth" id="sth_songstrip"></span></summary><div id="ssBody"></div>';ref.after(d);
+ d.addEventListener('toggle',()=>{if(d.open)ssRender(true)});try{syncLayout8()}catch(e){}try{xhButtons()}catch(e){}}
+XA.ssOpen=()=>{ssEnsure();XS8().shown.songstrip=true;try{syncLayout8()}catch(e){}const d=openSec('songstrip');if(d){ssRender(true);d.scrollIntoView({behavior:'smooth',block:'start'})}};
+XA.ssFile=el=>{const f=el.files&&el.files[0];if(f)importFile9(f).then(()=>{try{const d=document.getElementById('songs8');ssRender(true)}catch(e){}});el.value=''};
+XA.ssPick=async el=>{if(await ssActivate(el.value)){ssS().page=0;save();ssRender(true)}};
+XA.ssSel=el=>{const S=ssS(),k=el.dataset.k;S[k]=(k==='who'||k==='win'||k==='scope')?el.value:+el.value;if(k!=='scope'&&k!=='per')S.page=0;if(k==='per')S.page=0;save();ssRender(true)};
+XA.ssPage=el=>{const S=ssS();S.page=Math.max(0,S.page+(+el.dataset.d));save();ssRender(true)};
+XA.ssRemove=async()=>{const it=ssItem(SS.cur);if(!it)return;const i=SS.list.indexOf(it);SS.list.splice(i,1);ssDel(it.id);if(ssActiveId()===it.id){try{songStop8()}catch(e){}}SS.cur=SS.list.length?SS.list[Math.min(i,SS.list.length-1)].id:'';ssS().cur=SS.cur;ssS().page=0;save();ssRender(true);toast('Removed '+it.name)};
+XA.ssPlay=async()=>{const it=ssItem(SS.cur);if(!it)return;if(SG8.playing&&ssActiveId()===it.id){songPause8();ssRender(true);return}if(ssActiveId()!==it.id){if(!(await ssActivate(it.id)))return}
+ try{songBuild8()}catch(e){}const D=ssCurSong();if(D){const [a]=ssRange(D,'page'),u=a*D.num*D.bu,sec=60/D.song.bpm/(D.song.g||4);SG8.pos=u*sec;SG8.idx=SG8.evs.findIndex(e=>e.t>=SG8.pos-0.001);if(SG8.idx<0){SG8.idx=0;SG8.pos=0}}
+ songStart8();ssRender(true)};
+XA.ssStop=()=>{try{songStop8();songRender8()}catch(e){}ssClear();ssRender(true)};
+/* live highlight while the Song player plays this song */
+let SSL={key:'',cE:null,bE:null,sE:null};
+function ssClear(){['cE','bE','sE'].forEach(k=>{if(SSL[k]){SSL[k].classList.remove('on');SSL[k]=null}});SSL.key='';const n=document.getElementById('ssNow');if(n)n.textContent='Press Play'}
+function ssTick(){const d=document.getElementById('songstrip');if(!d||!d.open)return;const p=document.getElementById('ssPlay'),on=SG8.playing&&ssActiveId()===SS.cur;
+ if(p){const t=on?'⏸ Pause':'▶ Play';if(p.textContent!==t)p.textContent=t}if(!on){if(SSL.key)ssClear();return}
+ const D=ssCurSong(),root=document.getElementById('ssGrid');if(!D||!root)return;const sec=60/D.song.bpm/(D.song.g||4),u=SG8.pos/sec,beat=Math.floor(u/D.bu+1e-9);if(beat<0||beat>=D.N)return;
+ const res=D.res,k=Math.max(0,Math.min(res-1,Math.floor(((u/D.bu)-beat)*res))),key=beat+'|'+k;if(SSL.key===key)return;SSL.key=key;
+ const bt=D.beats[beat];if(!bt)return;const nc=root.querySelector('.jsc[data-i="'+bt.i+'"]'),nb=root.querySelector('.jsb[data-b="'+beat+'"]'),ns=nb&&nb.querySelector('i[data-k="'+k+'"]');
+ if(!nc){const a=+root.dataset.a,b=+root.dataset.b,bar=Math.floor(beat/D.num);if(bar>=b||bar<a){const S=ssS();S.page=Math.floor(bar/S.per);ssRender(true)}return}
+ if(SSL.cE!==nc){if(SSL.cE)SSL.cE.classList.remove('on');nc.classList.add('on');SSL.cE=nc;const big=document.getElementById('ssBig');if(big)big.textContent=D.blocks[bt.i].name;const nx=document.getElementById('ssNext');if(nx)nx.textContent='Next: '+(D.blocks[bt.i+1]?D.blocks[bt.i+1].name:'end')}
+ if(SSL.bE!==nb){if(SSL.bE)SSL.bE.classList.remove('on');if(nb)nb.classList.add('on');SSL.bE=nb}
+ if(SSL.sE!==ns){if(SSL.sE)SSL.sE.classList.remove('on');if(ns)ns.classList.add('on');SSL.sE=ns}
+ const n=document.getElementById('ssNow');if(n)n.textContent='Bar '+(Math.floor(beat/D.num)+1)+' · beat '+(beat%D.num+1)}
+/* ---------- picture, document and music exports ---------- */
+function ssSVG(D,a,b,light,pageNo,pageTot){const ink=light?'#111':'#f3ebe0',mut=light?'#666':'#a99d8f',bg=light?'#ffffff':'#201a15',bw=Math.max(34,D.res*11+10),maxW=980;let x=14,y=34,rowH=0,g='';
+ D.blocks.filter(c=>c.bar>=a&&c.bar<b).forEach(c=>{const w=Math.max(70,c.len*bw+16);if(x+w>maxW){x=14;y+=rowH+14;rowH=0}
+  g+='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="64" rx="8" fill="none" stroke="'+mut+'" stroke-width="1"/><text x="'+(x+8)+'" y="'+(y+22)+'" font-size="18" font-weight="800" fill="'+ink+'">'+xmlEsc(c.name)+'</text>';
+  if(c.sec)g+='<text x="'+(x+w-8)+'" y="'+(y+14)+'" font-size="9" text-anchor="end" fill="'+mut+'">'+xmlEsc(c.sec)+'</text>';
+  for(let k=0;k<c.len;k++){const bt=D.beats[c.b0+k];if(!bt)continue;const bx=x+8+k*bw;g+='<text x="'+bx+'" y="'+(y+36)+'" font-size="9" fill="'+mut+'">'+(bt.w+1)+'</text><text x="'+bx+'" y="'+(y+54)+'" font-size="13" font-weight="700" fill="'+ink+'" xml:space="preserve">'+bt.syms.join(' ')+'</text>'}
+  x+=w+10;rowH=64});
+ const H=y+rowH+16,t='Song Strip – '+(D.song.title||'')+' · '+Math.round(D.song.bpm)+' BPM · bars '+(a+1)+'–'+b+(pageTot>1?' ('+pageNo+'/'+pageTot+')':'');
+ g='<rect width="'+maxW+'" height="'+H+'" fill="'+bg+'"/><text x="14" y="20" font-size="13" font-weight="700" fill="'+ink+'">'+xmlEsc(t.slice(0,110))+'</text>'+g;
+ return{svg:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+maxW+' '+H+'" width="'+maxW+'" height="'+H+'" font-family="Roboto,system-ui,-apple-system,Segoe UI,Helvetica,Arial,sans-serif" role="img" aria-label="Song Strip">'+g+'</svg>',w:maxW,h:H,name:'Song Strip'}}
+function ssPages(D){const S=ssS();if(S.scope!=='all')return[ssRange(D,'page')];const out=[];for(let a=0;a<D.bars;a+=S.per)out.push([a,Math.min(D.bars,a+S.per)]);return out}
+XA.ssEx=async el=>{const f=el.dataset.f;const it=ssItem(SS.cur);if(!it||!it.r){toast('Add a song first');return}
+ try{
+  if(f==='hub'){XA.xhOpen({dataset:{s:'song:'+it.id}});return}
+  if(['mid','gp5','ptb','txt','copy','zip'].includes(f)){const s=ssSong(it.id,f==='mid'?12:4);if(!s){toast('This song has no notes to export');return}exportSong8(s,f);return}
+  const D=ssCurSong();if(!D){toast('This song has no notes to show');return}
+  if(f==='video'){SS_VID.on=true;JS_VID.on=false;JT.vidOn=false;XH.on=false;XH.tl=null;await vidOpen();return}
+  const pg=ssPages(D),ds=pg.map((r,i)=>ssSVG(D,r[0],r[1],true,i+1,pg.length)),title='Song Strip – '+(D.song.title||it.name),base=(safeName(title)||'song-strip').slice(0,60);
+  if(f==='svg'){let y=0,inner='',W=0;ds.forEach(d=>{inner+='<g transform="translate(0,'+y+')">'+d.svg.replace(/^<svg[^>]*>/,'').replace(/<\/svg>\s*$/,'')+'</g>';y+=d.h;W=Math.max(W,d.w)});
+   download(new Blob(['<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+W+' '+y+'" width="'+W+'" height="'+y+'">'+inner+'</svg>'],{type:'image/svg+xml'}),base+'.svg');toast('Saved '+base+'.svg');return}
+  const rs=[];for(const d of ds)rs.push(await jtRaster(d,f==='pdf'?'image/jpeg':'image/png',.92));
+  if(f==='png'){if(rs.length===1)download(new Blob([rs[0].bytes],{type:'image/png'}),base+'.png');else{const z=await makeZip(rs.map((r,i)=>({name:(i+1)+'-'+base+'.png',data:r.bytes})),true);download(new Blob([z],{type:'application/zip'}),base+'.zip')}toast('Saved '+base);return}
+  if(f==='pdf'){download(xppPDF(title,rs),base+'.pdf');toast('Saved '+base+'.pdf');return}
+  download(await xppDOCX(title,Math.round(D.song.bpm)+' BPM · JackRoseGuitar Song Strip',rs),base+'.docx');toast('Saved '+base+'.docx')
+ }catch(e){toast('Export failed: '+(e&&e.message||e))}};
+/* ---------- video: chords and dashes, with the notes for sound ---------- */
+const SS_VID={on:false};
+function ssVidTL(){const D=ssCurSong();if(!D)return null;const S=ssS(),[a,b]=ssRange(D,S.scope),b0=a*D.num,b1=b*D.num,nb=Math.max(1,b1-b0),song=D.song,g=song.g||4,sec=60/song.bpm/g,u0=b0*D.bu,u1=b1*D.bu,tun=tn(),fr=state.frets,items=[];
+ const parts=S.who==='all'?D.parts:D.parts.filter(x=>String(x.i)===S.who);
+ parts.forEach(({p})=>p.evs.forEach(e=>{if(!e.notes.length||e.t<u0||e.t>=u1)return;const used=new Set(),nt=[];e.notes.forEach(n=>{if(!Number.isFinite(n.m))return;const q=jbFret(n.m,tun,fr,5);if(q&&q.s!=null&&q.s>=0&&!used.has(q.s)){used.add(q.s);nt.push({s:q.s,f:q.f})}});
+  if(nt.length)items.push({t:0.8+(e.t-u0)*sec,d:Math.max(.2,Math.min(e.d*sec,3)*.9),notes:nt,label:''})}));
+ items.sort((x,y)=>x.t-y.t);const rb=D.blocks.filter(c=>c.bar>=a&&c.bar<b),map=new Map(rb.map((c,i)=>[c.i,i]));
+ const beats=[];for(let k=b0;k<b1;k++){const bt=D.beats[k];if(bt)beats.push({i:map.get(bt.i),w:bt.w,len:bt.len,syms:bt.syms})}
+ if(!beats.length)return null;
+ return{items,len:0.8+beats.length*D.bd+0.8,title:'Song Strip – '+(song.title||''),tab:null,strip:{beats,names:rb.map(c=>c.name),lens:rb.map(c=>c.len),res:D.res,bd:D.bd,lead:.8,N:beats.length,who:D.who}}}
+(function(){const _vt=vidTimeline;vidTimeline=function(){if(SS_VID.on){try{const r=ssVidTL();if(r)return r}catch(e){}}return _vt.apply(this,arguments)};
+ const _vc=XA.vidClose;XA.vidClose=function(){SS_VID.on=false;return _vc.apply(this,arguments)};
+ ['jsEx','xhEx'].forEach(k=>{const o=XA[k];XA[k]=function(el){if(el&&el.dataset&&el.dataset.f==='video')SS_VID.on=false;return o.apply(this,arguments)}});
+ const _xo=XA.xhOpen;XA.xhOpen=function(el,e){if(el&&el.dataset&&el.dataset.s==='song:cur')el={dataset:Object.assign({},el.dataset,{s:ssCurSrc()})};return _xo.call(this,el,e)}})();
+/* ---------- Export Hub: songs you added are sources too ---------- */
+XH_SECS.push(['songstrip','song:cur']);XH_SECS.forEach(x=>{if(x[0]==='songs8')x[1]='song:cur'});
+/* ---------- header button, css, polling ---------- */
+(function(){const css=document.createElement('style');css.textContent='#songstrip .jsc{max-width:100%}#songstrip .x10bar select{max-width:100%}';document.head.appendChild(css);
+ const put=()=>{ssEnsure();const g=document.querySelector('header.top .x10gA');if(!g)return;if(!document.getElementById('x23strip')){const b=document.createElement('button');b.type='button';b.id='x23strip';b.className='x8b';b.dataset.x='ssOpen';b.title='Song Strip – chord and beat dashes for the songs you added, with every export';b.textContent='🎼 Song Strip';g.appendChild(b)}};
+ [0,300,900,1800,3200].forEach(ms=>setTimeout(()=>{try{put()}catch(e){}},ms));
+ const _v8=v8Post;v8Post=function(){const r=_v8.apply(this,arguments);try{ssEnsure()}catch(e){}return r};
+ const _xc=xCardOpen;xCardOpen=function(id){const r=_xc.apply(this,arguments);if(id==='songstrip'){try{ssRender(true)}catch(e){}}return r};
+ setInterval(()=>{try{ssTick();ssRender(false)}catch(e){}},250);
+ setTimeout(()=>{try{ssLoadAll()}catch(e){}},700);
+ setTimeout(()=>{try{Object.assign(window.__fretlab,{SS,ssBuild,ssSong,ssChord,ssVidTL})}catch(e){}},0)})();
 
 /* ================= 10.22 default fret window and an "All frets" option ================= */
 const FRDEF22=[[0,4],[0,4],[0,4],[0,3],[0,4],[0,4]];
