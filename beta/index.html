@@ -7,7 +7,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="JackRoseGuitar">
-<title>JackRoseGuitar 11 – Fretboard, Scales, Chords &amp; Intervals</title>
+<title>JackRoseGuitar 12 – Fretboard, Scales, Chords &amp; Intervals</title>
 <link rel="manifest" href="../manifest.webmanifest">
 <link rel="apple-touch-icon" href="../icon-192.png">
 <meta name="description" content="JackRoseGuitar: a free offline fretboard for guitar, bass, banjo, mandolin, ukulele and more. Scales, chords, intervals, ear training, lessons and games.">
@@ -846,7 +846,7 @@ body.mob7 .dawc{min-height:0}
 <a class="skip" href="#sec_boardCard">Skip to the fretboard</a><div id="x_live" class="sr" aria-live="polite" role="status"></div>
 <div class="app" id="appRoot">
   <header class="top">
-    <h1>JackRose<span>Guitar</span><small>11 β</small></h1>
+    <h1>JackRose<span>Guitar</span><small>12 β</small></h1>
     <nav id="tabs"></nav>
     <button class="icon" data-act="qs" title="Quick switch (Ctrl+K)" aria-label="Quick switch">🔎</button>
     <button class="icon" data-act="exStudio" title="Export Studio (E)" aria-label="Export Studio">🖨</button>
@@ -1006,7 +1006,7 @@ body.mob7 .dawc{min-height:0}
   <details class="card x7" id="prog9"><summary>🎹 Progression library – 1,745 progressions plus your own, export to MIDI, Guitar Pro and Power Tab</summary><div id="prog9Body"></div></details>
   <details class="card x7" id="tabx8"><summary>📝 Tab export – ASCII, MIDI, Guitar Pro, Power Tab</summary><div id="tabx8Body"></div></details>
   <details class="card x7" id="pkg8"><summary>📦 Study packages – clean PDF with related intervals, chords and scales</summary><div id="pkg8Body"></div></details>
-  <footer>JackRoseGuitar 11 · 100% offline · all settings stored only on this device<span id="x_saved"></span> · <button class="btn sm" data-act="whatsnew">What’s new</button> <button class="btn sm" data-x="guide10">📖 Guide</button></footer>
+  <footer>JackRoseGuitar 12 · 100% offline · all settings stored only on this device<span id="x_saved"></span> · <button class="btn sm" data-act="whatsnew">What’s new</button> <button class="btn sm" data-x="guide10">📖 Guide</button></footer>
 </div>
 <div id="x_tip" hidden></div><div id="x_toast" role="status" hidden></div><button id="x_top" hidden data-x="top" aria-label="Back to top" title="Back to top">↑</button>
 <div id="printArea"></div>
@@ -2067,7 +2067,7 @@ function buildPDF(pages,Wmm,Hmm,meta){
  // refresh ExtGState lists (states may be added on later pages)
  pageIds.forEach(pid=>{objs[pid]=objs[pid].replace(/\/ExtGState << [^>]* >>/,`/ExtGState << ${Object.entries(gsIds).map(([k,id])=>`/GS${k.replace('.','_')} ${id} 0 R`).join(' ')} >>`)});
  objs[pagesId]=`<< /Type /Pages /Kids [${pageIds.map(i=>i+' 0 R').join(' ')}] /Count ${pageIds.length} >>`;
- const infoId=add();objs[infoId]=`<< /Title ${pdfStr(meta.title||'JackRoseGuitar')} /Author ${pdfStr(meta.author||'')} /Creator (JackRoseGuitar 11) /Producer (JackRoseGuitar 11) >>`;
+ const infoId=add();objs[infoId]=`<< /Title ${pdfStr(meta.title||'JackRoseGuitar')} /Author ${pdfStr(meta.author||'')} /Creator (JackRoseGuitar 12) /Producer (JackRoseGuitar 12) >>`;
  const catId=add();objs[catId]=`<< /Type /Catalog /Pages ${pagesId} 0 R >>`;
  imgs.forEach(({id,op})=>{objs[id]={img:op.jpeg,w:op.pw,h:op.ph}});
  const out=[],L=s=>{const b=new Uint8Array(s.length);for(let i=0;i<s.length;i++)b[i]=s.charCodeAt(i)&255;return b};let pos=0;const offs=[];
@@ -2274,8 +2274,8 @@ function exCatalog(data,fmt){
  const csvq=v=>/[",\n;]/.test(String(v))?'"'+String(v).replace(/"/g,'""')+'"':String(v);
  if(fmt==='csv')return '﻿'+cols.join(',')+'\n'+rows.map(r=>cols.map(c=>csvq(r[c])).join(',')).join('\n');
  if(fmt==='tsv')return cols.join('\t')+'\n'+rows.map(r=>cols.map(c=>String(r[c]).replace(/\t/g,' ')).join('\t')).join('\n');
- if(fmt==='json')return JSON.stringify({app:'JackRoseGuitar 11',title:state.exp.title,created:new Date().toISOString(),items:rows},null,1);
- if(fmt==='yaml')return `app: JackRoseGuitar 11\ntitle: ${JSON.stringify(state.exp.title)}\nitems:\n`+rows.map(r=>'  - '+cols.map((c,k)=>(k?'    ':'')+c+': '+JSON.stringify(r[c])).join('\n')).join('\n');
+ if(fmt==='json')return JSON.stringify({app:'JackRoseGuitar 12',title:state.exp.title,created:new Date().toISOString(),items:rows},null,1);
+ if(fmt==='yaml')return `app: JackRoseGuitar 12\ntitle: ${JSON.stringify(state.exp.title)}\nitems:\n`+rows.map(r=>'  - '+cols.map((c,k)=>(k?'    ':'')+c+': '+JSON.stringify(r[c])).join('\n')).join('\n');
  if(fmt==='xml')return `<?xml version="1.0" encoding="UTF-8"?>\n<fretlab title="${xmlEsc(state.exp.title)}">\n`+rows.map(r=>`  <item ${cols.map(c=>`${c}="${xmlEsc(r[c])}"`).join(' ')}/>`).join('\n')+'\n</fretlab>';
  return `${state.exp.title}\n${'='.repeat(Math.max(3,state.exp.title.length))}\n\n`+rows.map(r=>`${String(r.n).padStart(3)}. ${r.name}\n     notes: ${r.notes}${r.formula?'\n     formula: '+r.formula:''}\n     ${r.group}`).join('\n\n');
 }
@@ -2286,7 +2286,7 @@ async function exRun(fmt){
   if(['csv','tsv','json','yaml','xml','txt'].includes(fmt)){const t=exCatalog(data,fmt);download(new Blob([t],{type:fmt==='json'?'application/json':fmt==='xml'?'application/xml':'text/plain'}),`${base}.${fmt}`);exProgress(1,1,`Saved ${data.length} rows as ${fmt.toUpperCase()}.`);return}
   if(fmt==='svgzip'){download(await makeZip(data.map((d,i)=>({name:`${String(i+1).padStart(3,'0')}-${safeName(d.name)}.svg`,data:d.svg}))),`${base}-svg.zip`);exProgress(1,1,`Zipped ${data.length} SVG diagrams.`);return}
   if(fmt==='midizip'){const files=[];const snap=exSnap();try{exItems().forEach((it,i)=>{exCapture(it);const ms=[...new Set([...ACT.values()].map(a=>(rootMidi()+a.semi)))].sort((a,b)=>a-b);const notes=it.kind==='chord'||it.kind==='prog'?ms.map(m=>({t:0,d:1900,m})):ms.concat([rootMidi()+12]).map((m,k)=>({t:k*240,d:220,m}));files.push({name:`${String(i+1).padStart(3,'0')}-${safeName(data[i].name)}.mid`,data:smf(notes,state.bpm)})})}finally{exRestore(snap)}download(await makeZip(files),`${base}-midi.zip`);exProgress(1,1,`Zipped ${files.length} MIDI files.`);return}
-  if(fmt==='html'){const h=`<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${xmlEsc(E.title)}</title><style>body{font-family:${CSSFONT[E.font]};color:${E.tCol};max-width:1100px;margin:24px auto;padding:0 16px}h1{color:${E.hCol}}.g{display:grid;grid-template-columns:repeat(${exLayout(1).cols},1fr);gap:${E.gy}px ${E.gx}px}figure{margin:0;${E.border!=='none'?`border:${E.border==='thick'?2:1}px ${E.border==='dashed'?'dashed':'solid'} ${E.borderCol};`:''}padding:4px}figure svg{width:${E.dsize||100}%;height:auto;display:block;margin:0 auto}figcaption{font-size:${E.cSize+3}px;text-align:center}@media print{figure{break-inside:avoid}}</style></head><body><h1>${xmlEsc(E.title)}</h1>${E.subtitle?`<h2>${xmlEsc(E.subtitle)}</h2>`:''}${E.author?`<p>${xmlEsc(E.author)}</p>`:''}${E.intro?`<p>${xmlEsc(E.intro).replace(/\n/g,'<br>')}</p>`:''}<div class="g">${data.map(d=>{const c=exCaptions(d).map((t,k)=>k?xmlEsc(t):`<b>${xmlEsc(t)}</b>`).join('<br>');return `<figure>${E.cap==='above'?`<figcaption>${c}</figcaption>`:''}${d.svg.replace('<svg ','<svg role="img" aria-label="'+xmlEsc(d.name)+'" ')}${E.cap==='below'?`<figcaption>${c}</figcaption>`:''}</figure>`}).join('')}</div><p style="font-size:12px;color:#888">Made with JackRoseGuitar 11 – works offline.</p></bo`+`dy></html>`;download(new Blob([h],{type:'text/html'}),`${base}.html`);exProgress(1,1,`Saved an HTML page with ${data.length} diagrams.`);return}
+  if(fmt==='html'){const h=`<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${xmlEsc(E.title)}</title><style>body{font-family:${CSSFONT[E.font]};color:${E.tCol};max-width:1100px;margin:24px auto;padding:0 16px}h1{color:${E.hCol}}.g{display:grid;grid-template-columns:repeat(${exLayout(1).cols},1fr);gap:${E.gy}px ${E.gx}px}figure{margin:0;${E.border!=='none'?`border:${E.border==='thick'?2:1}px ${E.border==='dashed'?'dashed':'solid'} ${E.borderCol};`:''}padding:4px}figure svg{width:${E.dsize||100}%;height:auto;display:block;margin:0 auto}figcaption{font-size:${E.cSize+3}px;text-align:center}@media print{figure{break-inside:avoid}}</style></head><body><h1>${xmlEsc(E.title)}</h1>${E.subtitle?`<h2>${xmlEsc(E.subtitle)}</h2>`:''}${E.author?`<p>${xmlEsc(E.author)}</p>`:''}${E.intro?`<p>${xmlEsc(E.intro).replace(/\n/g,'<br>')}</p>`:''}<div class="g">${data.map(d=>{const c=exCaptions(d).map((t,k)=>k?xmlEsc(t):`<b>${xmlEsc(t)}</b>`).join('<br>');return `<figure>${E.cap==='above'?`<figcaption>${c}</figcaption>`:''}${d.svg.replace('<svg ','<svg role="img" aria-label="'+xmlEsc(d.name)+'" ')}${E.cap==='below'?`<figcaption>${c}</figcaption>`:''}</figure>`}).join('')}</div><p style="font-size:12px;color:#888">Made with JackRoseGuitar 12 – works offline.</p></bo`+`dy></html>`;download(new Blob([h],{type:'text/html'}),`${base}.html`);exProgress(1,1,`Saved an HTML page with ${data.length} diagrams.`);return}
   const L0=exLayout(1),wpx=Math.round(L0.imgW/25.4*150*E.scale);
   if(['pngzip','jpgzip','webpzip'].includes(fmt)){const type={pngzip:'image/png',jpgzip:'image/jpeg',webpzip:'image/webp'}[fmt],ext={pngzip:'png',jpgzip:'jpg',webpzip:'webp'}[fmt];const w=Math.round(1264*E.scale/2);
    const r=await exRaster(data,w,type,E.jq/100);download(await makeZip(r.map((x,i)=>({name:`${String(i+1).padStart(3,'0')}-${safeName(data[i].name)}.${ext}`,data:x.bytes,store:true}))),`${base}-${ext}.zip`);exProgress(1,1,`Zipped ${r.length} ${ext.toUpperCase()} images.`);return}
@@ -3168,7 +3168,7 @@ function libraryHTML(){
   (loose.length?`<h3>Other</h3><div class="pills">${loose.map(s=>`<button class="pill${s.k===state.scale?' on':''}" data-act="libGo" data-k="${s.k}">${s.n}</button>`).join('')}</div>`:'')+'</div>';
 }
 function libraryText(){
- const L=[`JackRoseGuitar 11 scale library – ${SCALES.length} scales`,''];
+ const L=[`JackRoseGuitar 12 scale library – ${SCALES.length} scales`,''];
  FAMS.forEach(F=>{L.push(F.name);F.keys.forEach((k,i)=>{const s=SC[k];L.push(`  ${i+1}. ${s.n.padEnd(40)} ${s.t.map(tl).join(' ')}${AKA[k]?'   aka '+AKA[k].join(', '):''}`)});L.push('')});
  SCALES.filter(s=>s.fam==null).forEach(s=>L.push(`${s.n.padEnd(43)} ${s.t.map(tl).join(' ')}`));
  return L.join('\n');
@@ -3781,18 +3781,18 @@ const F7=[
 ['Data & settings',['Settings profiles','Favourites export/import','Practice log CSV','Copy as Markdown']]
 ];
 const F7N=F7.reduce((a,g)=>a+g[1].length,0);
-function newHTML7(){let n=0;return `<h2>What's new in JackRoseGuitar 11</h2>
+function newHTML7(){let n=0;return `<h2>What's new in JackRoseGuitar 12</h2>
 <p><b>Every section is now collapsible and starts collapsed</b> (your choice is remembered), and the default instrument is the <b>nylon-string guitar</b>. The theme button now toggles light/dark reliably (Shift+T cycles every theme).</p>
 <p><b>${F7N} new features:</b></p>
 <div style="max-height:46vh;overflow:auto">`+F7.map(g=>`<p><b>${g[0]}</b><br>`+g[1].map(x=>`${++n}. ${x}`).join('<br>')+'</p>').join('')+`</div>
 <div class="row"><button class="btn main" data-act="closeModal">Let's play</button></div>`}
-function helpHTML(){return `<h2>JackRoseGuitar 11 – help</h2>
+function helpHTML(){return `<h2>JackRoseGuitar 12 – help</h2>
 <p><b>Shortcuts</b> (when not typing in a box)</p>
 <p><kbd>1</kbd>–<kbd>6</kbd> modes · <kbd>←</kbd><kbd>→</kbd> root ±1 semitone (<kbd>Shift</kbd> = a 5th) · <kbd>↑</kbd><kbd>↓</kbd> previous/next scale, chord or progression · <kbd>Space</kbd> play · <kbd>Esc</kbd> stop all / close · <kbd>M</kbd> metronome · <kbd>T</kbd> light/dark · <kbd>Shift</kbd>+<kbd>T</kbd> all themes · <kbd>O</kbd> expand/collapse all · <kbd>G</kbd> jump to section · <kbd>F</kbd> focus mode (just the neck) · <kbd>H</kbd> show / hide the header menu · <kbd>Shift</kbd>+<kbd>I</kbd> About · <kbd>Shift</kbd>+<kbd>L</kbd> Lab tools · <kbd>Shift</kbd>+<kbd>D</kbd> guided demo · <kbd>Shift</kbd>+<kbd>H</kbd> all features · <kbd>/</kbd> search · <kbd>Shift</kbd>+<kbd>M</kbd> mute · <kbd>Shift</kbd>+<kbd>P</kbd> presentation · <kbd>D</kbd> drone · <kbd>E</kbd> export studio · <kbd>V</kbd> video mode · <kbd>L</kbd> lessons</p>
 <p><b>Quiz &amp; games</b>: <kbd>1</kbd>–<kbd>4</kbd> answer · <kbd>Enter</kbd> next question. <b>Lessons</b>: <kbd>←</kbd><kbd>→</kbd> previous/next lesson · <kbd>Space</kbd> play/stop the first example · <kbd>N</kbd> next unfinished · <kbd>Esc</kbd> back.</p>
 <p>• Drop a MIDI, Guitar Pro or Power Tab file anywhere on the page to open it in the Song player (K plays / pauses).<br>• The strum editor (Practice tools) has 100 patterns, a metronome click and a count-in.<br>• Click a string's name to hide or show that string.<br>• Click a legend item to hide that note.<br>• Click the board, then use the arrow keys to move the cursor.<br>• The page starts in a simple view – ☰ Navigate opens any section, Show all sections shows everything. ■ Stop appears while anything plays.<br>• 🎓 Lessons, 🎮 Games, 🎬 Video and 📚 My library are in the header; 🎸 Strings &amp; ranges is next to the tuning in Settings.<br>• <button class="btn sm" data-x="guide10">❔ Open the illustrated guide (PDF)</button></p>
 <div class="row"><button class="btn" data-act="whatsnew">What's new</button><button class="btn" data-x="about104">About</button><button class="btn" data-x="lab105">🧪 Lab</button><button class="btn" data-x="tour104" data-v="0">Quick tour</button><button class="btn main" data-act="closeModal">Close</button></div>`}
-function welcomeHTML(){return `<h2>Welcome to JackRoseGuitar 11</h2>
+function welcomeHTML(){return `<h2>Welcome to JackRoseGuitar 12</h2>
 <p>An offline guitar fretboard for scales, chords, intervals and ear training.</p>
 <p>• <b>Tap any fret</b> to hear it (nylon guitar by default).<br>• Pick a <b>mode</b> at the top, then a root and a scale or chord.<br>• The simple view shows the neck; use ☰ Navigate or Show all sections for every tool.<br>• 🎓 Lessons teaches guitar from the very first steps.<br>• Press <b>?</b> any time for shortcuts.</p>
 <div class="row"><button class="btn main" data-act="closeModal">Let's play</button><button class="btn" data-x="demo106">▶ Take the guided demo</button><button class="btn" data-x="home107">🏠 All features</button></div>`}
@@ -4973,7 +4973,7 @@ function renderData(){
  const sh=$('#sth_tools');if(sh)sh.textContent='· '+backupHint();
 }
 document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('[data-act=backup]')){XS().lastBackup=Date.now();save();renderData()}},true);
-XA.favExp=()=>{download(new Blob([JSON.stringify({app:'JackRoseGuitar 11',favs:state.favs},null,1)],{type:'application/json'}),'jackroseguitar-favourites.json');flashMsg('Favourites exported.');toast('Favourites exported ('+state.favs.length+').')};
+XA.favExp=()=>{download(new Blob([JSON.stringify({app:'JackRoseGuitar 12',favs:state.favs},null,1)],{type:'application/json'}),'jackroseguitar-favourites.json');flashMsg('Favourites exported.');toast('Favourites exported ('+state.favs.length+').')};
 XA.favImp=el=>{const f=el.files&&el.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const o=JSON.parse(r.result),a=Array.isArray(o)?o:o.favs;if(!Array.isArray(a))throw 0;
  const ok=a.filter(x=>x&&typeof x==='object'&&typeof x.mode==='string'&&Number.isFinite(x.pc)&&typeof x.label==='string'),have=new Set(state.favs.map(x=>JSON.stringify(x)));let n=0;
  ok.forEach(x=>{const s=JSON.stringify(x);if(!have.has(s)&&state.favs.length<200){state.favs.push(x);have.add(s);n++}});save();favRender();secUpdate();toast(n+' favourite'+(n===1?'':'s')+' imported.')}catch(e){toast('That file is not a JackRoseGuitar favourites file.')}};r.readAsText(f);el.value=''};
@@ -4984,7 +4984,7 @@ XA.mdCopy=()=>{
  if(m==='scales'){const s=SC[state.scale];t+=`- Scale: ${s.n}\n- Formula: ${s.t.map(tl).join(' ')}\n- Notes: ${s.t.map(spell).join(' ')}\n`}
  else if(m==='chords'){const c=CH[state.chord];t+=`- Chord: ${c.n}\n- Formula: ${c.t.map(tl).join(' ')}\n- Notes: ${c.t.map(spell).join(' ')}\n`}
  else if(m==='progress'){t+=`- Chords: ${progChords().map(c=>c.name).join(' – ')}\n`}
- let tab=null;try{tab=asciiTab()}catch(e){}if(tab)t+='\n```\n'+tab+'\n```\n';t+='\n_Made with JackRoseGuitar 11_\n';
+ let tab=null;try{tab=asciiTab()}catch(e){}if(tab)t+='\n```\n'+tab+'\n```\n';t+='\n_Made with JackRoseGuitar 12_\n';
  COPYMSG10='Copied as Markdown.';copyText(fixAcc(t))};
 XA.rst=el=>{
  if(!el.dataset.arm){el.dataset.arm='1';el.dataset.orig=el.textContent;el.textContent='Tap again to confirm';setTimeout(()=>{if(el.dataset.arm){delete el.dataset.arm;el.textContent=el.dataset.orig}},4000);return}
@@ -5339,7 +5339,7 @@ function layout8(){
  <button class="x8b main" data-act="exStudio" title="Export Studio (E)">Export</button>
  <a class="x8b ghost" href="../index.html?choose" id="x8switch" title="Choose Original or Beta mode">Mode ⇄</a>`;
  H.appendChild(right);H.after(tools);
- const br=document.createElement('div');br.className='x8beta';br.innerHTML='<b>JackRoseGuitar 11 Beta</b> · simple view – the neck, its controls and the tab. Use <b>☰ Navigate</b> or <b>Show all sections</b> for everything else.';
+ const br=document.createElement('div');br.className='x8beta';br.innerHTML='<b>JackRoseGuitar 12 Beta</b> · simple view – the neck, its controls and the tab. Use <b>☰ Navigate</b> or <b>Show all sections</b> for everything else.';
  tools.after(br);
  const ir=document.createElement('div');ir.className='row x8inst';ir.id='x8inst';
  const bw=$('#boardCard .boardwrap');if(bw){bw.parentNode.insertBefore(ir,bw);const tw=document.createElement('div');tw.id='x8tabwrap';tw.className='x8tabwrap';bw.after(tw)}
@@ -5610,7 +5610,7 @@ function relatedFor8(it){
 function pkgPages8(it){
  const P=XS8().pkg,paper=P.paper==='Letter'?[215.9,279.4]:[210,297],[PW,PH]=paper,M=14,CW=PW-2*M;const sp=specOf8(it);if(!sp)throw new Error('Nothing selected');
  const pages=[];let ops,y;const I=instr8(XS8().instr);
- const newPage=()=>{ops=[];pages.push({ops});y=M;ops.push({t:'text',x:M,y:PH-7,text:winAnsi(`JackRoseGuitar 11 · ${sp.label} · ${instrLabel10()}`),size:7,col:'#9a8f80',font:'helv'});ops.push({t:'text',x:PW-M,y:PH-7,text:'Page '+pages.length,size:7,col:'#9a8f80',align:'right',font:'helv'})};
+ const newPage=()=>{ops=[];pages.push({ops});y=M;ops.push({t:'text',x:M,y:PH-7,text:winAnsi(`JackRoseGuitar 12 · ${sp.label} · ${instrLabel10()}`),size:7,col:'#9a8f80',font:'helv'});ops.push({t:'text',x:PW-M,y:PH-7,text:'Page '+pages.length,size:7,col:'#9a8f80',align:'right',font:'helv'})};
  const need=h=>{if(y+h>PH-14)newPage()};
  const head=(t,sub)=>{need(16);ops.push({t:'fill',x:M,y:y,w:CW,h:.6,col:'#e3a03a'});y+=6;ops.push({t:'text',x:M,y:y,text:winAnsi(t),size:13,bold:true,col:'#241a10',font:'helv'});y+=4;if(sub){ops.push({t:'text',x:M,y:y+1,text:winAnsi(sub),size:7.5,col:'#6d6257',font:'helv'});y+=5}y+=2};
  newPage();
@@ -5762,7 +5762,7 @@ const UI8=[
 ['Player and exports',['Transport bar with a large Play / Pause','Position slider with elapsed and total time','Tempo slider shows percent and BPM live','Pieces grouped: Ballades, Études, Nocturnes, Mazurkas, Waltzes…','Statistics line explains moved octaves and left-out notes','Monospaced tab preview with aligned figures','Export buttons grouped under one label','Numbered tab-export list','Move up, move down and remove on each list item','Package card shows what the PDF will contain','Vector PDF with a dark title band','PDF section headings with an accent rule','PDF footer with page numbers','PDF dots colour-coded with outlined roots','A message confirms every export']],
 ['Polish and accessibility',['Theme changes fade smoothly','All new animations respect “reduce motion”','Printing hides the new navigation and tools','ARIA labels on every new control','Larger touch targets in the Navigate menu','Divider and title in the Navigate menu','Badge styling for practice counts','Softer, centred footer','Dialog backdrop gently blurred','Dialog buttons aligned to the right','Mode chooser at start: Original or new Beta','Chooser remembers your choice','Chooser works offline and on every platform','Same look in all themes for the new parts','Faster first paint: the heavy sections stay closed until opened','Beta keeps all 7.0 features one tap away','Section menu shows only sections that apply to the current mode','Instrument change confirms with a short message','Tab panel follows the position window','Song dots clear as each note ends']]];
 const UI8N=UI8.reduce((a,g)=>a+g[1].length,0);
-function newHTML8(){let n=0;return `<h2>What's new in JackRoseGuitar 11 (Beta)</h2>
+function newHTML8(){let n=0;return `<h2>What's new in JackRoseGuitar 12 (Beta)</h2>
 <p><b>The diagram is back on screen</b>: the neck and its controls start open, and the page starts in a calm <b>simple view</b>. Use <b>☰ Navigate</b> or <b>Show all sections</b> for everything else.</p>
 <p><b>New:</b> a <b>tab under the diagram</b> showing one octave of the scale, chord or interval. There are new instruments (<b>bass, banjo, mandolin, violin, viola, cello, ukulele</b>) and <b>PDF study packages</b> with related intervals, chords and scales. The <b>tab export</b> writes ASCII, MIDI, Guitar Pro 5 and Power Tab. The <b>Chopin MIDI library</b> plays on the neck, with treble and bass parts and a tempo control.</p>
 <p><b>${UI8N} UI and visual improvements:</b></p><div style="max-height:40vh;overflow:auto">`+UI8.map(g=>`<p><b>${g[0]}</b><br>`+g[1].map(x=>`${++n}. ${x}`).join('<br>')+'</p>').join('')+`</div>
@@ -7464,7 +7464,7 @@ function lesHTML(){
 function lesRender(){const r=$('#les10');if(!r)return;lesStop();r.innerHTML=lesHTML();const m=r.querySelector('.l10main');if(m)m.scrollTop=0;window.scrollTo(0,0);const on=r.querySelector('.l10li.on');if(on)on.scrollIntoView({block:'nearest'});const h=r.querySelector('.l10main h1,.l10main h2');if(h){h.tabIndex=-1;try{h.focus({preventScroll:true})}catch(e){}}const L=LESSONS[les10().i];if(L)document.title=`Lesson ${les10().i+1}: ${L.t} – JackRoseGuitar`}
 function lesEnter(i){if(i!=null)les10().i=i;document.body.classList.add('les10');$('#les10').hidden=false;stopAll();lesRender();save();if(location.hash!=='#lessons')safeHist10('#lessons')}
 XA.lesOpenMode=()=>lesEnter();
-XA.lesExit=()=>{lesStop();document.title=`JackRoseGuitar 11 – Fretboard, Scales, Chords & Intervals`;document.body.classList.remove('les10');$('#les10').hidden=true;if(location.hash==='#lessons')safeHist10(location.pathname+location.search);renderAll()};
+XA.lesExit=()=>{lesStop();document.title=`JackRoseGuitar 12 – Fretboard, Scales, Chords & Intervals`;document.body.classList.remove('les10');$('#les10').hidden=true;if(location.hash==='#lessons')safeHist10(location.pathname+location.search);renderAll()};
 XA.lesGo=el=>{const i=+el.dataset.i;if(i<0||i>=LESSONS.length)return;les10().i=i;save();lesRender();document.body.classList.remove('l10navopen')};
 XA.lesMenu=()=>document.body.classList.toggle('l10navopen');
 XA.lesPlay=el=>{const id=el.dataset.id;if(el.textContent.includes('Stop')){lesStop();return}lesPlay(id)};
@@ -8517,7 +8517,7 @@ function diag104(){const f=feats104();let L=['JackRoseGuitar '+V104()+' (Beta) �
  'Installed app (standalone): '+(standalone104()?'yes':'no'),'Online: '+(navigator.onLine?'yes':'no'),'Safe mode: '+(window.__safe104?'on':'off'),
  'Instrument/tuning: '+(state.tuning||'?')+' / '+(state.tun?state.tun.length+' strings':'?'),'Saved data: '+fmtB104(storBytes104()),'Text size: '+SET104.size,'','Feature support:'];
  f.forEach(x=>L.push('  '+(x[1]?'✔':'✘')+' '+x[0]));L.push('','Recent errors ('+ERR104.length+'):');if(!ERR104.length)L.push('  none');ERR104.forEach(x=>L.push('  '+x));return L.join('\n')}
-function V104(){return '11'}
+function V104(){return '12'}
 /* self-test */
 function selftest104(){const R=[],T=(n,f)=>{let ok=false,d='';try{const r=f();ok=r===true||r===undefined?true:!!r;if(typeof r==='string'){d=r}}catch(e){d=e.message}R.push([n,ok,d])};
  T('Saved settings can be written and read',()=>{localStorage.setItem('fl.t','x');const r=localStorage.getItem('fl.t')==='x';localStorage.removeItem('fl.t');return r});
@@ -8583,7 +8583,7 @@ setTimeout(()=>{try{if(window.__safe104){const d=document.createElement('div');d
  const miss=feats104().filter(x=>/Local storage|Web Audio|Canvas/.test(x[0])&&!x[1]).map(x=>x[0]);if(miss.length)toast('This browser does not support: '+miss.join(', ')+'. Some features will not work.');
  if(/[?&]about=1/.test(location.search))XA.about104()}catch(e){}},1200);
 
-const BUGS104=["About JackRoseGuitar dialog: version, build date, what JackRoseGuitar is and live counts of scales, chords and tunings (header ⓘ button, Help, or Shift+I; also opens from ?about=1)", "About › Privacy statement: runs entirely on your device, no accounts, analytics or tracking, nothing leaves the device except files you export", "About › Licences & credits (Roboto, SIL OFL 1.1) and a statement that everything you create is yours", "About › Terms: provided “as is”, with a reminder to keep backups", "About › Troubleshooting for the common launch-day problems: no sound, lost settings, a broken-looking page, installing", "About › Diagnostics report (version, build, browser, screen, language, installed or not, online, tuning, saved size, feature support, recent errors)", "Copy report button puts the diagnostics on the clipboard", "Report a problem button saves JackRoseGuitar-report.txt with blank “what happened / expected / steps” fields plus the diagnostics", "Error catcher: unexpected script errors are kept (last 20) and shown once as a gentle notice instead of failing silently", "Unhandled promise rejections are caught and listed the same way", "Feature-support table (storage, sound, canvas, video recording, MIDI, service worker, clipboard, share, fullscreen, persistent storage)", "Start-up compatibility check: tells you if the browser lacks storage, sound or canvas, which the app needs", "Storage meter: shows how much saved data JackRoseGuitar uses and the browser's allowance", "Protect my data: asks the browser for persistent storage so settings and library are not auto-cleaned", "Reset settings only: restores factory settings but keeps your library (asks to click twice)", "Reset everything: wipes all JackRoseGuitar data on this device including the library (asks to click twice)", "Audio test: plays a 440 Hz tone and reports the audio state, to separate “no sound” from muted devices", "Self-test: eight quick checks (storage, settings round-trip, scales, chords, tunings, fretboard, sound, library)", "Offline / back-online notices", "Check for updates button for the hosted and installed versions", "“JackRoseGuitar was updated – reload” notice when a new version has been installed in the background", "Share button (system share sheet, or copies the link)", "Copy link button", "Five-step Quick tour (About, or Help › Quick tour)", "Help now has About and Quick tour buttons", "“Skip to the fretboard” link for keyboard and screen-reader users", "Text size setting (small, normal, large, extra large) that is remembered", "Stronger keyboard focus outline on every control", "Automatic accessible names for icon-only buttons", "Dialogs are now proper dialogs for screen readers (role, label), keep Tab inside, and give focus back to the button that opened them", "The browser tab title follows the current mode (for example “Scales – JackRoseGuitar 11”)", "Safe mode: open the app with ?safe=1 to start from factory settings without reading or overwriting your saved data", "Back up button in About › Your data (downloads all settings and the library)", "Search and social preview tags (description, Open Graph, Twitter card, colour scheme) in the page head", "Message for browsers with JavaScript turned off"];
+const BUGS104=["About JackRoseGuitar dialog: version, build date, what JackRoseGuitar is and live counts of scales, chords and tunings (header ⓘ button, Help, or Shift+I; also opens from ?about=1)", "About › Privacy statement: runs entirely on your device, no accounts, analytics or tracking, nothing leaves the device except files you export", "About › Licences & credits (Roboto, SIL OFL 1.1) and a statement that everything you create is yours", "About › Terms: provided “as is”, with a reminder to keep backups", "About › Troubleshooting for the common launch-day problems: no sound, lost settings, a broken-looking page, installing", "About › Diagnostics report (version, build, browser, screen, language, installed or not, online, tuning, saved size, feature support, recent errors)", "Copy report button puts the diagnostics on the clipboard", "Report a problem button saves JackRoseGuitar-report.txt with blank “what happened / expected / steps” fields plus the diagnostics", "Error catcher: unexpected script errors are kept (last 20) and shown once as a gentle notice instead of failing silently", "Unhandled promise rejections are caught and listed the same way", "Feature-support table (storage, sound, canvas, video recording, MIDI, service worker, clipboard, share, fullscreen, persistent storage)", "Start-up compatibility check: tells you if the browser lacks storage, sound or canvas, which the app needs", "Storage meter: shows how much saved data JackRoseGuitar uses and the browser's allowance", "Protect my data: asks the browser for persistent storage so settings and library are not auto-cleaned", "Reset settings only: restores factory settings but keeps your library (asks to click twice)", "Reset everything: wipes all JackRoseGuitar data on this device including the library (asks to click twice)", "Audio test: plays a 440 Hz tone and reports the audio state, to separate “no sound” from muted devices", "Self-test: eight quick checks (storage, settings round-trip, scales, chords, tunings, fretboard, sound, library)", "Offline / back-online notices", "Check for updates button for the hosted and installed versions", "“JackRoseGuitar was updated – reload” notice when a new version has been installed in the background", "Share button (system share sheet, or copies the link)", "Copy link button", "Five-step Quick tour (About, or Help › Quick tour)", "Help now has About and Quick tour buttons", "“Skip to the fretboard” link for keyboard and screen-reader users", "Text size setting (small, normal, large, extra large) that is remembered", "Stronger keyboard focus outline on every control", "Automatic accessible names for icon-only buttons", "Dialogs are now proper dialogs for screen readers (role, label), keep Tab inside, and give focus back to the button that opened them", "The browser tab title follows the current mode (for example “Scales – JackRoseGuitar 12”)", "Safe mode: open the app with ?safe=1 to start from factory settings without reading or overwriting your saved data", "Back up button in About › Your data (downloads all settings and the library)", "Search and social preview tags (description, Open Graph, Twitter card, colour scheme) in the page head", "Message for browsers with JavaScript turned off"];
 function newHTML104(){return `<h2>What's new in JackRoseGuitar 10.4 (Beta)</h2><p>${BUGS104.length} launch-preparation additions in the app (plus site files):</p><ol class="x102list">${BUGS104.map(x=>`<li>${x}</li>`).join('')}</ol><p class="mut">Earlier: <button class="btn" data-x="new103">10.3</button> <button class="btn" data-x="new102">10.2</button></p><div class="row"><button class="btn main" data-act="closeModal">OK</button></div>`}
 
 /* ================= 10.5 Lab ================= */
@@ -8873,7 +8873,7 @@ setTimeout(()=>{try{const m=/[?&]lab=([a-z0-9]+)/.exec(location.search);if(m)lab
 
 const META105=['Search box that filters all Lab tools by name or topic','Pin your favourite tools to the top of the list (★)','Recent results: the last 10 results you produced, one click to reopen the tool','Copy result button on every tool','Save result as a text file on every tool','Play button: hear the notes, chord or rhythm a tool produced','Show on the fretboard: marks a result’s notes on the neck (Explore mode)','Shift+L and the header 🧪 button open the Lab','Deep link: add ?lab=toolname to the address (for example beta/index.html?lab=ivec)'];
 const GRP105={Analyse:'Theory & analysis',Sound:'Sound, physics & gear',Practice:'Practice',Charts:'Charts & setlists'};
-function newHTML105(){const n=LAB105.length+META105.length;return `<h2>What's new in JackRoseGuitar 11 (Beta)</h2><p><b>${n} new features</b> – the 🧪 Lab (header button or <kbd>Shift</kbd>+<kbd>L</kbd>) holds ${LAB105.length} new tools plus ${META105.length} workspace features:</p>`+Object.keys(GRP105).map(g=>`<h3>${GRP105[g]}</h3><ul class="x102list">`+LAB105.filter(t=>t.grp===g).map(t=>`<li><b>${esc5(t.name)}</b> – ${esc5(t.desc)}</li>`).join('')+'</ul>').join('')+`<h3>Workspace</h3><ul class="x102list">${META105.map(x=>`<li>${x}</li>`).join('')}</ul><p class="mut">Earlier: <button class="btn" data-x="new104">10.4</button> <button class="btn" data-x="new103">10.3</button></p><div class="row"><button class="btn main" data-act="closeModal">OK</button></div>`}
+function newHTML105(){const n=LAB105.length+META105.length;return `<h2>What's new in JackRoseGuitar 12 (Beta)</h2><p><b>${n} new features</b> – the 🧪 Lab (header button or <kbd>Shift</kbd>+<kbd>L</kbd>) holds ${LAB105.length} new tools plus ${META105.length} workspace features:</p>`+Object.keys(GRP105).map(g=>`<h3>${GRP105[g]}</h3><ul class="x102list">`+LAB105.filter(t=>t.grp===g).map(t=>`<li><b>${esc5(t.name)}</b> – ${esc5(t.desc)}</li>`).join('')+'</ul>').join('')+`<h3>Workspace</h3><ul class="x102list">${META105.map(x=>`<li>${x}</li>`).join('')}</ul><p class="mut">Earlier: <button class="btn" data-x="new104">10.4</button> <button class="btn" data-x="new103">10.3</button></p><div class="row"><button class="btn main" data-act="closeModal">OK</button></div>`}
 
 /* ================= 10.6 Demo mode – steps ================= */
 const DEMO105=[];
@@ -10338,7 +10338,7 @@ if(/^#drill/i.test(location.hash))setTimeout(()=>{const M=$('#modal');if(M&&!M.h
 
 /* ================= 11 what's new ================= */
 XA.new108=()=>showModal(newHTML108());
-function newHTML(){const U=LES_UNITS.slice(10,23);return `<h2>What's new in JackRoseGuitar 11 (Beta)</h2><ul class="x102list"><li><b>Version 11:</b> 38 more pages as sections (the 🧭 Library), Jam Band 5 with 100 improvements, the 📤 Export Hub (MIDI, Guitar Pro, Power Tab, ASCII tab, documents and video for every instrument), every chord progression as a demo-jam playlist, a 🔄 Reset all button, and a starting fret window of 0–4 (0–3 on the 3rd string) with an ↔️ All frets button.</li><li><b>Scale playback timing fixed:</b> scales, intervals and lesson examples are now scheduled on the audio clock, with the sounds prepared in advance. Notes land at exactly even spacing – even when the page is busy or the loop restarts – instead of wobbling by tens of milliseconds.</li><li><b>${LESSONS.length-100} more full lessons</b> (now ${LESSONS.length} in ${LES_UNITS.length} units), each with explanations, playable examples on the neck and check questions. New units: ${U.map((u,i)=>`<b>${i+11}. ${u}</b>`).join(', ')}.</li><li><b>Every chord progression has its own lesson</b> (units 24–41, one unit per group of the progression player): all 1,745 progressions, each with its Roman numerals, the chords in two keys, a playable progression, a strum, the bass line, the chord shapes and three check questions. The lessons are generated from the progression player’s own list, so new progressions added there are covered the same way.</li><li><b>Every scale has its own lesson</b> (unit 23): all 182 scales and modes in the library, from the major scale and pentatonics to the exotic and symmetrical ones – each with the formula, the notes in C, the step pattern, two fretboard positions, a one-octave run, the chord it builds and three check questions.</li><li><b>Every chord has its own lesson</b> (unit 22): 82 chord types from major, minor and power chords to 13ths, altered dominants, Lydian ♯11 and quartal chords – each with the notes and formula, a fingering on the neck, an arpeggio, a strum and two check questions.</li><li><b>Every interval has its own lesson</b> (unit 21): unison, minor and major second, minor and major third, perfect fourth, tritone, perfect fifth, minor and major sixth, minor and major seventh and the octave – with the shape on the neck, a tune or chord that uses it, and a final lesson that puts them all together.</li></ul><p class="mut">Open them with 🎓 Lessons, then pick a lesson from the list or press <kbd>N</kbd> for the next unfinished one.</p><p class="mut">Earlier: <button class="btn" data-x="new108">10.8</button> <button class="btn" data-x="new107">10.7</button> <button class="btn" data-x="new106">10.6</button> <button class="btn" data-x="new105">10.5</button></p><div class="row"><button class="btn main" data-act="closeModal">OK</button></div>`}
+function newHTML(){const U=LES_UNITS.slice(10,23);return `<h2>What's new in JackRoseGuitar 12 (Beta)</h2><ul class="x102list"><li><b>Version 11:</b> 38 more pages as sections (the 🧭 Library), Jam Band 5 with 100 improvements, the 📤 Export Hub (MIDI, Guitar Pro, Power Tab, ASCII tab, documents and video for every instrument), every chord progression as a demo-jam playlist, a 🔄 Reset all button, and a starting fret window of 0–4 (0–3 on the 3rd string) with an ↔️ All frets button.</li><li><b>Scale playback timing fixed:</b> scales, intervals and lesson examples are now scheduled on the audio clock, with the sounds prepared in advance. Notes land at exactly even spacing – even when the page is busy or the loop restarts – instead of wobbling by tens of milliseconds.</li><li><b>${LESSONS.length-100} more full lessons</b> (now ${LESSONS.length} in ${LES_UNITS.length} units), each with explanations, playable examples on the neck and check questions. New units: ${U.map((u,i)=>`<b>${i+11}. ${u}</b>`).join(', ')}.</li><li><b>Every chord progression has its own lesson</b> (units 24–41, one unit per group of the progression player): all 1,745 progressions, each with its Roman numerals, the chords in two keys, a playable progression, a strum, the bass line, the chord shapes and three check questions. The lessons are generated from the progression player’s own list, so new progressions added there are covered the same way.</li><li><b>Every scale has its own lesson</b> (unit 23): all 182 scales and modes in the library, from the major scale and pentatonics to the exotic and symmetrical ones – each with the formula, the notes in C, the step pattern, two fretboard positions, a one-octave run, the chord it builds and three check questions.</li><li><b>Every chord has its own lesson</b> (unit 22): 82 chord types from major, minor and power chords to 13ths, altered dominants, Lydian ♯11 and quartal chords – each with the notes and formula, a fingering on the neck, an arpeggio, a strum and two check questions.</li><li><b>Every interval has its own lesson</b> (unit 21): unison, minor and major second, minor and major third, perfect fourth, tritone, perfect fifth, minor and major sixth, minor and major seventh and the octave – with the shape on the neck, a tune or chord that uses it, and a final lesson that puts them all together.</li></ul><p class="mut">Open them with 🎓 Lessons, then pick a lesson from the list or press <kbd>N</kbd> for the next unfinished one.</p><p class="mut">Earlier: <button class="btn" data-x="new108">10.8</button> <button class="btn" data-x="new107">10.7</button> <button class="btn" data-x="new106">10.6</button> <button class="btn" data-x="new105">10.5</button></p><div class="row"><button class="btn main" data-act="closeModal">OK</button></div>`}
 ds(DG9,'Finger drill','Generates 8 measures of random 2-, 3- or 4-note finger patterns from fingers 1–4 in any order (1-3-2-4, 1-3, 2-1-3 …), the same on every string or different on each, with the neck, the tab and sound.','Click 🖐 Drill, choose the notes per pattern, the strings, the starting fret and the tempo, press ↻ New drill, then ▶ Play all.','When you want to build finger independence and a clean left hand.',{sel:'#x109drill',run:()=>{dHdr();dClick('#x109drill')},undo:()=>{if(document.body.classList.contains('les10'))XA.lesExit();try{document.activeElement&&document.activeElement.blur&&document.activeElement.blur()}catch(e){}}});
 
 /* ================= fretboard always first; "Under fretboard" pins a section beside it ================= */
@@ -17177,7 +17177,7 @@ async function ixBuild(src,o,opt){opt=opt||{};const ctx=opt.ctx||{};let fmt=opt.
  if(fmt==='jpg'){const n=document.createElement('canvas');n.width=c.width;n.height=c.height;const ng=n.getContext('2d');ng.fillStyle=o.jpgBg;ng.fillRect(0,0,n.width,n.height);ng.drawImage(c,0,0);c=n}
  const mime=fmt==='jpg'?'image/jpeg':fmt==='webp'?'image/webp':'image/png';let blob=await ixBlob(c,mime,o.q/100);if(!blob)throw new Error('The browser could not create the picture.');
  let ext=fmt;if(blob.type&&blob.type!==mime){ext=blob.type==='image/png'?'png':ext}
- if(ext==='png'&&!opt.preview&&(z.dpi>0||o.meta)){const T=ixTok(o.title,ctx)||ctx.label||ctx.name||'';let by=new Uint8Array(await blob.arrayBuffer());by=ixPngMeta(by,z.dpi,o.meta?[['Title',T],['Author',o.author],['Description',ixTok(o.caption,ctx)||o.altText],['Software','JackRoseGuitar 11'],['Creation Time',new Date().toISOString()]]:[]);blob=new Blob([by],{type:'image/png'})}
+ if(ext==='png'&&!opt.preview&&(z.dpi>0||o.meta)){const T=ixTok(o.title,ctx)||ctx.label||ctx.name||'';let by=new Uint8Array(await blob.arrayBuffer());by=ixPngMeta(by,z.dpi,o.meta?[['Title',T],['Author',o.author],['Description',ixTok(o.caption,ctx)||o.altText],['Software','JackRoseGuitar 12'],['Creation Time',new Date().toISOString()]]:[]);blob=new Blob([by],{type:'image/png'})}
  else if(ext==='jpg'&&z.dpi>0&&!opt.preview){blob=new Blob([ixJpgDpi(new Uint8Array(await blob.arrayBuffer()),z.dpi)],{type:'image/jpeg'})}
  return{blob,ext,w:c.width,h:c.height}}
 function ixName(base,o,res,scLab){const d=new Date(),p=n=>String(n).padStart(2,'0'),ymd=d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate()),hm=p(d.getHours())+p(d.getMinutes());
@@ -17450,7 +17450,7 @@ function xtText(t,name,ext,o){
  const d=new Date(),tok=s=>String(s).replace(/\{name\}/g,name).replace(/\{date\}/g,d.toLocaleDateString()).replace(/\{time\}/g,d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}));
  t=String(t).replace(/^﻿/,'');
  if(json){try{let v=JSON.parse(t);const srt=x=>Array.isArray(x)?x.map(srt):x&&typeof x==='object'?Object.keys(x).sort().reduce((a,k)=>(a[k]=srt(x[k]),a),{}):x;if(o.jsonSort)v=srt(v);
-   if(o.jsonMeta&&v&&typeof v==='object'&&!Array.isArray(v))v=Object.assign({_export:{app:'JackRoseGuitar 11',name,date:d.toISOString()}},v);
+   if(o.jsonMeta&&v&&typeof v==='object'&&!Array.isArray(v))v=Object.assign({_export:{app:'JackRoseGuitar 12',name,date:d.toISOString()}},v);
    const ind=o.jsonIndent;t=ind==='min'?JSON.stringify(v):JSON.stringify(v,null,ind==='keep'?(/\n\s/.test(t)?(/\n\t/.test(t)?'\t':(/\n {4}\S/.test(t)?4:/\n {2}\S/.test(t)?2:1)):0):ind==='tab'?'\t':+ind)}catch(e){}}
  if(data&&(o.csvDelim!=='keep'||o.csvQuote!=='keep'||!o.csvHead)){const d0=E==='tsv'?'\t':(t.split('\n')[0].split(';').length>t.split('\n')[0].split(',').length?';':','),rows=xtCsvParse(t,d0).filter(r=>!(r.length===1&&r[0]===''));if(!o.csvHead)rows.shift();const dl=o.csvDelim==='keep'?d0:o.csvDelim,q=o.csvQuote;
   const enc=v=>{v=String(v);const need=v.includes(dl)||/["\n\r]/.test(v);return q==='all'||(need&&q!=='keep')||(q==='keep'&&need)?'"'+v.replace(/"/g,'""')+'"':v};t=rows.map(r=>r.map(enc).join(dl)).join('\n')}
@@ -17472,7 +17472,7 @@ function xtText(t,name,ext,o){
   if(o.banner&&L.length){const w=Math.max(...L.slice(0,1).map(l=>l.length));L=['='.repeat(w),L[0],'='.repeat(w),...L.slice(1)]}
   if(o.lineNum){const w=String(L.length).length;L=L.map((l,i)=>String(i+1).padStart(w)+'  '+l)}
   const top=[],bot=[];if(o.header)top.push(tok(o.header));if(o.dateLine)top.push(d.toLocaleDateString());if(top.length)top.push('');
-  if(o.footer)bot.push(tok(o.footer));if(o.credit)bot.push('Made with JackRoseGuitar 11');if(bot.length)bot.unshift('');
+  if(o.footer)bot.push(tok(o.footer));if(o.credit)bot.push('Made with JackRoseGuitar 12');if(bot.length)bot.unshift('');
   L=[...top,...L,...bot];t=L.join('\n')}
  if(prose||data||json||markup){t=t.replace(/\r\n?/g,'\n');if(o.finalNL&&!t.endsWith('\n'))t+='\n';
   if(o.eol==='crlf')t=t.replace(/\n/g,'\r\n');else if(o.eol==='cr')t=t.replace(/\n/g,'\r');else if(o.eol==='keep'&&0)t=t}
@@ -17532,7 +17532,7 @@ async function xeHandle(blob,name,saver){
  const o=Object.assign({},XE),m=/\.([A-Za-z0-9]+)$/.exec(name),ext=m?m[1]:'',base=name.replace(/\.[^.]+$/,'');
  let out=await xeConvert(blob,base,ext.toLowerCase(),o),full=xeName(base,ext,o),kindExt=ext.toLowerCase();
  if(o.zipOne&&kindExt!=='zip'){const folder=o.zipFolder?o.zipFolder.replace(/[\\:*?"<>|]+/g,'-').replace(/^\/+|\/+$/g,'')+'/':'',files=[{name:folder+full,data:new Uint8Array(await out.arrayBuffer())}];
-  if(o.readme)files.push({name:folder+'README.txt',data:new TextEncoder().encode(`Made with JackRoseGuitar 11\n${new Date().toLocaleString()}\n\n${full} (${xeSize(out.size)})\n`)});
+  if(o.readme)files.push({name:folder+'README.txt',data:new TextEncoder().encode(`Made with JackRoseGuitar 12\n${new Date().toLocaleString()}\n\n${full} (${xeSize(out.size)})\n`)});
   out=new Blob([await makeZip(files,true)],{type:'application/zip'});full=full.replace(/\.[^.]+$/,'')+'.zip'}
  else if(o.readme&&kindExt==='zip'){/* keep as made */}
  if(o.big>0&&out.size>o.big*1024&&!confirm(full+' is '+xeSize(out.size)+'. Save it anyway?'))return;
@@ -19763,7 +19763,7 @@ const S14R={arm:0,ac:null,n:null,on:false,sig:'',rvSig:'',preOn:false,voices:[],
 function s14Load(){const o=(XS8().s14)||{};Object.keys(S14F).forEach(k=>{const[,,t,d,e]=S14F[k];let v=o[k];if(v===undefined||v===null)v=d;
  if(t==='num'){v=+v;if(!Number.isFinite(v))v=d;v=Math.max(e[0],Math.min(e[1],v))}else if(t==='chk')v=!!v;else if(t==='sel'){v=String(v);if(!e.some(x=>String(x[0])===v))v=d}else v=/^#[0-9a-f]{6}$/i.test(v)?v:d;S14X[k]=v});S14R.sig=''}
 function s14Save(){XS8().s14=Object.assign({},S14X);save()}
-const s14Keys=re=>Object.keys(S14D).filter(k=>re.test(k)),s14SameDef=ks=>ks.every(k=>S14X[k]===S14D[k]);
+const s14KC={},s14Keys=re=>s14KC[re.source]||(s14KC[re.source]=Object.keys(S14D).filter(k=>re.test(k))),s14SameDef=ks=>ks.every(k=>S14X[k]===S14D[k]);
 const s14ChainDef=()=>s14SameDef(s14Keys(/^m[A-Z]/)),s14RevDef=()=>s14SameDef(s14Keys(/^rv[A-Z]/)),s14JamDef=()=>s14SameDef(s14Keys(/^j[A-Z]/)),s14MixDef=()=>s14SameDef(s14Keys(/^jv/)),s14GenDef=()=>s14SameDef(s14Keys(/^p[A-Z]/));
 const S14PRE={
  loud:{n:'Loud and safe: limiter on, a little warmth',v:{mLimit:true,mLimThr:-10,mLimRatio:12,mDrive:15,mVol:110}},
@@ -19935,6 +19935,244 @@ function s14Btn(){const R=document.querySelector('header.top .x8right')||documen
 (function(){const _r=jbRender;jbRender=function(){const r=_r.apply(this,arguments);try{s14Btn()}catch(e){}return r}})();
 function s14Hash(){const m=/#s14=([^&\s]+)/.exec(location.hash||'');if(m){try{const o=JSON.parse(decodeURIComponent(m[1]));const ok={};Object.keys(o).forEach(k=>{if(S14F[k])ok[k]=o[k]});s14Apply(ok)}catch(e){}}}
 setTimeout(()=>{try{s14Load();s14Hash();[0,500,1500,3000].forEach(ms=>setTimeout(s14Btn,ms));Object.assign(window.__fretlab,{S14X,S14U,S14F,S14D,S14PRE,S14R,s14Count,s14Data,s14HTML,s14Text,s14Svg,s14Open,s14Apply,s14Wire,s14Report,S14TOOLS,s14ChainDef,s14RevDef,s14JamDef,s14MixDef,s14GenDef,audio:()=>audio(),pluck:(m,v)=>pluck(m,v),seq:(a,b,c,d)=>seq(a,b,c,d),drumHit:(k,t,v)=>drumHit(k,t,v),jbStart:()=>jbStart(),jbStop:()=>jbStop(),jbTick:()=>jbTick(),jbS:()=>jbS(),JB,bufCache,getAC:()=>AC,getParts:()=>({master,toneF,conv,wetG,dryG,compN}),flash:p=>flash(p),bassNote:(m,t,d)=>bassNote(m,t,d)})}catch(e){console.error(e)}},0);
+
+/* ================= Header lab – bundle 15 ================= */
+const S15H='html body header.top.top';
+const S15FONTS={serif:'Georgia,"Times New Roman",serif',mono:'ui-monospace,Menlo,Consolas,monospace',system:'system-ui,-apple-system,"Segoe UI",sans-serif',rounded:'"Trebuchet MS","Segoe UI",system-ui,sans-serif'};
+const S15ACC={orange:'#d98200',green:'#2e9e5b',blue:'#2f7fd1',red:'#d1433a',purple:'#8a55c8',white:'#f3ebe0'};
+const S15SEL=(a)=>a.map(x=>[x,x]);
+const S15U=[
+ {g:'Layout',f:[['hPadY','Top and bottom space (px)','num',8,[0,30,1]],['hPadX','Side space (px)','num',12,[0,60,2]],['hGap','Space between items (px)','num',10,[0,40,1]],['hSticky','Keep the header at the top while scrolling','sel','app',[['app','As the app'],['on','Always'],['off','Never']]],['hMinH','Minimum height (px, 0 = as the app)','num',0,[0,120,2]],['hRadius','Rounded bottom corners (px)','num',0,[0,30,1]],['hShadow','Shadow under the header','sel','app',[['app','As the app'],['none','None'],['soft','Soft'],['strong','Strong']]],['hBorderB','Bottom line','sel','app',[['app','As the app'],['none','None'],['accent','Orange'],['thick','Thick dark']]],['hOpacity','Opacity (%)','num',100,[40,100,5]],['hBlur','Blur what is behind it (px)','num',0,[0,20,1]],['hWrap','Wrap items onto new lines','sel','app',[['app','As the app'],['wrap','Wrap'],['nowrap','Never wrap']]],['hAlignV','Line the items up','sel','app',[['app','As the app'],['flex-start','Top'],['center','Middle'],['flex-end','Bottom'],['stretch','Stretch']]],['hMaxW','Keep the header no wider than (px, 0 = full width)','num',0,[0,2400,50]],['hZ','Stacking order above the page','num',40,[1,100,1]]]},
+ {g:'Brand',f:[['hLogoSize','Logo size (%)','num',100,[50,200,5]],['hLogoColor','Logo text colour','col','#f3ebe0'],['hBeta','Show the “11 β” label','chk',true],['hLogoWeight','Logo weight','sel','app',[['app','As the app'],['400','Light'],['600','Medium'],['800','Heavy']]],['hLogoFont','Logo font','sel','app',[['app','As the app'],['serif','Serif'],['mono','Monospace'],['system','System'],['rounded','Rounded']]],['hLogoSpace','Logo letter spacing (px)','num',0,[-2,10,0.5]],['hTagline','Add a short line of text after the logo','txt',''],['hLogoHide','Hide the logo','chk',false],['hLogoLink','Clicking the logo scrolls to the top','chk',false]]},
+ {g:'Buttons and tabs',f:[['bSize','Button size (%)','num',100,[70,160,5]],['bPadX','Button side space (px, 0 = as the app)','num',0,[0,30,1]],['bRadius','Button corners (px, −1 = as the app)','num',-1,[-1,30,1]],['bBg','Button colour','col','#3a332c'],['bFg','Button text colour','col','#f3ebe0'],['bBorder','Button outline colour','col','#5a5047'],['bHoverBg','Button colour under the pointer','col','#4a4138'],['bWeight','Button text weight','sel','app',[['app','As the app'],['400','Light'],['600','Medium'],['800','Heavy']]],['bLabels','Show the words next to button icons','chk',true],['bGap','Space between buttons (px)','num',6,[0,30,1]],['bBigTouch','Big touch targets (44 px)','chk',false],['bFlat','Flat buttons without outlines','chk',false],['bUpper','Capital letters on buttons','chk',false],['bFocus','Strong keyboard focus ring','chk',false],['tabPadX','Tab side space (px)','num',13,[4,40,1]],['tabPadY','Tab top and bottom space (px)','num',7,[2,20,1]],['tabSize','Tab text size (%)','num',100,[70,160,5]],['tabRadius','Tab corners (px, −1 = as the app)','num',-1,[-1,30,1]],['tabActive','Colour of the open tab','sel','app',[['app','As the app'],['orange','Orange'],['green','Green'],['blue','Blue'],['red','Red'],['purple','Purple'],['white','White']]],['tabUnderline','Underline style for the open tab','chk',false],['tabWrap','Let tabs wrap onto more lines','chk',false],['tabDd','Show the ▾ quick pick beside tabs','chk',true]]},
+ {g:'Colours',f:[['cBg1','Header colour (top)','col','#2e2924'],['cBg2','Header colour (bottom)','col','#1b1814'],['cBgMode','Header background','sel','app',[['app','Gradient (as the app)'],['flat','One flat colour (top)'],['none','See-through']]],['cText','Header text colour','col','#e9dfd2'],['cMuted','Small label colour','col','#b9ab98'],['cLine','Bottom line colour','col','#000000'],['cLogoAccent','Colour of “Guitar” in the logo','col','#d98200'],['cStripe','Coloured stripe along the top edge','sel','none',[['none','None'],['orange','Orange'],['green','Green'],['blue','Blue'],['red','Red'],['purple','Purple'],['white','White']]]]},
+ {g:'Status strip',f:[['sOn','Show a status strip','chk',false],['sPos','Where the strip goes','sel','below',[['below','Under the header'],['inside','Inside the header'],['bottom','Floating at the bottom']]],['sSize','Strip text size (%)','num',100,[70,160,5]],['sBg','Strip colour','col','#26211c'],['sFg','Strip text colour','col','#e9dfd2'],['sClock','Clock','chk',true],['sDate','Date','chk',false],['sTimer','Time you have spent here','chk',false],['sTab','Open section','chk',true],['sTuning','Tuning','chk',true],['sTimbre','Instrument sound','chk',false],['sVol','Volume','chk',true],['sBpm','Jam Band tempo','chk',false],['sOnline','Online / offline','chk',false]]},
+ {g:'Quick controls',f:[['qOn','Show quick controls beside the Menu button','chk',false],['qPos','Where they go','sel','after',[['after','After the Menu button'],['before','Before the Menu button']]],['qSize','Quick control size (%)','num',100,[70,160,5]],['qVol','Louder and quieter','chk',true],['qMute','Mute','chk',true],['qTheme','Change theme','chk',true],['qFull','Fullscreen','chk',false],['qFocus','Focus mode (just the neck)','chk',false],['qJam','Start and stop the Jam Band','chk',true],['qTempo','Jam Band tempo − and +','chk',false],['qPanic','Stop all sound','chk',false],['qUndo','Undo and redo','chk',false],['qSearch','Quick switch search','chk',false]]}];
+const S15F={},S15X={};S15U.forEach(G=>G.f.forEach(f=>{S15F[f[0]]=f;S15X[f[0]]=f[3]}));const S15D=Object.assign({},S15X),s15Count=()=>Object.keys(S15F).length;
+const S15R={t0:Date.now(),tm:0,hidden:false,pinned:false};
+function s15Load(){const o=(XS8().s15)||{};Object.keys(S15F).forEach(k=>{const[,,t,d,e]=S15F[k];let v=o[k];if(v===undefined||v===null)v=d;
+ if(t==='num'){v=+v;if(!Number.isFinite(v))v=d;v=Math.max(e[0],Math.min(e[1],v))}else if(t==='chk')v=!!v;else if(t==='sel'){v=String(v);if(!e.some(x=>String(x[0])===v))v=d}else if(t==='txt')v=String(v).replace(/[<>"\\]/g,'').slice(0,40);else v=/^#[0-9a-f]{6}$/i.test(v)?v.toLowerCase():d;S15X[k]=v})}
+function s15Save(){XS8().s15=Object.assign({},S15X);save()}
+const s15Ch=()=>Object.keys(S15D).filter(k=>S15X[k]!==S15D[k]);
+const S15PRE={
+ compact:{n:'Compact: less space, smaller tabs',v:{hPadY:3,hGap:6,hMinH:0,bSize:90,tabPadX:9,tabPadY:4,tabSize:90,hBeta:false}},
+ minimal:{n:'Minimal: no shadow, flat buttons, underlined tab',v:{hShadow:'none',hBorderB:'none',bFlat:true,bLabels:false,tabUnderline:true,cBgMode:'flat',hBeta:false}},
+ touch:{n:'Big touch targets',v:{bBigTouch:true,bSize:115,tabPadY:11,tabPadX:16,bGap:10,hGap:12}},
+ light:{n:'Light header',v:{cBg1:'#f3ebe0',cBg2:'#e6dccc',cText:'#2a2118',cMuted:'#6d5f4d',cLine:'#c9bba5',cLogoAccent:'#b36500',hLogoColor:'#2a2118',bBg:'#fffdf6',bFg:'#2a2118',bBorder:'#c9bba5',bHoverBg:'#efe5d4',hShadow:'soft'}},
+ contrast:{n:'High contrast',v:{cBg1:'#000000',cBg2:'#000000',cText:'#ffffff',cMuted:'#e0e0e0',cLine:'#ffffff',hLogoColor:'#ffffff',bBg:'#000000',bFg:'#ffffff',bBorder:'#ffffff',bHoverBg:'#333333',bFocus:true,tabActive:'white',hBorderB:'thick'}},
+ status:{n:'Status strip under the header',v:{sOn:true,sPos:'below',sClock:true,sTab:true,sVol:true,sTuning:true,sBpm:true}},
+ quick:{n:'Quick controls always visible',v:{qOn:true,qVol:true,qMute:true,qTheme:true,qJam:true,qTempo:true,qPanic:true}},
+ glass:{n:'Glass: see-through with blur',v:{cBgMode:'none',hBlur:10,hOpacity:90,hShadow:'soft',hBorderB:'none',cText:'#f3ebe0'}}};
+/* ---- the style sheet: only the settings that were changed produce rules ---- */
+function s15Css(){const X=S15X,D=S15D,c=k=>X[k]!==D[k],H=S15H,o=[],BT=H+' button,'+H+' select';
+ const BB=H+' .x10util .x8b,'+H+' .x8right .x8b,'+H+' .x103hdr,'+H+' #m10desk,'+H+' #s15q button';
+ const add=(s,b)=>o.push(s+'{'+b+'}');
+ if(c('hPadY'))add(H,`padding-top:${X.hPadY}px!important;padding-bottom:${X.hPadY}px!important`);
+ if(c('hPadX'))add(H,`padding-left:${X.hPadX}px!important;padding-right:${X.hPadX}px!important`);
+ if(c('hGap'))add(H,`gap:${X.hGap}px!important;row-gap:${X.hGap}px!important`);
+ if(X.hSticky==='on')add(H,'position:sticky!important;top:0!important');else if(X.hSticky==='off')add(H,'position:static!important');
+ if(c('hMinH'))add(H,`min-height:${X.hMinH}px!important`);
+ if(c('hRadius'))add(H,`border-radius:0 0 ${X.hRadius}px ${X.hRadius}px!important`);
+ if(X.hShadow!=='app')add(H,'box-shadow:'+({none:'none',soft:'0 2px 8px rgba(0,0,0,.18)',strong:'0 10px 28px rgba(0,0,0,.55)'})[X.hShadow]+'!important');
+ if(X.hBorderB!=='app')add(H,'border-bottom:'+({none:'0 solid transparent',accent:'3px solid #d98200',thick:'4px solid #000'})[X.hBorderB]+'!important');
+ if(c('hOpacity'))add(H,`opacity:${X.hOpacity/100}`);
+ if(c('hBlur'))add(H,`backdrop-filter:blur(${X.hBlur}px)!important;-webkit-backdrop-filter:blur(${X.hBlur}px)!important`);
+ if(X.hWrap!=='app')add(H,`flex-wrap:${X.hWrap==='wrap'?'wrap':'nowrap'}!important`);
+ if(X.hAlignV!=='app')add(H,`align-items:${X.hAlignV}!important`);
+ if(c('hMaxW'))add(H,`max-width:${X.hMaxW}px!important;margin-left:auto!important;margin-right:auto!important`);
+ if(c('hZ'))add(H,`z-index:${X.hZ}!important`);
+ /* brand */
+ const L=H+' h1';
+ if(c('hLogoSize'))add(L,`zoom:${X.hLogoSize/100}`);
+ if(c('hLogoColor'))add(L,`color:${X.hLogoColor}!important`);
+ if(!X.hBeta)add(L+' small','display:none!important');
+ if(X.hLogoWeight!=='app')add(L,`font-weight:${X.hLogoWeight}!important`);
+ if(X.hLogoFont!=='app')add(L,`font-family:${S15FONTS[X.hLogoFont]}!important`);
+ if(c('hLogoSpace'))add(L,`letter-spacing:${X.hLogoSpace}px`);
+ if(X.hTagline)add(L+'::after',`content:"${X.hTagline.replace(/["\\]/g,'')}";font-size:12px;font-weight:400;margin-left:10px;color:#b9ab98;letter-spacing:0;font-family:Roboto,system-ui,sans-serif`);
+ if(X.hLogoHide)add(L,'display:none!important');
+ if(X.hLogoLink)add(L,'cursor:pointer');
+ /* buttons */
+ if(c('bSize'))add(BT,`zoom:${X.bSize/100}`);
+ if(c('bPadX'))add(BB,`padding-left:${X.bPadX}px!important;padding-right:${X.bPadX}px!important`);
+ if(X.bRadius>=0)add(BB+','+H+' button.icon',`border-radius:${X.bRadius}px!important`);
+ if(c('bBg'))add(BB,`background:${X.bBg}!important`);
+ if(c('bFg'))add(BB,`color:${X.bFg}!important`);
+ if(c('bBorder'))add(BB,`border-color:${X.bBorder}!important`);
+ if(c('bHoverBg'))add(BB.split(',').map(s=>s+':hover').join(','),`background:${X.bHoverBg}!important`);
+ if(X.bWeight!=='app')add(BB,`font-weight:${X.bWeight}!important`);
+ if(!X.bLabels)add(H+' .h7l','display:none!important');
+ if(c('bGap'))add(H+' .x10util,'+H+' .x8right,'+H+' .x10g','gap:'+X.bGap+'px!important');
+ if(X.bBigTouch)add(BB+','+H+' .tab','min-height:44px!important;min-width:44px!important');
+ if(X.bFlat)add(BB,'border-color:transparent!important;background:transparent!important');
+ if(X.bUpper)add(BB+','+H+' .tab','text-transform:uppercase!important;letter-spacing:.04em');
+ if(X.bFocus)add(H+' button:focus-visible,'+H+' select:focus-visible,'+H+' a:focus-visible','outline:3px solid #ffbf3a!important;outline-offset:2px!important');
+ const T=H+' .tab';
+ if(c('tabPadX'))add(T,`padding-left:${X.tabPadX}px!important;padding-right:${X.tabPadX}px!important`);
+ if(c('tabPadY'))add(T,`padding-top:${X.tabPadY}px!important;padding-bottom:${X.tabPadY}px!important`);
+ if(c('tabSize'))add(T,`zoom:${X.tabSize/100}`);
+ if(X.tabRadius>=0)add(T,`border-radius:${X.tabRadius}px!important`);
+ if(X.tabActive!=='app')add(T+'.on',`background:${S15ACC[X.tabActive]}!important;border-color:${S15ACC[X.tabActive]}!important;color:${X.tabActive==='white'?'#1b1206':'#fff'}!important`);
+ if(X.tabUnderline)add(T+'.on','background:transparent!important;color:#fff!important;border-color:transparent!important;border-bottom:3px solid '+(X.tabActive==='app'?'#d98200':S15ACC[X.tabActive])+'!important;border-radius:0!important');
+ if(X.tabWrap)add(H+' nav#tabs','flex-wrap:wrap!important;overflow:visible!important');
+ if(!X.tabDd)add(H+' .tabdd','display:none!important');
+ /* colours */
+ if(c('cBg1')||c('cBg2')||X.cBgMode!=='app'){if(X.cBgMode==='none')add(H,'background:transparent!important;box-shadow:none');else if(X.cBgMode==='flat')add(H,`background:${X.cBg1}!important`);else add(H,`background:linear-gradient(180deg,${X.cBg1},${X.cBg2})!important`)}
+ if(c('cText'))add(T+','+H+' .x103mode,'+H+' .x10util,'+H+' .x8right','color:'+X.cText+'!important');
+ if(c('cMuted'))add(H+' h1 small,'+H+' .mut,'+H+' #x_badge','color:'+X.cMuted+'!important');
+ if(c('cLine')&&X.hBorderB==='app')add(H,`border-bottom-color:${X.cLine}!important`);
+ if(c('cLogoAccent'))add(L+' span','color:'+X.cLogoAccent+'!important');
+ if(X.cStripe!=='none')add(H,`box-shadow:inset 0 3px 0 ${S15ACC[X.cStripe]},0 6px 18px rgba(0,0,0,.22)!important`);
+ /* strip and quick controls */
+ o.push('#s15bar{display:flex;flex-wrap:wrap;gap:4px 16px;align-items:center;padding:5px 14px;font:600 12px Roboto,system-ui,sans-serif;font-size:'+(12*X.sSize/100).toFixed(1)+'px;background:'+X.sBg+';color:'+X.sFg+';border-bottom:1px solid #000}html body header.top.top>#s15bar#s15bar.s15in{display:flex!important;flex:1 1 100%;margin:0 -12px;order:20}#s15bar.s15fl{position:fixed;left:0;right:0;bottom:0;z-index:60;border-top:1px solid #000;border-bottom:0}#s15bar b{opacity:.65;font-weight:600;margin-right:4px}');
+ o.push('#s15q{display:none;align-items:center;gap:4px;flex:0 0 auto}header.top #s15q button{background:#3a332c;color:#f3ebe0;border:1px solid #5a5047;border-radius:6px;padding:4px 8px;min-height:30px;cursor:pointer;font-size:'+(13*X.qSize/100).toFixed(1)+'px;white-space:nowrap}header.top #s15q button:hover{background:#4a4138}html body header.top.top>#s15q#s15q{display:flex!important}');
+ return o.join('\n')}
+/* ---- applying the settings ---- */
+function s15Qbtns(){const X=S15X,B=[];const a=(k,id,t,l)=>{if(X[k])B.push(`<button type="button" data-s15q="${id}" title="${xmlEsc(l)}" aria-label="${xmlEsc(l)}">${t}</button>`)};
+ if(X.qVol){a('qVol','vdn','🔉','Quieter');a('qVol','vup','🔊','Louder')}a('qMute','mute','🔇','Mute');a('qTheme','theme','🌓','Change theme');a('qFull','fs','⛶','Fullscreen');a('qFocus','focus','◧','Focus mode');a('qJam','jam','▶ Jam','Start or stop the Jam Band');
+ if(X.qTempo){a('qTempo','bdn','−','Jam Band slower');a('qTempo','bup','+','Jam Band faster')}a('qPanic','panic','⏹','Stop all sound');if(X.qUndo){a('qUndo','undo','↶','Undo');a('qUndo','redo','↷','Redo')}a('qSearch','qs','🔎','Quick switch');return B.join('')}
+function s15Bar(){const X=S15X;let bar=document.getElementById('s15bar');
+ if(!X.sOn){if(bar)bar.remove();return}
+ const H=document.querySelector('header.top');if(!H)return;
+ if(!bar){bar=document.createElement('div');bar.id='s15bar';bar.setAttribute('role','status')}
+ bar.className=X.sPos==='inside'?'s15in':X.sPos==='bottom'?'s15fl':'';
+ if(X.sPos==='inside'){if(bar.parentNode!==H)H.appendChild(bar)}else if(X.sPos==='bottom'){if(bar.parentNode!==document.body)document.body.appendChild(bar)}else if(bar.previousElementSibling!==H)H.after(bar);
+ const p=[],it=(l,v)=>p.push(`<span><b>${xmlEsc(l)}</b>${xmlEsc(v)}</span>`),d=new Date();
+ if(X.sClock)it('Time',d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}));
+ if(X.sDate)it('Date',d.toLocaleDateString([], {weekday:'short',day:'numeric',month:'short'}));
+ if(X.sTimer){const s=Math.floor((Date.now()-S15R.t0)/1000);it('Here',Math.floor(s/60)+' min '+String(s%60).padStart(2,'0')+' s')}
+ if(X.sTab){const t=document.querySelector('#tabs .tab.on');it('Section',t?t.textContent.trim():'–')}
+ if(X.sTuning){const o=document.querySelector('#selTuning option:checked');it('Tuning',o?o.textContent.replace(/\s*\(.*/,'').trim():'–')}
+ if(X.sTimbre){const o=document.querySelector('#selTimbre option:checked');it('Sound',o?o.textContent.trim():'–')}
+ if(X.sVol)it('Volume',Math.round(state.vol*100)+'%'+((state.v7&&state.v7.mute)?' (muted)':''));
+ if(X.sBpm){let b='–';try{b=jbS().bpm+' BPM'+(JB.on?' ▶':'')}catch(e){}it('Jam',b)}
+ if(X.sOnline)it('Network',navigator.onLine?'online':'offline');
+ bar.innerHTML=p.length?p.join(''):'<span>Switch on some items in the Header lab</span>'}
+function s15Quick(){const X=S15X;let q=document.getElementById('s15q');
+ if(!X.qOn){if(q)q.remove();return}
+ const m=document.getElementById('x103hdr');if(!m)return;
+ if(!q){q=document.createElement('span');q.id='s15q';q.setAttribute('role','group');q.setAttribute('aria-label','Quick controls')}
+ q.innerHTML=s15Qbtns();
+ if(X.qPos==='before'){if(q.nextElementSibling!==m)m.before(q)}else if(q.previousElementSibling!==m)m.after(q)}
+function s15Apply(){let st=document.getElementById('s15css');const ch=s15Ch().length>0;
+ if(!ch){if(st)st.remove()}else{if(!st){st=document.createElement('style');st.id='s15css';document.head.appendChild(st)}const css=s15Css();if(st.textContent!==css)st.textContent=css}
+ s15Bar();s15Quick();clearInterval(S15R.tm);S15R.tm=0;if(S15X.sOn)S15R.tm=setInterval(()=>{try{s15Bar()}catch(e){}},S15X.sClock||S15X.sTimer?1000:2000);
+ if(S15R.hidden){const H=document.querySelector('header.top');if(H)H.style.display='none'}}
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-s15q]');
+ if(b){const a=b.dataset.s15q,cl=s=>{const t=document.querySelector(s);if(t)t.click()};
+  try{if(a==='vup'||a==='vdn'){state.vol=Math.min(1.5,Math.max(0,Math.round((state.vol+(a==='vup'?0.1:-0.1))*100)/100));const r=document.getElementById('rngVol');if(r)r.value=state.vol;save();if(master)master.gain.value=(state.v7&&state.v7.mute)?0:state.vol;toast('Volume '+Math.round(state.vol*100)+'%')}
+  else if(a==='mute')cl('[data-x="mute"]');else if(a==='theme')cl('[data-act="theme"]');else if(a==='fs')cl('[data-act="fs"]');else if(a==='focus')cl('[data-act="focus"]');else if(a==='undo')cl('[data-act="undo"]');else if(a==='redo')cl('[data-act="redo"]');else if(a==='qs')cl('[data-act="qs"]');
+  else if(a==='jam'){if(JB.on)jbStop();else jbStart()}
+  else if(a==='bdn'||a==='bup'){const J=jbS();J.bpm=Math.min(240,Math.max(40,J.bpm+(a==='bup'?5:-5)));save();try{jbRender()}catch(er){}toast('Jam Band tempo '+J.bpm+' BPM')}
+  else if(a==='panic'){try{stopAll()}catch(er){}try{jbStop()}catch(er){}try{hushAll10()}catch(er){}toast('All sound stopped')}}catch(er){toast('Header: '+er.message)}
+  setTimeout(()=>{try{s15Bar()}catch(e){}},60);return}
+ const h=e.target.closest&&e.target.closest('header.top h1');if(h&&S15X.hLogoLink){window.scrollTo({top:0,behavior:'smooth'})}},true);
+/* ---- information, window and tools ---- */
+function s15Data(){const H=document.querySelector('header.top'),B=[],add=(id,t,x)=>B.push({id,t,x,h:xmlEsc(x)});
+ if(H){const r=H.getBoundingClientRect(),cs=getComputedStyle(H);
+  add('size','Size',Math.round(r.width)+' × '+Math.round(r.height)+' px'+(S15R.hidden?' (hidden)':''));
+  add('menu','Menu',H.classList.contains('hc')?'closed – press ▾ Menu to open it':'open');
+  add('pos','Position',cs.position==='sticky'?'stays at the top while you scroll':'scrolls away with the page');
+  const vis=[...H.querySelectorAll('button,select,a')].filter(e=>e.getClientRects().length),all=H.querySelectorAll('button,select,a');
+  add('items','Items',vis.length+' showing now, '+all.length+' in all ('+H.querySelectorAll('#tabs .tab').length+' tabs)');
+  add('theme','Look',((document.documentElement.dataset.theme)||'light')+' theme, logo '+Math.round(parseFloat(getComputedStyle(H.querySelector('h1')||H).fontSize))+' px')}
+ const ch=s15Ch();add('chg','Changed settings',ch.length?ch.length+': '+ch.slice(0,12).join(', ')+(ch.length>12?'…':''):'none – the header is exactly as the app made it');
+ add('strip','Status strip',S15X.sOn?'on, '+S15X.sPos:'off');add('quick','Quick controls',S15X.qOn?'on':'off');
+ return{blocks:B,full:'Header',names:[],semis:[],L:[]}}
+function s15HTML(D){D=D||s15Data();return`<div class="s7wrap"><div class="s7h"><b>${xmlEsc(D.full)}</b></div><div class="s7g" style="grid-template-columns:repeat(2,minmax(0,1fr))">${D.blocks.map(b=>`<div class="s7b"><b>${xmlEsc(b.t)}</b><div>${b.h}</div></div>`).join('')}</div></div>`}
+function s15Text(D){D=D||s15Data();return D.full+'\n'+'='.repeat(8)+'\n'+D.blocks.map(b=>b.t+': '+b.x).join('\n')}
+function s15Svg(D){D=D||s15Data();const W=720,pad=24,lines=[];D.blocks.forEach(b=>{const t=b.t+': '+b.x;let cur='';t.split(' ').forEach(wd=>{if((cur+' '+wd).length>84){lines.push(cur);cur='  '+wd}else cur=cur?cur+' '+wd:wd});lines.push(cur)});
+ let y=pad+34,g=`<text x="${pad}" y="${pad+14}" font-size="22" font-weight="800" fill="#1a1208">${xmlEsc(D.full)}</text>`;lines.forEach(l=>{g+=`<text x="${pad}" y="${y}" font-size="13" fill="#2a2118" xml:space="preserve">${xmlEsc(l)}</text>`;y+=18});
+ const H=y+pad-6;return{svg:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" font-family="Roboto,system-ui,Helvetica,Arial,sans-serif"><rect width="${W}" height="${H}" fill="#fffdf6"/>${g}</svg>`,W,H}}
+function s15Buttons(){const H=document.querySelector('header.top');if(!H)return[];return[...H.querySelectorAll('button,select')].map(e=>(e.getAttribute('aria-label')||e.title||e.textContent||e.id||'').trim().replace(/\s+/g,' ')).filter(Boolean)}
+function s15Report(){return['FretLab header report','Settings changed: '+s15Ch().length].concat(s15Ch().map(k=>'  '+k+' = '+S15X[k])).concat(['',s15Text(),'','Buttons and lists in the header:'],s15Buttons().map(t=>'  '+t)).join('\n')}
+function s15Field(f){const[k,l,t,d,e]=f,v=S15X[k],a=`data-s15k="${k}"`;
+ if(t==='chk')return`<label class="vxf chk"><input type="checkbox" ${a}${v?' checked':''}> ${xmlEsc(l)}</label>`;
+ if(t==='sel')return`<label class="vxf"><span>${xmlEsc(l)}</span><select ${a}>${e.map(o=>`<option value="${xmlEsc(String(o[0]))}"${String(o[0])===v?' selected':''}>${xmlEsc(o[1])}</option>`).join('')}</select></label>`;
+ if(t==='col')return`<label class="vxf"><span>${xmlEsc(l)}</span><input type="color" ${a} value="${v}"></label>`;
+ if(t==='txt')return`<label class="vxf"><span>${xmlEsc(l)}</span><input type="text" maxlength="40" ${a} value="${xmlEsc(v)}"></label>`;
+ return`<label class="vxf"><span>${xmlEsc(l)}</span><input type="number" ${a} min="${e[0]}" max="${e[1]}" step="${e[2]}" value="${v}"></label>`}
+const S15TOOLS=[['expand','▾ Open the menu'],['collapse','▴ Close the menu'],['hideToggle','Hide / show the header'],['pin','📌 Keep at top on / off'],['scrollTop','↑ Back to the top'],['compact','Compact look'],['minimal','Minimal look'],['full','Show everything'],['copyButtons','Copy list of buttons'],['saveButtons','Save list of buttons'],['copyReport','Copy header report'],['saveReport','Save header report'],['copySvg','Copy picture (SVG)'],['saveSvg','Save picture (SVG)'],['savePng','Save picture (PNG)'],['saveHtml','Save page (HTML)'],['share','Copy share link']];
+function s15Html(){const act=s15Ch().length;
+ return`<h2>⚙ Header lab</h2><p class="mut">${s15Count()} settings and ${S15TOOLS.length+3} tools (${s15Count()+S15TOOLS.length+3} improvements) for the header at the top. <b id="s15act">${act}</b> settings changed. With everything at its default the header is exactly as before.</p>
+ <div class="row"><select data-s15p aria-label="Preset"><option value="">Presets…</option><option value="__def">Default (as before)</option>${Object.keys(S15PRE).map(k=>`<option value="${k}">${xmlEsc(S15PRE[k].n)}</option>`).join('')}</select></div>
+ <div class="row">${S15TOOLS.map(([a,l])=>`<button class="btn sm" data-s15a="${a}">${l}</button>`).join('')}<button class="btn sm" data-s15a="copyset">Copy settings</button><button class="btn sm" data-s15a="pasteset">Paste settings</button><button class="btn sm" data-s15a="reset">Reset</button></div>
+ <div id="s15prev" class="s7prev">${s15HTML()}</div>
+ <div class="vx"><div class="vxb" style="max-height:34vh">${S15U.map(G=>`<fieldset><legend>${G.g} (${G.f.length})</legend><div class="vxg">${G.f.map(s15Field).join('')}</div></fieldset>`).join('')}</div></div>
+ <div class="row"><button class="btn" data-s15a="close">Close</button></div>`}
+function s15Open(){s15Load();showModal(s15Html());try{$('#mbox').classList.add('wide')}catch(e){}}
+function s15Refresh(){const p=document.getElementById('s15prev');if(p)p.innerHTML=s15HTML();const a=document.getElementById('s15act');if(a)a.textContent=s15Ch().length}
+function s15Set(o){Object.assign(S15X,o);s15Save();s15Load();s15Save();s15Apply()}
+function s15SetEl(el){const k=el.dataset.s15k,f=S15F[k];if(!f)return;const t=f[2],e=f[4];let v;
+ if(t==='chk')v=el.checked;else if(t==='num'){v=parseFloat(el.value);if(!Number.isFinite(v))return;v=Math.max(e[0],Math.min(e[1],v))}else if(t==='txt')v=el.value.replace(/[<>"\\]/g,'').slice(0,40);else v=el.value;S15X[k]=v;s15Save();s15Apply();s15Refresh()}
+document.addEventListener('input',e=>{const el=e.target;if(el&&el.dataset&&el.dataset.s15k)s15SetEl(el)},true);
+document.addEventListener('change',e=>{const el=e.target;if(!el)return;if(el.dataset&&el.dataset.s15k&&el.tagName==='SELECT')s15SetEl(el);
+ if(el.dataset&&el.dataset.s15p!==undefined&&el.value){if(el.value==='__def')s15Set(S15D);else if(S15PRE[el.value])s15Set(Object.assign({},S15D,S15PRE[el.value].v));s15Open();toast('Header lab preset applied')}},true);
+function s15Png(){const o=s15Svg(),im=new Image(),u=URL.createObjectURL(new Blob([o.svg],{type:'image/svg+xml'}));return new Promise((ok,no)=>{im.onload=()=>{const c=document.createElement('canvas');c.width=o.W*2;c.height=o.H*2;c.getContext('2d').drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);c.toBlob(ok)};im.onerror=no;im.src=u})}
+document.addEventListener('click',async e=>{const b=e.target.closest&&e.target.closest('[data-s15a]');if(!b)return;const a=b.dataset.s15a,H=document.querySelector('header.top');
+ try{
+  if(a==='close')hideModal();
+  else if(a==='expand'||a==='collapse'){const open=!H.classList.contains('hc');if((a==='expand')!==open&&XA.hdr103)XA.hdr103();s15Refresh();toast(a==='expand'?'Menu open':'Menu closed')}
+  else if(a==='hideToggle'){S15R.hidden=!S15R.hidden;if(H)H.style.display=S15R.hidden?'none':'';toast(S15R.hidden?'Header hidden – use this tool again to bring it back':'Header shown')}
+  else if(a==='pin'){s15Set({hSticky:S15X.hSticky==='on'?'off':'on'});s15Open();toast(S15X.hSticky==='on'?'Header stays at the top':'Header scrolls with the page')}
+  else if(a==='scrollTop'){window.scrollTo({top:0,behavior:'smooth'})}
+  else if(a==='compact'||a==='minimal'){s15Set(Object.assign({},S15D,S15PRE[a].v));s15Open();toast('Header lab: '+S15PRE[a].n)}
+  else if(a==='full'){s15Set(Object.assign({},S15D,{sOn:true,sDate:true,sTimbre:true,sBpm:true,sOnline:true,qOn:true,qFull:true,qFocus:true,qTempo:true,qPanic:true,qUndo:true,qSearch:true}));s15Open();toast('Header lab: everything shown')}
+  else if(a==='copyButtons'){await navigator.clipboard.writeText(s15Buttons().join('\n'));toast('List of buttons copied')}
+  else if(a==='saveButtons'){download(new Blob([s15Buttons().join('\n')],{type:'text/plain'}),'header-buttons.txt')}
+  else if(a==='copyReport'){await navigator.clipboard.writeText(s15Report());toast('Header report copied')}
+  else if(a==='saveReport'){download(new Blob([s15Report()],{type:'text/plain'}),'header-report.txt')}
+  else if(a==='copySvg'){await navigator.clipboard.writeText(s15Svg().svg);toast('Picture copied as SVG')}
+  else if(a==='saveSvg'){download(new Blob([s15Svg().svg],{type:'image/svg+xml'}),'header.svg')}
+  else if(a==='savePng'){download(await s15Png(),'header.png')}
+  else if(a==='saveHtml'){download(new Blob(['<!doctype html><meta charset="utf-8"><title>Header</title><body style="font-family:system-ui;max-width:720px;margin:24px auto">'+s15HTML()+'</body>'],{type:'text/html'}),'header.html')}
+  else if(a==='share'){const o={};s15Ch().forEach(k=>o[k]=S15X[k]);await navigator.clipboard.writeText(location.href.split('#')[0]+'#s15='+encodeURIComponent(JSON.stringify(o)));toast('Link copied')}
+  else if(a==='reset'){s15Set(S15D);s15Open();toast('Header lab reset')}
+  else if(a==='copyset'){await navigator.clipboard.writeText(JSON.stringify({s15:S15X}));toast('Header lab settings copied')}
+  else if(a==='pasteset'){let txt='';try{txt=await navigator.clipboard.readText()}catch(er){txt=prompt('Paste the Header lab settings here')||''}try{const o=JSON.parse(txt);if(!o||!o.s15)throw 0;s15Set(o.s15);s15Open();toast('Header lab settings applied')}catch(er){toast('Those are not valid settings')}}
+ }catch(er){toast('Header lab: '+er.message)}},true);
+XA.s15Open=()=>s15Open();
+function s15Btn(){const R=document.querySelector('header.top .x8right')||document.querySelector('header.top');if(R&&!document.getElementById('s15btn')){const a=document.createElement('button');a.id='s15btn';a.className='x8b';a.dataset.x='s15Open';a.textContent='⚙ Header';a.title='Header lab: layout, logo, buttons, colours, status strip and quick controls';R.appendChild(a)}}
+function s15Hash(){const m=/#s15=([^&\s]+)/.exec(location.hash||'');if(m){try{const o=JSON.parse(decodeURIComponent(m[1]));const ok={};Object.keys(o).forEach(k=>{if(S15F[k])ok[k]=o[k]});s15Set(ok)}catch(e){}}}
+setTimeout(()=>{try{s15Load();s15Hash();s15Apply();[0,500,1500,3000].forEach(ms=>setTimeout(()=>{s15Btn();s15Quick();s15Bar()},ms));Object.assign(window.__fretlab,{S15X,S15U,S15F,S15D,S15PRE,S15R,s15Count,s15Data,s15HTML,s15Text,s15Svg,s15Open,s15Set,s15Apply,s15Css,s15Report,s15Buttons,S15TOOLS})}catch(e){console.error(e)}},0);
+/* ================= Playback speed fixes ================= */
+const S15P={cap:240,bn:{calls:0,runs:0,ms:0,last:0,tm:0},lazy:{n:0,saved:0},warm:{n:0,tm:0}};
+/* 1. the cache of plucked notes can no longer grow without limit; the least recently used note goes first */
+(function(){const g=Map.prototype.get,s=Map.prototype.set,h=Map.prototype.has;
+ bufCache.get=function(k){const v=g.call(this,k);if(v!==undefined){this.delete(k);s.call(this,k,v)}return v};
+ bufCache.set=function(k,v){if(h.call(this,k))this.delete(k);s.call(this,k,v);while(this.size>S15P.cap){this.delete(this.keys().next().value)}return this}})();
+/* 2. Jam Band lists: very long lists are filled in only when you open them */
+(function(){const _h=jbHTML;jbHTML=function(){let h=_h.apply(this,arguments);const store=[];
+ h=h.replace(/<select([^>]*)>([\s\S]*?)<\/select>/g,(m,at,inner)=>{const n=inner.split('<option').length-1;if(n<30)return m;
+  const sel=/<option[^>]*selected[^>]*>[\s\S]*?<\/option>/.exec(inner)||/<option[\s\S]*?<\/option>/.exec(inner);if(!sel)return m;
+  store.push(inner);S15P.lazy.saved+=inner.length-sel[0].length;return`<select${at} data-s15l="${store.length-1}">${sel[0]}</select>`});
+ S15P.lazy.store=store;S15P.lazy.n=store.length;return h}})();
+function s15Expand(el){if(!el||!el.dataset||el.dataset.s15l===undefined)return;const st=S15P.lazy.store,i=+el.dataset.s15l,v=el.value;delete el.dataset.s15l;if(st&&st[i]!==undefined){el.innerHTML=st[i];if(el.value!==v)el.value=v}}
+['pointerdown','mousedown','touchstart','focusin','keydown'].forEach(ev=>document.addEventListener(ev,e=>{const el=e.target;if(el&&el.tagName==='SELECT'&&el.dataset&&el.dataset.s15l!==undefined)s15Expand(el)},true));
+/* 3. the bass neck is drawn once for a burst of calls, not once per call */
+(function(){const _b=bnRender;bnRender=function(){const P=S15P.bn,d=document.getElementById('bassneck');if(!d||!d.open)return _b.apply(this,arguments);
+ const now=performance.now();P.calls++;
+ if(now-P.last<120){if(!P.tm)P.tm=setTimeout(()=>{P.tm=0;const t=performance.now();P.runs++;try{_b()}catch(e){console.error(e)}P.last=performance.now();P.ms+=P.last-t},130);return}
+ if(P.tm){clearTimeout(P.tm);P.tm=0}
+ P.runs++;const r=_b.apply(this,arguments);P.last=performance.now();P.ms+=P.last-now;return r}})();
+/* 4. Jam Band start: the notes of the chosen sound are prepared in small slices while the count-in plays */
+function s15Warm(force){const W=S15P.warm;clearTimeout(W.tm);if(!AC)return;const tb=state.timbre;if(tb==='synth'||tb==='organ'||(typeof NEWV!=='undefined'&&NEWV.has(tb)))return;
+ const order=[];for(let m=36;m<=84;m++)order.push(m);order.sort((a,b)=>Math.abs(a-55)-Math.abs(b-55));let i=0;
+ const step=()=>{if((!force&&!JB.on)||!AC||state.timbre!==tb)return;const t0=performance.now();while(i<order.length&&performance.now()-t0<5){const m=order[i++],key=[m,tb,state.sustain,AC.sampleRate,state.a4].join('_');if(!bufCache.has(key)){bufCache.set(key,makePluck(m,tb));W.n++}}if(i<order.length)W.tm=setTimeout(step,12)};
+ W.tm=setTimeout(step,0)}
+(function(){const _s=jbStart;jbStart=function(){const r=_s.apply(this,arguments);try{s15Warm()}catch(e){}return r}})();
+setTimeout(()=>Object.assign(window.__fretlab,{S15P,s15Warm,s15Expand}),0);
+
+/* 5. note highlights on the tab are drawn once per screen refresh instead of once per note (this was about 80% of the time spent per note) */
+(function(){const _t=tabLight10,Q=new Map();let raf=0;S15P.tl={calls:0,runs:0};
+ tabLight10=function(svg,T,j,key,scroller){S15P.tl.calls++;Q.set(svg,[svg,T,j,key,scroller]);if(!raf)raf=requestAnimationFrame(()=>{raf=0;const a=[...Q.values()];Q.clear();a.forEach(x=>{S15P.tl.runs++;try{_t.apply(null,x)}catch(e){console.error(e)}})})}})();
+/* 6. while the Jam Band plays the bass neck is redrawn at most about 2 times a second */
+(function(){const _b=bnRender;bnRender=function(){if(JB.on&&S15P.bn.last&&performance.now()-S15P.bn.last<450){const P=S15P.bn;if(!P.tm2){P.tm2=setTimeout(()=>{P.tm2=0;try{_b()}catch(e){}P.last=performance.now()},460)}return}return _b.apply(this,arguments)}})();
+/* 7. first-sound spikes: the notes of the chosen sound are prepared in idle moments after the sound is first started and when the sound is changed */
+(function(){const _a=audio;let first=true;audio=function(){const r=_a.apply(this,arguments);if(r&&first){first=false;setTimeout(()=>{try{s15Warm(true)}catch(e){}},400)}return r}})();
+document.addEventListener('change',e=>{if(e.target&&e.target.id==='selTimbre')setTimeout(()=>{try{s15Warm(true)}catch(e){}},300)},true);
+/* 8. the audio engine is created just after the first tap or key press anywhere, so starting the first sound no longer pays for it */
+(function(){let done=false;const go=()=>{if(done)return;done=true;setTimeout(()=>{try{audio()}catch(e){}},200)};['pointerdown','keydown','touchstart'].forEach(ev=>document.addEventListener(ev,go,{capture:true,once:false,passive:true}))})();
 
 window.__fretlab={x102:{SC:()=>SC,CH:()=>CH,CHORDS:()=>CHORDS,SCALES:()=>SCALES,PROGS:()=>PROGS,progList,STRUMS9:()=>STRUMS9,DRUMS:()=>DRUMS,LESSONS:()=>LESSONS,LEX:()=>LEX,GAMES:()=>GAMES,GG:()=>GG,PRESETS:()=>PRESETS,TOK:()=>TOK,INSTR:()=>(typeof INSTR8!=="undefined"?INSTR8:null),voicingsFor,octaveNotes8,scaleSeq,chordMidis,progChords,rootMidi,tn,gpRead9,ptbRead9,midiRead9,gp5Write8,ptbWrite8,midiWrite8,asciiTab8,fit7Song10,quiz:()=>quiz,download:(b,n)=>download(b,n),XA:()=>XA,CHOPIN8:()=>CHOPIN8,midiScore9,keyEst10,keyFromName10,keyLabel10},x101:{vidAudioPCM,mp4Mux10,flvMux10,audioCodec10,aacASC10,vidAudioEnc,pcm16FLV10},x10:{LESSONS,LES_UNITS,CHD10,parseNotes10,scaleSteps10,lesEnter,lesPlay,LEX:()=>LEX,voicingsFor,progList,PROG10,DR10,FEAT10,BUGS10:()=>BUGS10.concat(BUGS10_EXTRA),vidTimeline,vidPrepare,gifEncode,mp4Mux,flvMux,vidH264,vidGif,VID,hushAll10,playing10,les10},x9:{PROG9,PROG9_CATS,FEAT9,FEAT9N,UI9,UI9N,STRUMS9,importAny9,midiRead9,midiScore9,gpRead9,gpifRead9,ptbRead9,bcfz9,bcfs9,unzip9,scoreToSong9,posBox9,progSong9,progAll9,barChords9,curProg9,makeZip9,sv9,importFile9},x8:{XS8,INSTR8,setInstr8,octaveNotes8,octaveFor8,tabText8,specOf8,relatedFor8,pkgPages8,tlSong8,songBuild8,midiParse,midiToSong8,asciiTab8,gp5Write8,ptbWrite8,midiWrite8,SG8,UI8,UI8N,curItem8,buildPDF,exportSong8},x7:{XA,TK,DRILLS,parseChordSym,transposeText,idChord,parseNote,intervalBetween,applyInterval,romanFor,capoOptions7,symStyle,allCards,cardFace,ACH,achCheck,GLOSS,TIPS,TKORDER,DRTABS,PTTABS,STRUMS,MOODS,PATH,sanitizeV7,XS,THEME_LIST,symStyle,setBpm,tempoOf,v7Key},SELF:()=>SELF_HTML,cleanSelf,makeZip,buildPDF,buildDOCX,exRun,exItems,exCollect,exPages,boardSVG,buildPlatform,melEvents,melEnsure,MP,melTab,melText,melMidiBytes,markerSVG,SHAPES,FXS,PALETTES,VPRESETS,applyVPreset,sanitizeV6,designerHTML,crc32,parseSeq,MELP,ALLSET,AKA,dropVoicings,parseProg,pickVoicing,capoHTML,progSheetSVG,libraryText,qsItems,anyScaleChords,neighbours,gapMute,ivPool,MEL:()=>MEL,FAMS,rot,degToks,TOK,chordScales,charNotes,scaleStats,famTableRows,famTableText,filterSelect,stepFamily,CH,SC:()=>SC,hearColour,midiFile,smf,sheetSVG,timedStart,quizTimer,pickStr,newHTML,dailyPlan,streakDays,tapTempo,clockTick:()=>clockTick(),drumHit,bassNote,DRUMS,cagedFor,CAGED,CAGED_ROOT,chordBoxes,triadSets,subsFor,chordSheet,patSeq,progList,secondaryDoms,midiMsg,livePcs,tstrFill,histGo,pianoSVG,staffSVG,legendOff,hist:()=>hist,state:()=>state,quiz:()=>quiz,prog:()=>prog,detectPitch,voicingsFor,renderAll,asciiTab,exportSvgString,SCALES,CHORDS,PROGS,tunerShow,computePos:()=>computePos(),metToggle,clock:()=>clock};
 })();
