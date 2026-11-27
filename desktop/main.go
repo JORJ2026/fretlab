@@ -27,7 +27,7 @@ import (
 const (
 	version       = "12"
 	preferredPort = 47831 // fixed so the browser keeps your saved settings between runs (they are stored per address)
-	signature     = "fretlab-desktop"
+	signature     = "manicrulesguitar-desktop"
 )
 
 // The page pings the launcher every few seconds; when the pings stop, the launcher quits.

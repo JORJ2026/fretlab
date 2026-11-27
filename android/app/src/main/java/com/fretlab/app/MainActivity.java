@@ -128,11 +128,11 @@ public class MainActivity extends Activity {
     @Override protected void onPause() { super.onPause(); web.onPause(); }
     @Override protected void onResume() { super.onResume(); web.onResume(); }
 
-    /** Saves an export to Downloads/FretLab (Android 10+) or the app's own Download folder, and opens PDFs. */
+    /** Saves an export to Downloads/ManicRulesGuitar (Android 10+) or the app's own Download folder, and opens PDFs. */
     private String saveDownload(String name, String mime, String b64) {
         try {
             byte[] data = Base64.decode(b64, Base64.DEFAULT);
-            String safe = (name == null || name.isEmpty() ? "fretlab-export" : name).replaceAll("[\\\\/:*?\"<>|]", "_");
+            String safe = (name == null || name.isEmpty() ? "manicrulesguitar-export" : name).replaceAll("[\\\\/:*?\"<>|]", "_");
             String type = (mime == null || mime.isEmpty()) ? "application/octet-stream" : mime;
             Uri uri = null;
             String where;
@@ -140,11 +140,11 @@ public class MainActivity extends Activity {
                 ContentValues cv = new ContentValues();
                 cv.put(MediaStore.MediaColumns.DISPLAY_NAME, safe);
                 cv.put(MediaStore.MediaColumns.MIME_TYPE, type);
-                cv.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS + "/FretLab");
+                cv.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS + "/ManicRulesGuitar");
                 uri = getContentResolver().insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, cv);
                 if (uri == null) throw new IOException("could not create the file");
                 try (OutputStream os = getContentResolver().openOutputStream(uri)) { os.write(data); }
-                where = "Downloads/FretLab/" + safe;
+                where = "Downloads/ManicRulesGuitar/" + safe;
             } else {
                 File dir = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
                 if (dir == null) dir = getFilesDir();
