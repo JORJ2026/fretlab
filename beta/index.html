@@ -843,6 +843,10 @@ body.jbpage .x8beta{display:none!important}
 #dawRoll{display:block;cursor:crosshair}
 body.mob7 .dawc{min-height:0}
 </style>
+<!--x24 Arial Narrow everywhere--><style id="x24font">:root{--x24f:"Arial Narrow","ArialNarrow","Arial Nova Cond","Liberation Sans Narrow","Nimbus Sans Narrow","Helvetica Neue Condensed",Arial,sans-serif}
+html,body,*:not(pre):not(code):not(kbd):not(samp):not(textarea):not(.mono):not([class*=pre]),*::before,*::after,svg text,svg tspan,input,select,button,option{font-family:var(--x24f)!important;font-stretch:condensed}</style>
+<script>(function(){try{var P=CanvasRenderingContext2D.prototype,d=Object.getOwnPropertyDescriptor(P,'font');if(!d||P.__x24)return;P.__x24=1;var F='"Arial Narrow","Liberation Sans Narrow","Nimbus Sans Narrow",Arial,sans-serif';
+Object.defineProperty(P,'font',{configurable:true,get:d.get,set:function(v){var s=String(v);if(!/mono|courier|consolas|menlo/i.test(s)){var m=s.match(/^(.*?\d+(?:\.\d+)?(?:px|pt|em|rem)(?:\s*\/\s*\S+)?)\s+/);if(m)s=m[1]+' '+F}d.set.call(this,s)}})}catch(e){}})();</script>
 </head>
 <body>
 <noscript><p style="padding:20px;font:16px sans-serif">FretLab needs JavaScript. Please turn it on in your browser settings and reload.</p></noscript>
@@ -20281,6 +20285,7 @@ function x17Demos(){try{return jbDemos().map((d,i)=>({i,n:d.n,g:d.g||'Demos'})).
 function x17Quiet(fn){const T=toast,R=jbRender,S=save;toast=()=>{};jbRender=()=>{};save=()=>{};try{return fn()}finally{toast=T;jbRender=R;save=S}}
 function x17Parts(o){
  const cl=j=>JSON.parse(JSON.stringify(j));
+ if(o.src==='custom')return o.parts.map(p=>({n:p.n,reps:o.reps,j:cl(p.j)}));
  if(o.src==='saved'){const s=XS8().jbSaved||[],it=s[o.saved];if(!it)throw new Error('There is no saved jam in that slot');return[{n:it.n||'Saved jam',reps:o.reps,j:cl(it.j)}]}
  if(o.src==='demo'){const ds=jbDemos(),d=ds[o.demo];if(!d)throw new Error('Pick a demo');const orig=cl(jbS());let j;try{x17Quiet(()=>{XA.jbDemo({value:String(o.demo)});j=cl(jbS())})}finally{jlApply(orig)}return[{n:d.n,reps:o.reps,j}]}
  if(o.src==='list'){const L=jlL();if(!L.length)throw new Error('The song list is empty – add parts in “Song builder” first');return L.map(it=>({n:it.n,reps:Math.max(1,it.reps||1)*1,j:cl(it.j),song:true}))}
@@ -20705,7 +20710,7 @@ setTimeout(()=>{try{x17Load();x17Hash();[0,500,1500,3000].forEach(ms=>setTimeout
    so Jam Band timing, per-track instruments, channel strips and exports all keep working with any engine. */
 const ENG18=(function(){
  const LSK='fretlab.eng18',SR=44100;
- const E={cfg:{note:'howler',keys:'builtin',bass:'builtin',drum:'builtin',fx:'off',fxAmt:50},cache:new Map(),pend:new Map(),files:{},base:null,status:'',tick:0,fails:{}};
+ const E={cfg:{note:'howler',keys:'builtin',bass:'builtin',drum:'builtin',fx:'off',fxAmt:50,limit:true},cache:new Map(),pend:new Map(),files:{},base:null,status:'',tick:0,fails:{}};
  try{const j=JSON.parse(localStorage.getItem(LSK)||'null');if(j&&typeof j==='object')for(const k in E.cfg)if(typeof j[k]===typeof E.cfg[k])E.cfg[k]=j[k]}catch(e){}
  const saveCfg=()=>{try{localStorage.setItem(LSK,JSON.stringify(E.cfg))}catch(e){}};
  const ENGS=[
@@ -20869,7 +20874,7 @@ V=W):0),x=(b+=u+=y)*M.cos(A*H++),g+=x+x*E*(a*a*d%2-1),n&&++n>z&&(b+=v,C+=v,n=0),
  function warmFam(eng,role,fam,m){const k=eng+role+fam;if(warming.has(k))return;warming.add(k);const e=byId(eng);(async()=>{try{for(const f of e.files)await needFile(f);const R=refsFor(role).slice().sort((a,b)=>Math.abs(a-m)-Math.abs(b-m));for(const r of R)await ensure(eng,role,fam,r)}catch(x){}warming.delete(k)})()}
  function rateFor(m,p){if(p.v.sr)return 1;return Math.pow(2,(m-p.v.rm)/12)*((state.a4||440)/440)}
  function playNote(m,vel,tb){
-  const fam=famOf(tb),role=roleOfFam(fam),p=pick(role,fam,m);if(!p)return false;
+  const fam=famOf(tb),role=roleOfFam(fam);if(E.cfg[role==='bass'?'bass':role]==='howler'&&tb!=='steel'&&tb!=='nylon'&&tb!=='electric')return false;const p=pick(role,fam,m);if(!p)return false;
   const s=AC.createBufferSource();s.buffer=audioBuf(AC,p.k,p.v);s.playbackRate.value=rateFor(m,p);const g=AC.createGain(),t=AC.currentTime,sus=Math.max(.15,state.sustain||1),
    lim=Math.min(s.buffer.duration/s.playbackRate.value,(FAMS[fam]||FAMS.pl).len*Math.min(1.6,.35+sus*.65));
   const GN=p.v.sr?.9:(role==='bass'?.8:.7);if(p.v.sr){g.gain.value=GN*vel;s.connect(g);route7(g,m);s.start(t);return true}
@@ -20908,15 +20913,21 @@ V=W):0),x=(b+=u+=y)*M.cos(A*H++),g+=x+x*E*(a*a*d%2-1),n&&++n>z&&(b+=v,C+=v,n=0),
      st.fx=fx;st.in.connect(st.dry);st.dry.connect(st.out);st.in.connect(fx);fx.connect(st.wet);st.wet.connect(st.out)}catch(e){st.in.connect(st.out);st.type='off*';E.status='Effect failed: '+e.message}}}
   if(st.fx){st.wet.gain.value=a;st.dry.gain.value=1-a*.55}
  }
+ const limNodes=new WeakMap();
+ function limApply(ctx){const n=limNodes.get(ctx);if(!n||!toneF||ctx!==AC&&false)return;try{n.out.disconnect()}catch(e){}if(E.cfg.limit)n.out.connect(n.lim);else n.out.connect(ctx.destination)}
  function wireMaster(){ /* call after audio(): puts the effect stage between the compressor and the tone filter */
   if(!AC||!compN||!toneF||fxNodes.has(AC))return;const ctx=AC,inp=ctx.createGain(),out=toneF;
-  try{compN.disconnect();compN.connect(inp);inp.connect(out)}catch(e){return}
+  try{compN.disconnect();compN.connect(inp);inp.connect(out);out.disconnect()}catch(e){return}
   fxNodes.set(ctx,{in:inp,out,fx:null,type:'off',dry:ctx.createGain(),wet:ctx.createGain(),tuna:null});
+  try{const lim=ctx.createDynamicsCompressor();lim.threshold.value=-5;lim.knee.value=0;lim.ratio.value=20;lim.attack.value=.002;lim.release.value=.14;
+   const sat=ctx.createWaveShaper(),N=2048,c=new Float32Array(N);for(let i=0;i<N;i++){const x=i/(N-1)*2-1,a=Math.abs(x);c[i]=Math.sign(x)*(a<=.8?a:.8+.17*Math.tanh((a-.8)/.17))}sat.curve=c;sat.oversample='2x';
+   const outG=ctx.createGain();outG.gain.value=1;lim.connect(sat);sat.connect(outG);outG.connect(ctx.destination);limNodes.set(ctx,{lim,sat,out});limApply(ctx)}catch(e){}
   if(E.cfg.fx!=='off'){if(window.Tuna)fxApply(ctx);else needFile('tuna.js').then(()=>fxApply(ctx),()=>{})}}
  async function setFx(type,amt){
   if(type!==undefined)E.cfg.fx=type;if(amt!==undefined)E.cfg.fxAmt=amt;saveCfg();
   if(E.cfg.fx!=='off'&&!window.Tuna){try{await needFile('tuna.js')}catch(e){E.status=e.message;E.cfg.fx='off'}}
   if(AC)fxApply(AC);E.render&&E.render()}
+ async function setLimit(on){E.cfg.limit=!!on;saveCfg();if(AC)limApply(AC);E.render&&E.render()}
  /* ---------- selecting engines ---------- */
  async function setEngine(role,id,quiet){
   const e=byId(id);if(!e.roles.includes(role)){id='builtin'}E.cfg[role]=id;saveCfg();E.render&&E.render();if(id==='builtin')return true;
@@ -20937,7 +20948,7 @@ V=W):0),x=(b+=u+=y)*M.cos(A*H++),g+=x+x*E*(a*a*d%2-1),n&&++n>z&&(b+=v,C+=v,n=0),
   const all=`<div class="eng18r"><div><b>Use one engine for everything</b><div class="mut">Sets all four rows above</div></div><select data-xc="engAll" aria-label="All roles">${['<option value="">Choose…</option>'].concat(ENGS.map(e=>`<option value="${e.id}">${esc(e.name)}</option>`)).join('')}</select><span></span></div>`;
   const fx=`<div class="eng18r"><div><b>Master effect</b><div class="mut">Tuna.js – applied to everything you hear and export</div></div><select data-xc="engFx" aria-label="Master effect">${FXS.map(([v,t])=>`<option value="${v}"${v===E.cfg.fx?' selected':''}>${t}</option>`).join('')}</select><label class="mut">Amount <input type="range" min="0" max="100" value="${E.cfg.fxAmt}" data-xi="engFxAmt"></label></div>`;
   const list=ENGS.slice(1).map(e=>`<li><b>${esc(e.name)}</b> ${e.v?'v'+e.v+' · ':''}${e.lic||''} – ${esc(e.info)}</li>`).join('');
-  return `<p class="mut" style="margin:0 0 6px">Pick the sound engine for each part of the band. They work with the notes you tap, the practice drum machine, the Jam Band (every track, bass and drum kit), and the audio and video exports. Anything an engine cannot play is left to the built-in sound.</p>${rows}${all}${fx}<p class="eng18s" id="eng18s" role="status">${esc(E.status)}</p><details class="eng18i"><summary>About the engines</summary><ul>${list}<li><b>Tuna.js</b> v1.1.3 · MIT – master effects. <b>Howler.js</b> only plays ready-made audio files, so it has no part in a synthesized band.</li></ul></details>`}
+  return `<p class="mut" style="margin:0 0 6px">Pick the sound engine for each part of the band. They work with the notes you tap, the practice drum machine, the Jam Band (every track, bass and drum kit), and the audio and video exports. Anything an engine cannot play is left to the built-in sound.</p>${rows}${all}${fx}<div class="eng18r"><div><b>Clipping protection</b><div class="mut">A limiter on the final output – keeps loud guitars, distortion and pedals from crackling</div></div><label><input type="checkbox" data-xc="engLim"${E.cfg.limit?' checked':''}> On</label><span></span></div><p class="eng18s" id="eng18s" role="status">${esc(E.status)}</p><details class="eng18i"><summary>About the engines</summary><ul>${list}<li><b>Tuna.js</b> v1.1.3 · MIT – master effects. <b>Howler.js</b> only plays ready-made audio files, so it has no part in a synthesized band.</li></ul></details>`}
  function render(){const d=document.getElementById('engBody');if(!d)return;const s=document.getElementById('eng18s');if(s)s.textContent=E.status;const a=document.activeElement;if(a&&d.contains(a)&&a.tagName==='SELECT'&&a.dataset.r)return;
   if(d.dataset.sig===JSON.stringify(E.cfg)&&s){s.textContent=E.status;return}d.dataset.sig=JSON.stringify(E.cfg);d.innerHTML=html()}
  E.render=render;
@@ -20949,6 +20960,7 @@ V=W):0),x=(b+=u+=y)*M.cos(A*H++),g+=x+x*E*(a*a*d%2-1),n&&++n>z&&(b+=v,C+=v,n=0),
  const css=document.createElement('style');css.textContent='.eng18b{padding:6px 2px}.eng18r{display:grid;grid-template-columns:minmax(150px,1.5fr) minmax(150px,1fr) auto;gap:8px;align-items:center;padding:6px 0;border-top:1px solid var(--line,#ddd)}.eng18r .mut{font-size:.85em}.eng18s{min-height:1.3em;margin:8px 0 2px;font-size:.9em}.eng18i{margin-top:6px}.eng18i ul{margin:6px 0 0 18px;padding:0}@media(max-width:620px){.eng18r{grid-template-columns:1fr}}';document.head.appendChild(css);
  XA.engSet=el=>{setEngine(el.dataset.r,el.value)};
  XA.engAll=el=>{if(el.value)setAll(el.value);el.value=''};
+ XA.engLim=el=>{setLimit(el.checked)};
  XA.engFx=el=>{setFx(el.value)};
  XA.engFxAmt=el=>{setFx(undefined,+el.value)};
  XA.engTry=async el=>{const r=el.dataset.r;if(!audio())return;await prewarm();
@@ -20975,7 +20987,7 @@ V=W):0),x=(b+=u+=y)*M.cos(A*H++),g+=x+x*E*(a*a*d%2-1),n&&++n>z&&(b+=v,C+=v,n=0),
   let n=0;for(const x of w){const e=byId(x[0]);for(const f of e.files)await needFile(f);await ensure(...x);n++;if(onProg&&w.length>12&&n%6===0)onProg(Math.min(.01,n/w.length*.01))}
  }
  /* the timeline-video mixer builds notes straight from sample arrays: let it use an engine voice */
- const api={x17:{load:()=>x17Load(),plan:o=>x17Plan(o),render:(...a)=>x17Render(...a),S:()=>X17S},cfg:E.cfg,E,ENGS,FAMS,famOf,pcmVoice,prewarm,prewarmAll,ensure,setEngine,setAll,setFx,ensureCard,render,playNote,playBass,playDrum,key,detect,toneVoice,primVoice,PRIM,SR,wantsUsed,fxApply};
+ const api={needFile,setLimit,x17:{load:()=>x17Load(),plan:o=>x17Plan(o),render:(...a)=>x17Render(...a),S:()=>X17S},cfg:E.cfg,E,ENGS,FAMS,famOf,pcmVoice,prewarm,prewarmAll,ensure,setEngine,setAll,setFx,ensureCard,render,playNote,playBass,playDrum,key,detect,toneVoice,primVoice,PRIM,SR,wantsUsed,fxApply};
  return api;
 })();
 (function(){const _ra=renderAll;renderAll=function(){const r=_ra.apply(this,arguments);try{ENG18.ensureCard()}catch(e){}return r};
@@ -20983,6 +20995,477 @@ V=W):0),x=(b+=u+=y)*M.cos(A*H++),g+=x+x*E*(a*a*d%2-1),n&&++n>z&&(b+=v,C+=v,n=0),
  setTimeout(()=>{try{window.__fretlab.ENG18=ENG18}catch(e){}},0);
  /* engines chosen last time: prepare them quietly in the background after start-up */
  setTimeout(async()=>{try{for(const r of ['note','keys','bass','drum'])if(ENG18.cfg[r]!=='builtin')await ENG18.setEngine(r,ENG18.cfg[r])}catch(e){}},2500)})();
+/* ================= 19: export all demo songs and patterns (MIDI · Guitar Pro · Power Tab · ASCII · WAV · MP3 · MP4 · FLV) ================= */
+const BX19={busy:false,cancel:false,sink:null};
+const BX19F=[['mid','MIDI','.mid','MIDI',0],['gp5','Guitar Pro','.gp5','GuitarPro',0],['ptb','Power Tab','.ptb','PowerTab',0],['txt','ASCII tab','.txt','ASCII',0],['wav','WAV','.wav','WAV',1],['mp3','MP3','.mp3','MP3',1],['mp4','MP4 video','.mp4','MP4',1],['flv','FLV video','.flv','FLV',1]];
+const BX19D={fmts:['mid','gp5','ptb','txt'],demo:true,groups:null,strum:true,drum:true,arp:true,reps:1,vres:'480p',part:120};
+let BX19S=null;
+function bx19Load(){let o={};try{o=JSON.parse(localStorage.getItem('fretlab.bx19')||'{}')||{}}catch(e){}BX19S=Object.assign({},BX19D,o);if(!Array.isArray(BX19S.fmts))BX19S.fmts=BX19D.fmts.slice();return BX19S}
+function bx19Save(){try{localStorage.setItem('fretlab.bx19',JSON.stringify(BX19S))}catch(e){}}
+const bx19Clone=j=>JSON.parse(JSON.stringify(j));
+function bx19Groups(){try{const d=jbDemos(),m=new Map();d.forEach((x,i)=>{const g=x.g||'Demos';m.set(g,(m.get(g)||0)+1)});return[...m.entries()]}catch(e){return[]}}
+/* a clean one-bar-per-chord jam to hang a pattern on */
+function bx19Base(){
+ const orig=bx19Clone(jbS());let j;
+ try{x17Quiet(()=>{jlApply({});const J=jbS(),r=jbParse('I vi IV V',0);
+  Object.assign(J,{chords:r.out,src:'mine',key:0,bpm:100,bpb:4,cb:4,chordOn:true,chordInst:'steel',drumOn:false,drum:'off',bassOn:false,g2On:false,kbOn:false,kb2On:false,kb3On:false,melOn:false,soloOn:false,count:false,g1Mode:'strum',g1Arp:'up'});
+  jbS();j=bx19Clone(J)})}finally{jlApply(orig)}
+ return j}
+function bx19Items(S){
+ const items=[];
+ if(S.demo){const ds=jbDemos(),ok=S.groups;ds.forEach((d,i)=>{const g=d.g||'Demos';if(ok&&ok.indexOf(g)<0)return;items.push({kind:'demo',dir:'Demo jams/'+g,name:String(d.n).replace(/^.*? · /,'')||d.n,full:d.n,idx:i})})}
+ if(S.strum){STRUMS9.forEach((p,i)=>items.push({kind:'strum',dir:'Strum patterns',name:p[0]+' ('+p[2]+')',full:'Strum pattern – '+p[0],idx:i}))}
+ if(S.drum){Object.keys(DRUMS).forEach(k=>{const D=DRUMS[k];items.push({kind:'drum',dir:'Drum grooves'+(D.group?'/'+D.group:''),name:D.name||k,full:'Drum groove – '+(D.name||k),id:k})})}
+ if(S.arp){JB_ARPN.forEach(([v,t])=>items.push({kind:'arp',dir:'Arpeggio patterns',name:t,full:'Arpeggio – '+t,v}))}
+ return items}
+function bx19Jam(it){
+ if(it.kind==='demo'){const orig=bx19Clone(jbS());let j;try{x17Quiet(()=>{XA.jbDemo({value:String(it.idx)});j=bx19Clone(jbS())})}finally{jlApply(orig)}return j}
+ const j=bx19Base();
+ if(it.kind==='strum'){j.strum=String(it.idx);j.bassOn=true;j.bassStyle='root'}
+ else if(it.kind==='drum'){j.drum=it.id;j.drumOn=true;j.chordOn=true;j.bassOn=true;j.bassStyle='root';const D=DRUMS[it.id];j.swing=!!(D&&D.swing)||/shuf|swing|texas|purdie|slow128|bluesshuf/.test(String(it.id));if(D&&D.beats===3)j.bpb=3,j.cb=3}
+ else if(it.kind==='arp'){j.g1Mode='arp';j.g1Arp=it.v;j.g1Rv=2}
+ return j}
+function bx19Doc(f,j){
+ const orig=bx19Clone(jbS());
+ try{jlApply(j);const J=jbS();
+  const song=jbSong(J,{g:f==='mid'?12:4,drums:f==='mid'||f==='gp5'});
+  if(!song.parts.length)return null;
+  const noDrum=Object.assign({},song,{parts:song.parts.filter(p=>!p.drum)});
+  let out;
+  if(f==='mid')out=midiWrite8(song);else if(f==='gp5')out=gp5Write8(song);
+  else if(f==='ptb'){if(!noDrum.parts.length)return null;out=ptbWrite8(noDrum)}
+  else{if(!noDrum.parts.length)return null;out=asciiTab8(noDrum)}
+  return typeof out==='string'?new TextEncoder().encode(out):(out instanceof Uint8Array?out:new Uint8Array(out))
+ }finally{jlApply(orig)}}
+async function bx19Av(f,it,j,S){
+ const o=Object.assign({},X17S||x17Load(),{fmt:f,src:'custom',parts:[{n:it.full,j}],reps:S.reps,mode:'reps',count:'off',lead:.05,tail:1.5,fade:0,vres:S.vres,sr:44100,bits:16,kbps:192,id3:true,artist:'FretLab'});
+ if(f==='mp4'||f==='flv'){o.vres=S.vres;o.sr=44100}
+ const plan=x17Plan(o),raw=await x17Render(o,plan,null),pcm=x17Finish(o,raw,plan);
+ let blob;
+ if(f==='wav')blob=x17Wav(pcm,o.bits,o.dither);
+ else if(f==='mp3')blob=await x17Mp3(pcm,o.kbps,o.sr,()=>{},{title:it.full,artist:o.artist,album:'FretLab Jam Band'});
+ else{const r=await x17Av(o,plan,pcm,()=>{},()=>{},()=>BX19.cancel);blob=r.blob}
+ return new Uint8Array(await blob.arrayBuffer())}
+async function bx19Run(S,ui){
+ if(BX19.busy||X17R.busy)return;BX19.busy=true;BX19.cancel=false;X17R.busy=true;X17R.cancel=false;
+ const items=bx19Items(S),fm=BX19F.filter(x=>S.fmts.includes(x[0])),t0=performance.now();
+ const orig=bx19Clone(jbS());
+ let files=[],bytes=0,part=0,done=0,fail=[],made=0;const total=items.length*fm.length,used=new Set();
+ const flush=async last=>{if(!files.length)return;part++;const zip=makeZip9(files),name='FretLab-demos-and-patterns-'+(last&&part===1?'all':'part'+String(part).padStart(2,'0'))+'.zip';
+  if(BX19.sink)BX19.sink(name,zip);else download(new Blob([zip],{type:'application/zip'}),name);files=[];bytes=0;await new Promise(r=>setTimeout(r,400))};
+ try{try{jbStop()}catch(e){}
+  for(let n=0;n<items.length;n++){
+   if(BX19.cancel)break;const it=items[n],base=(safeName(it.name)||'item').slice(0,70);let j=null;
+   try{j=bx19Jam(it)}catch(e){fail.push(it.full+' – '+(e.message||e));done+=fm.length;continue}
+   for(const [f,label,ext,folder,av] of fm){
+    if(BX19.cancel)break;ui&&ui(`Item ${n+1} of ${items.length} · ${label}: ${it.full}`,done/total);
+    try{let data;if(av)data=await bx19Av(f,it,j,S);else data=bx19Doc(f,j);
+     if(!data){fail.push(it.full+' ('+label+') – nothing to write for this format');done++;continue}
+     let path=folder+'/'+it.dir+'/'+String(n+1).padStart(4,'0')+' '+base+ext;while(used.has(path))path=path.replace(ext,'-2'+ext);used.add(path);
+     files.push([path,data]);bytes+=data.length;made++;
+     if(bytes>S.part*1048576)await flush(false)}
+    catch(e){fail.push(it.full+' ('+label+') – '+(e&&e.message||e));if(String(e&&e.message)==='Cancelled')BX19.cancel=true}
+    done++;if(n%2===0)await new Promise(r=>setTimeout(r,0))}
+  }
+  if(files.length||part===0){if(fail.length){files.push(['_skipped and failed.txt',new TextEncoder().encode(fail.join('\n'))])}await flush(true)}
+  else if(fail.length&&made){}
+  const secs=((performance.now()-t0)/1000).toFixed(0);
+  ui&&ui(BX19.cancel?`Stopped after ${made} files.`:`Done – ${made} files in ${part} zip${part===1?'':'s'}${fail.length?', '+fail.length+' skipped':''} (${secs} s).`,1,fail);
+  return{made,part,fail,secs:+secs}
+ }finally{try{jlApply(orig)}catch(e){}BX19.busy=false;X17R.busy=false;X17R.cancel=false;try{jbRender()}catch(e){}}}
+function bx19Html(){
+ const S=bx19Load(),G=bx19Groups(),all=!S.groups;
+ const fm=BX19F.map(([f,l,e,d,av])=>`<label class="x17f"><input type="checkbox" data-bxf="${f}"${S.fmts.includes(f)?' checked':''}> ${l}${av?' <span class="mut">(slower)</span>':''}</label>`).join('');
+ const gr=G.map(([g,n])=>`<label class="x17f"><input type="checkbox" data-bxg="${xmlEsc(g)}"${all||S.groups.includes(g)?' checked':''}> ${xmlEsc(g)} <span class="mut">${n}</span></label>`).join('');
+ return `<h3 style="margin:0 0 6px">📦 Export all demo songs and patterns</h3><div class="x17body">
+ <p class="mut" style="margin:0 0 8px">Builds one or more zip files with every item you tick, in every format you tick – MIDI, Guitar Pro, Power Tab and ASCII tab, plus WAV, MP3, MP4 and FLV rendered with the sound engines you have chosen.</p>
+ <fieldset><legend>Formats</legend><div class="x17g">${fm}</div><div class="mut" style="margin-top:4px">Power Tab and ASCII leave out drums. Audio and video take a while for large selections.</div></fieldset>
+ <fieldset><legend>What to export</legend><div class="x17g"><label class="x17f"><input type="checkbox" data-bxs="demo"${S.demo?' checked':''}> Demo jams</label><label class="x17f"><input type="checkbox" data-bxs="strum"${S.strum?' checked':''}> Strum patterns</label><label class="x17f"><input type="checkbox" data-bxs="drum"${S.drum?' checked':''}> Drum grooves</label><label class="x17f"><input type="checkbox" data-bxs="arp"${S.arp?' checked':''}> Arpeggio patterns</label></div>
+  <details style="margin-top:6px"><summary>Choose demo jam styles (${G.length})</summary><div class="x17g" style="margin-top:6px"><button class="btn sm" data-bx19="gall">All</button><button class="btn sm" data-bx19="gnone">None</button>${gr}</div></details></fieldset>
+ <fieldset><legend>Audio and video options</legend><div class="x17g"><label class="x17f">Times through each item <select data-bxo="reps">${[1,2,3,4].map(n=>`<option${S.reps===n?' selected':''}>${n}</option>`).join('')}</select></label>
+  <label class="x17f">Video size <select data-bxo="vres">${[['480p','480p'],['720p','720p HD'],['square','Square']].map(([v,t])=>`<option value="${v}"${S.vres===v?' selected':''}>${t}</option>`).join('')}</select></label>
+  <label class="x17f">Start a new zip after <select data-bxo="part">${[60,120,250,500].map(n=>`<option value="${n}"${S.part===n?' selected':''}>${n} MB</option>`).join('')}</select></label></div></fieldset>
+ <p id="bx19sum" class="mut"></p>
+ <div class="x17prog" id="bx19prog" hidden><div id="bx19msg">Starting…</div><div class="x17bar"><i id="bx19fill"></i></div></div><div id="bx19fail" class="mut" style="max-height:90px;overflow:auto;font-size:12px"></div></div>
+ <div class="row" style="margin-top:8px"><button class="btn main" data-bx19="go" id="bx19go">Export</button><button class="btn" data-bx19="cancel" id="bx19cancel" hidden>Stop</button><button class="btn" data-bx19="close">Close</button></div>`}
+function bx19Sum(){const S=BX19S,n=bx19Items(S).length,f=S.fmts.length,av=BX19F.filter(x=>x[4]&&S.fmts.includes(x[0])).length,el=document.getElementById('bx19sum');
+ if(el)el.textContent=`${n} item${n===1?'':'s'} × ${f} format${f===1?'':'s'} = ${n*f} files`+(av&&n>40?` – ${av} of the formats are audio/video, so this may take a long while and a lot of space. You can stop at any time and keep what is done.`:'');
+ const g=document.getElementById('bx19go');if(g)g.disabled=!n||!f}
+function bx19Open(){bx19Load();showModal(bx19Html());try{$('#mbox').classList.add('wide')}catch(e){}bx19Sum()}
+XA.bx19Open=()=>bx19Open();
+document.addEventListener('change',e=>{const el=e.target;if(!el||!el.dataset||!document.getElementById('bx19sum'))return;const S=BX19S;
+ if(el.dataset.bxf!==undefined){const f=el.dataset.bxf;S.fmts=S.fmts.filter(x=>x!==f);if(el.checked)S.fmts.push(f)}
+ else if(el.dataset.bxs!==undefined)S[el.dataset.bxs]=el.checked;
+ else if(el.dataset.bxg!==undefined){const all=bx19Groups().map(x=>x[0]);let cur=S.groups||all.slice();cur=cur.filter(x=>x!==el.dataset.bxg);if(el.checked)cur.push(el.dataset.bxg);S.groups=cur.length===all.length?null:cur}
+ else if(el.dataset.bxo!==undefined){const k=el.dataset.bxo;S[k]=k==='vres'?el.value:+el.value}
+ else return;bx19Save();bx19Sum()});
+document.addEventListener('click',async e=>{const b=e.target.closest&&e.target.closest('[data-bx19]');if(!b)return;const a=b.dataset.bx19,S=BX19S||bx19Load();
+ if(a==='gall'||a==='gnone'){S.groups=a==='gall'?null:[];document.querySelectorAll('[data-bxg]').forEach(i=>i.checked=a==='gall');bx19Save();bx19Sum()}
+ else if(a==='close'){if(BX19.busy)BX19.cancel=true;hideModal()}
+ else if(a==='cancel'){BX19.cancel=true;X17R.cancel=true;const m=document.getElementById('bx19msg');if(m)m.textContent='Stopping…'}
+ else if(a==='go'){const g=document.getElementById('bx19go'),c=document.getElementById('bx19cancel'),p=document.getElementById('bx19prog');g.disabled=true;c.hidden=false;p.hidden=false;
+  try{await bx19Run(S,(t,f,fail)=>{const m=document.getElementById('bx19msg'),fl=document.getElementById('bx19fill'),fx=document.getElementById('bx19fail');if(m)m.textContent=t;if(fl)fl.style.width=Math.round(f*100)+'%';if(fx&&fail&&fail.length)fx.textContent='Skipped: '+fail.slice(0,40).join(' · ')+(fail.length>40?' …':'')})}
+  catch(err){toast('Export failed: '+(err&&err.message||err))}
+  finally{const g2=document.getElementById('bx19go'),c2=document.getElementById('bx19cancel');if(g2)g2.disabled=false;if(c2)c2.hidden=true}}},true);
+(function(){const _h=jbHTML;jbHTML=function(){const h=_h.apply(this,arguments);return h.replace(/(<button class="btn" data-x="x17Open"[^>]*>[^<]*<\/button>)/,'$1<button class="btn" data-x="bx19Open" title="Export every demo jam and pattern as MIDI, Guitar Pro, Power Tab, ASCII, WAV, MP3, MP4 or FLV">📦 Export all demos &amp; patterns</button>')};
+ const btn=()=>{const R=document.getElementById('x12g0')||document.querySelector('header.top .x8right')||document.querySelector('header.top');if(R&&!document.getElementById('bx19btn')){const a=document.createElement('button');a.id='bx19btn';a.className='x8b';a.dataset.x='bx19Open';a.textContent='📦 Export all';a.title='Export all demo songs and patterns';R.appendChild(a)}};
+ {const st=document.createElement('style');st.textContent='#bx19prog[hidden],#bx19cancel[hidden]{display:none!important}';document.head.appendChild(st)}
+ [0,500,1500,3000,6000].forEach(t=>setTimeout(btn,t));setTimeout(()=>{try{Object.assign(window.__fretlab,{BX19,bx19Items,bx19Run,bx19Jam,bx19Doc,get BX19S(){return BX19S||bx19Load()}})}catch(e){}},0)})();
+/* ================= 20: the Fretboard options as 11 dropdown buttons ================= */
+const DD20={on:true,open:'',ph:new Map(),refs:null,orig:boardBlock12};
+try{if(localStorage.getItem('fretlab.dd20')==='0')DD20.on=false}catch(e){}
+const DD20S=[['inst','Instrument'],['root','Root'],['scale','Scale'],['play','Play'],['strings','Strings'],['show','Show'],['diag','Diagram'],['pos','Position'],['fwin','Fret window'],['prac','Practice pattern'],['tune','Tune']];
+function dd20Els(k){const g=id=>document.getElementById(id),R=DD20.refs||{};
+ switch(k){case 'inst':return[g('x8inst')];case 'rs':return[g('controls')];case 'play':return[g('x16bar')];case 'strings':return[g('x12str')];case 'show':return[g('x10vis')];
+  case 'diag':return[g('x_bact')];case 'pos':return[g('posrow'),g('winrow')];case 'fwin':return[g('x_posp')];case 'prac':return[g('viewrow')];case 'tune':return[g('tuningRow')]}
+ return[]}
+function dd20Refs(){return !!document.getElementById('controls')}
+function dd20Tag(){const ct=document.getElementById('controls');if(!ct)return;ct.querySelectorAll(':scope>.row').forEach(r=>{r.classList.toggle('x20isroot',!!r.querySelector('.pills'));r.classList.toggle('x20isscale',!r.querySelector('.pills'))})}
+const DD20P=['inst','rs','play','strings','show','diag','pos','fwin','prac','tune'];
+function dd20Close(){DD20.open='';document.querySelectorAll('.x20p.open').forEach(p=>p.classList.remove('open'));document.querySelectorAll('.x20b.on').forEach(b=>{b.classList.remove('on');b.setAttribute('aria-expanded','false')})}
+function dd20Bar(){
+ const card=document.getElementById('boardCard');if(!card)return null;let bar=document.getElementById('x20bar');
+ if(!bar){bar=document.createElement('div');bar.id='x20bar';bar.className='x20bar';card.insertBefore(bar,card.firstChild)}
+ return bar}
+function dd20Arrange(){
+ if(!dd20Refs())return;const card=document.getElementById('boardCard'),bar=dd20Bar();if(!card||!bar)return;
+ if(!bar.dataset.on){bar.dataset.on='1';bar.className='x20bar';
+  bar.innerHTML=DD20S.map(([k,t])=>`<button type="button" class="x20b" data-x="dd20" data-k="${k}" aria-expanded="false" aria-haspopup="true">${t}<span class="x20v" id="x20v_${k}"></span> ▾</button>`).join('')+'<button type="button" class="x20b x20m" data-x="dd20Mode" title="Show every option at once, the classic layout">⊞ All options</button>';
+  let pops=document.getElementById('x20pops');if(!pops){pops=document.createElement('div');pops.id='x20pops';pops.className='x20pops';bar.after(pops)}
+  pops.innerHTML=DD20P.map(k=>`<div class="x20p" id="x20p_${k}" data-k="${k}" role="group"></div>`).join('')}
+ DD20P.forEach(k=>{const pane=document.getElementById('x20p_'+k);if(!pane)return;
+  dd20Els(k).forEach(el=>{if(!el||el.parentNode===pane)return;if(!DD20.ph.has(el)){const c=document.createComment('x20');if(el.parentNode)el.parentNode.insertBefore(c,el);DD20.ph.set(el,c)}pane.appendChild(el)})})}
+function dd20Labels(){
+ const set=(k,t)=>{const e=document.getElementById('x20v_'+k);if(e)e.textContent=t?': '+t:''};
+ try{const s=document.querySelector('#x20p_inst select');set('inst',s&&s.selectedOptions[0]?s.selectedOptions[0].text.replace(/\s*\(.*\)/,''):'')}catch(e){}
+ try{const p=document.querySelector('#controls .pills .on');set('root',p?p.textContent.trim():'')}catch(e){}
+ try{const s=document.getElementById('selScale');set('scale',s&&s.selectedOptions[0]?s.selectedOptions[0].text.replace(/^\d+\.\s*/,'').replace(/\s*\(.*\)/,'').slice(0,18):'')}catch(e){}
+ try{const p=document.querySelector('#posrow .pill.on');set('pos',p?p.textContent.trim():'')}catch(e){}
+ try{set('strings',(state.tun||[]).length+'')}catch(e){}}
+function dd20Restore(){
+ dd20Close();DD20.ph.forEach((c,el)=>{if(c.parentNode)c.replaceWith(el);else{const card=document.getElementById('boardCard');if(card)card.appendChild(el)}});DD20.ph.clear();
+ const pops=document.getElementById('x20pops');if(pops)pops.remove();const bar=document.getElementById('x20bar');if(bar){bar.dataset.on='';bar.className='x20bar classic';bar.innerHTML='<button type="button" class="x20b x20m" data-x="dd20Mode" title="Put the options in 11 dropdown buttons">▾ Use dropdown buttons</button>'}
+ try{DD20.orig()}catch(e){}}
+boardBlock12=function(){if(!DD20.on){const bar=document.getElementById('x20bar');if(bar&&bar.dataset.on)dd20Restore();else if(!bar){const b=dd20Bar();if(b){b.className='x20bar classic';b.innerHTML='<button type="button" class="x20b x20m" data-x="dd20Mode" title="Put the options in 11 dropdown buttons">▾ Use dropdown buttons</button>'}}return DD20.orig.apply(this,arguments)}
+ dd20Arrange();dd20Tag();dd20Labels()};
+XA.dd20=el=>{const k=el.dataset.k,pane=document.getElementById('x20p_'+(k==='root'||k==='scale'?'rs':k)),was=pane&&pane.classList.contains('open')&&pane.dataset.show===k;dd20Close();if(pane&&!was){pane.dataset.show=k;dd20Tag();pane.classList.add('open');el.classList.add('on');el.setAttribute('aria-expanded','true');DD20.open=k;dd20Labels()}};
+XA.dd20Mode=()=>{DD20.on=!DD20.on;try{localStorage.setItem('fretlab.dd20',DD20.on?'1':'0')}catch(e){}
+ if(DD20.on){const bar=document.getElementById('x20bar');if(bar){bar.dataset.on='';bar.className='x20bar'}}else dd20Restore();try{boardBlock12()}catch(e){}try{renderAll()}catch(e){}};
+document.addEventListener('click',e=>{if(!DD20.open)return;const t=e.target;if(t.closest&&(t.closest('#x20bar')||t.closest('#x20pops')))return;dd20Close()},true);
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&DD20.open)dd20Close()});
+(function(){const st=document.createElement('style');st.textContent=`#boardCard{position:relative}.x20bar{display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 8px;align-items:center}
+.x20b{font:inherit;font-size:13px;font-weight:600;padding:6px 10px;border-radius:8px;border:1px solid var(--line,rgba(128,128,128,.45));background:var(--panel2,#f1ebe0);color:inherit;cursor:pointer;white-space:nowrap}
+.x20b:hover{filter:brightness(.97)}.x20b.on{background:var(--acc,#d98200);color:#fff;border-color:transparent}.x20b .x20v{font-weight:400;opacity:.85}.x20m{margin-left:auto;font-weight:400;background:transparent}
+.x20pops{position:relative;height:0;z-index:60}.x20p{display:none;position:absolute;left:0;right:0;top:-4px;background:var(--panel,#fffdf8);border:1px solid var(--line,rgba(128,128,128,.45));border-radius:10px;box-shadow:0 12px 32px rgba(0,0,0,.28);padding:8px 10px;max-height:min(62vh,560px);overflow:auto}
+.x20p.open{display:block}.x20p[data-show=root] .x20isscale,.x20p[data-show=scale] .x20isroot{display:none!important}.x20p #controls{margin:0!important;padding:0!important}.x20p>.row,.x20p>div{margin:4px 0!important}.x20p #x8inst{background:transparent}`;document.head.appendChild(st);
+ [200,900,2000,3500].forEach(t=>setTimeout(()=>{try{boardBlock12()}catch(e){}},t));
+ setTimeout(()=>{try{Object.assign(window.__fretlab,{DD20,dd20Arrange,dd20Close})}catch(e){}},0)})();
+/* ================= 21: standard notation – animated scale, interval, chord and melody (abcjs engraves, FretLab plays) ================= */
+const NT21={tab:'scale',clef:'guitar',names:true,loop:false,bpm:0,on:false,tok:0,els:[],evs:[],cur:-1,sig:'',tm:[]};
+try{const j=JSON.parse(localStorage.getItem('fretlab.nt21')||'null');if(j)['tab','clef','names','loop','bpm'].forEach(k=>{if(k in j&&typeof j[k]===typeof NT21[k])NT21[k]=j[k]})}catch(e){}
+const nt21Save=()=>{try{localStorage.setItem('fretlab.nt21',JSON.stringify({tab:NT21.tab,clef:NT21.clef,names:NT21.names,loop:NT21.loop,bpm:NT21.bpm}))}catch(e){}};
+const NT_SHARP=['F','C','G','D','A','E','B'],NT_FLAT=['B','E','A','D','G','C','F'];
+const NT_KMAJ={0:'C',1:'G',2:'D',3:'A',4:'E',5:'B',6:'F#',7:'C#','-1':'F','-2':'Bb','-3':'Eb','-4':'Ab','-5':'Db','-6':'Gb','-7':'Cb'};
+function nt21Spell(m){const nm=noteLabel(m),mt=/^([A-G])([♯♭#b]*)/.exec(nm)||['',['C','C','D','D','E','F','F','G','G','A','A','B'][((m%12)+12)%12],''];
+ const L=mt[1],a=mt[2]||'',acc=(a.match(/[♯#]/g)||[]).length-(a.match(/[♭b]/g)||[]).length;return{L,acc,name:nm}}
+/* key signature from the spelled notes of a diatonic scale; null if the notes do not fit one */
+function nt21Key(sp){const by={};for(const s of sp){if(by[s.L]!==undefined&&by[s.L]!==s.acc)return null;by[s.L]=s.acc}
+ const ls=Object.keys(by);if(ls.length<5)return null;let sh=0,fl=0;const map={};
+ for(const l of ls){if(by[l]>1||by[l]<-1)return null}
+ for(let n=0;n<=7;n++){const ok=NT_SHARP.slice(0,n);let good=true;for(const l of ls){const want=ok.includes(l)?1:0;if(by[l]!==want&&!(by[l]===0&&!ok.includes(l)))good=false}
+  if(good&&ls.every(l=>by[l]===(ok.includes(l)?1:0)||(by[l]===0&&!ok.includes(l)))&&ls.every(l=>ok.includes(l)?by[l]===1:by[l]===0))return n}
+ for(let n=1;n<=7;n++){const ok=NT_FLAT.slice(0,n);if(ls.every(l=>ok.includes(l)?by[l]===-1:by[l]===0))return -n}
+ return null}
+function nt21Pitch(s,m,shift){const nat=m-s.acc+shift,oct=Math.floor(nat/12)-1;let t=oct>=5?s.L.toLowerCase():s.L;if(oct>=6)t+="'".repeat(oct-5);if(oct<=3)t+=','.repeat(4-oct);return t}
+/* turn a list of events {m|null, ch:[m..], len:eighths, text} into abc + the matching event list */
+function nt21Abc(evs,o){
+ const shift=o.clef==='guitar'?12:0,clefTxt=o.clef==='bass'?'bass':o.clef==='treble'?'treble':'treble-8';
+ const allSp=[];evs.forEach(e=>{(e.ch||(e.m!==null?[e.m]:[])).forEach(m=>allSp.push(nt21Spell(m)))});
+ const fifths=o.diatonic?nt21Key(allSp):null,kname=fifths!==null?NT_KMAJ[fifths]:'C';
+ const base={};'CDEFGAB'.split('').forEach(l=>base[l]=0);
+ if(fifths>0)NT_SHARP.slice(0,fifths).forEach(l=>base[l]=1);else if(fifths<0)NT_FLAT.slice(0,-fifths).forEach(l=>base[l]=-1);
+ let st=Object.assign({},base),bar=0,out=[],lyr=[],pos=0;const BAR=o.barLen||8;
+ const one=m=>{const s=nt21Spell(m),a=s.acc,key=s.L+'|'+Math.floor((m-a)/12),cur=st[key]!==undefined?st[key]:base[s.L];let pre='';
+  if(cur!==a){pre=a===0?'=':a===1?'^':a===-1?'_':a>1?'^^':'__';st[key]=a}
+  return pre+nt21Pitch(s,m,shift)};
+ const dur=n=>n===1?'':String(n);
+ evs.forEach((e,i)=>{let len=e.len||1;
+  if(pos>0&&pos+len>BAR+1e-9&&pos<BAR){/* keep each event inside its bar: split the remainder across a tie-less rest if needed */}
+  let tok;
+  if(e.ch&&e.ch.length>1)tok=(e.text?'"'+e.text+'"':'')+'['+e.ch.map(one).join('')+']'+dur(len);
+  else if(e.m===null||e.m===undefined)tok='z'+dur(len);
+  else tok=(e.text?'"'+e.text+'"':'')+one(e.m)+dur(len);
+  out.push(tok);
+  if(o.names){const nm=e.ch&&e.ch.length>1?(e.lab||'*'):(e.m===null||e.m===undefined?'*':nt21Spell(e.m).name.replace(/\s/g,''));lyr.push(nm.replace(/-/g,'‐'))}
+  pos+=len;if(pos>=BAR-1e-9){out.push('|');pos=0;st=Object.assign({},base)}});
+ if(pos>0)out.push('|');
+ /* rows of 16 eighths so the lyric line stays aligned */
+ let body=out.join(' ').replace(/ \|/g,' |');
+ const head=`X:1\nT:${(o.title||'').replace(/[\n:]/g,' ')}\nM:${o.meter||'4/4'}\nL:1/8\nQ:1/4=${o.bpm}\nK:${kname} clef=${clefTxt}\n`;
+ const w=o.names?'\nw:'+lyr.join(' '):'';
+ return{abc:head+body+w+'\n',key:kname}}
+/* ----- sources ----- */
+function nt21Source(tab){
+ const rm=rootMidi(),rn=dn(pcName(state.pc));
+ if(tab==='scale'){let q=[];try{q=scaleSeq().filter(x=>Number.isFinite(x))}catch(e){}if(!q.length)return null;
+  const sc=SC[state.scale];return{title:rn+' '+(sc?sc.n.replace(/^\d+\.\s*/,''):'scale'),evs:q.slice(0,64).map(m=>({m,len:1})),diatonic:true}}
+ if(tab==='interval'){
+  if(state.iv==='all'){const l=[rm].concat(IVLIST.map(([t,s])=>rm+s));return{title:rn+' – every interval up from the root',evs:l.map((m,i)=>({m,len:2,text:i?IVLIST[i-1][0]:''})),diatonic:false,meter:'4/4'}}
+  const x=TOK[state.iv]?TOK[state.iv][0]:7,top=rm+x,nm=state.iv;
+  return{title:rn+' + '+nm+' interval',evs:[{m:rm,len:2},{m:top,len:2,text:nm},{m:top,len:2},{m:rm,len:2},{ch:[rm,top],len:8,text:nm,lab:nm}],diatonic:false}}
+ if(tab==='chord'){let ms=[];try{ms=state.voicing?state.voicing.map((f,s)=>f>=0?tn()[s]+f:null).filter(x=>x!==null):CH[state.chord].t.map(x=>TOK[x]?rm+TOK[x][0]:null).filter(x=>x!==null)}catch(e){}if(!ms||!ms.length)return null;ms=ms.slice().sort((a,b)=>a-b);
+  const ch=CH[state.chord]||{n:state.chord};const sym=rn+String(ch.sym||'').replace(/[()]/g,'').replace(/\s.*$/,'');
+  const evs=ms.map(m=>({m,len:1})).concat(ms.slice().reverse().slice(1).map(m=>({m,len:1})));
+  return{title:rn+' '+(ch.n||state.chord),evs:evs.concat([{ch:ms,len:8,text:sym,lab:sym}]),diatonic:false}}
+ if(tab==='melody'){let e=[];try{e=melEvents()}catch(x){}if(!e.length)return null;const evs=[];
+  e.slice(0,64).forEach(v=>{if(v.chord&&v.chord.length)evs.push({ch:v.chord,len:4,lab:'*'});else evs.push({m:v.m,len:1})});
+  const sc=SC[state.scale];return{title:'Melody – '+rn+' '+(sc?sc.n.replace(/^\d+\.\s*/,''):''),evs,diatonic:true}}
+ return null}
+function nt21Tempo(){return NT21.bpm>0?NT21.bpm:Math.max(40,Math.min(240,state.bpm||100))}
+async function nt21Load(){const E=window.__fretlab&&window.__fretlab.ENG18;if(!E||!E.needFile)throw new Error('The engine loader is not ready yet');if(!window.ABCJS)await E.needFile('abcjs.js');if(!window.ABCJS)throw new Error('abcjs did not load')}
+function nt21Stop(){NT21.tok++;NT21.on=false;NT21.tm.forEach(clearTimeout);NT21.tm=[];nt21Mark(-1);const b=document.getElementById('nt21play');if(b)b.textContent='▶ Play'}
+function nt21Mark(i){NT21.els.forEach((e,k)=>{e.classList.toggle('x21on',k===i);if(k<i)e.classList.add('x21done');else e.classList.remove('x21done')});
+ const cur=document.getElementById('nt21cur'),box=document.getElementById('nt21box'),el=NT21.els[i];
+ if(!cur||!box)return;if(!el){cur.style.opacity='0';return}
+ const r=el.getBoundingClientRect(),b=box.getBoundingClientRect();cur.style.opacity='1';cur.style.left=(r.left-b.left+box.scrollLeft+r.width/2-1)+'px';cur.style.top=(r.top-b.top-6)+'px';cur.style.height=(r.height+12)+'px';
+ if(r.right>b.right-20||r.left<b.left+10)box.scrollLeft+=r.left-b.left-b.width*0.3}
+async function nt21Render(force){
+ const card=document.getElementById('notation');if(!card||!card.open)return;const body=document.getElementById('nt21body');if(!body)return;
+ const src=nt21Source(NT21.tab),sig=JSON.stringify([NT21.tab,NT21.clef,NT21.names,nt21Tempo(),src&&src.title,src&&src.evs.map(e=>e.m+':'+(e.ch||'')+e.len)]);
+ if(!force&&sig===NT21.sig)return;NT21.sig=sig;nt21Stop();
+ const box=document.getElementById('nt21box'),msg=document.getElementById('nt21msg');
+ if(!src){box.querySelectorAll('svg').forEach(s=>s.remove());msg.textContent='Nothing to show for this tab yet – pick a '+(NT21.tab==='melody'?'melody pattern in the Melody section':NT21.tab==='chord'?'chord':NT21.tab)+'.';NT21.els=[];NT21.evs=[];return}
+ try{await nt21Load()}catch(e){msg.textContent='Could not load the notation engine: '+e.message;return}
+ const o={clef:NT21.clef,names:NT21.names,bpm:nt21Tempo(),title:src.title,diatonic:src.diatonic,barLen:8},r=nt21Abc(src.evs,o);
+ let holder=document.getElementById('nt21abc');if(!holder){holder=document.createElement('div');holder.id='nt21abc';box.insertBefore(holder,box.firstChild)}
+ holder.innerHTML='';
+ try{ABCJS.renderAbc(holder,r.abc,{responsive:'resize',add_classes:true,staffwidth:Math.max(500,Math.min(1100,(box.clientWidth||800)-40)),scale:1.15,paddingtop:6,paddingbottom:6,wrap:{minSpacing:1.5,maxSpacing:2.8,preferredMeasuresPerLine:2}})}catch(e){msg.textContent='Notation error: '+e.message;return}
+ NT21.evs=src.evs;NT21.els=[...holder.querySelectorAll('.abcjs-note,.abcjs-rest')];
+ msg.textContent=src.title+' · key signature '+r.key+' · '+nt21Tempo()+' BPM'+(NT21.els.length!==src.evs.length?' · (animation unavailable for this layout)':'');
+ if(NT21.els.length!==src.evs.length)NT21.els=[]}
+function nt21Play(){
+ if(NT21.on){nt21Stop();return}
+ const evs=NT21.evs;if(!evs.length||!audio())return;NT21.on=true;const my=++NT21.tok,beat=60000/nt21Tempo()/2;/* an eighth note */
+ const b=document.getElementById('nt21play');if(b)b.textContent='■ Stop';
+ let t=0;const T=[];
+ evs.forEach((e,i)=>{const at=t;T.push(setTimeout(()=>{if(NT21.tok!==my)return;nt21Mark(i);
+   if(e.ch&&e.ch.length){e.ch.forEach((m,k)=>setTimeout(()=>{if(NT21.tok===my){pluck(m,.85);flash(m%12)}},k*(e.ch.length>2?28:0)))}else if(e.m!==null&&e.m!==undefined){pluck(e.m,.9);flash(e.m%12)}},at));t+=(e.len||1)*beat});
+ T.push(setTimeout(()=>{if(NT21.tok!==my)return;if(NT21.loop){NT21.on=false;nt21Play()}else nt21Stop()},t+250));NT21.tm=T}
+function nt21Html(){const T=[['scale','Scale'],['interval','Interval'],['chord','Chord'],['melody','Melody']];
+ return `<div class="x21bar"><span class="x21tabs">${T.map(([k,t])=>`<button type="button" class="x21t${NT21.tab===k?' on':''}" data-x="nt21Tab" data-k="${k}">${t}</button>`).join('')}</span>
+ <button type="button" class="btn main sm" id="nt21play" data-x="nt21Play">▶ Play</button>
+ <label class="x21f"><input type="checkbox" data-xc="nt21Opt" data-k="loop"${NT21.loop?' checked':''}> Loop</label>
+ <label class="x21f"><input type="checkbox" data-xc="nt21Opt" data-k="names"${NT21.names?' checked':''}> Note names</label>
+ <label class="x21f">Clef <select data-xc="nt21Opt" data-k="clef"><option value="guitar"${NT21.clef==='guitar'?' selected':''}>Guitar (treble, sounds an octave lower)</option><option value="treble"${NT21.clef==='treble'?' selected':''}>Treble (as sounding)</option><option value="bass"${NT21.clef==='bass'?' selected':''}>Bass</option></select></label>
+ <label class="x21f">Tempo <input type="range" min="40" max="200" value="${nt21Tempo()}" data-xi="nt21Bpm" style="width:110px"> <span id="nt21bpm">${nt21Tempo()}</span></label></div>
+ <div class="x21msg mut" id="nt21msg" role="status"></div>
+ <div class="x21box" id="nt21box"><div class="x21cur" id="nt21cur"></div></div>
+ <p class="mut" style="margin:4px 0 0;font-size:12px">Follows the root, scale, interval, chord and melody you pick in the Fretboard and Melody sections. Press Play and the notes light up as they sound, on the sound engines you chose.</p>`}
+function nt21Ensure(){
+ if(document.getElementById('notation'))return;const ref=document.getElementById('engines')||document.getElementById('settings');if(!ref||!ref.parentNode)return;
+ const d=document.createElement('details');d.className='card x7 x7sec';d.id='notation';d.innerHTML='<summary><span class="stt">🎼 Standard notation – scale, interval, chord and melody, animated</span><span class="sth" id="sth_notation"></span></summary><div id="nt21body"></div>';
+ ref.parentNode.insertBefore(d,ref);d.addEventListener('toggle',()=>{if(d.open){document.getElementById('nt21body').innerHTML=nt21Html();NT21.sig='';nt21Render(true)}else nt21Stop()});
+ try{if(!CORE8.includes('notation'))CORE8.push('notation');syncLayout8()}catch(e){}}
+XA.nt21Tab=el=>{NT21.tab=el.dataset.k;nt21Save();document.getElementById('nt21body').innerHTML=nt21Html();NT21.sig='';nt21Render(true)};
+XA.nt21Play=()=>nt21Play();
+XA.nt21Opt=el=>{const k=el.dataset.k;NT21[k]=el.type==='checkbox'?el.checked:el.value;nt21Save();if(k==='loop')return;NT21.sig='';nt21Render(true)};
+XA.nt21Bpm=el=>{NT21.bpm=+el.value;const s=document.getElementById('nt21bpm');if(s)s.textContent=el.value;nt21Save();clearTimeout(NT21.dt);NT21.dt=setTimeout(()=>{NT21.sig='';nt21Render(true)},250)};
+(function(){const st=document.createElement('style');st.textContent=`.x21bar{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;margin:2px 0 8px}.x21tabs{display:inline-flex;gap:0;border:1px solid var(--line,rgba(128,128,128,.45));border-radius:9px;overflow:hidden}
+.x21t{font:inherit;font-weight:600;font-size:13px;padding:6px 12px;border:0;background:var(--panel2,#f1ebe0);color:inherit;cursor:pointer}.x21t.on{background:var(--acc,#d98200);color:#fff}.x21f{display:inline-flex;gap:5px;align-items:center;font-size:13px}
+.x21box{position:relative;overflow-x:auto;overflow-y:hidden;background:#fffdf8;color:#1d1710;border:1px solid var(--line,rgba(128,128,128,.4));border-radius:10px;padding:4px 6px;min-height:120px}
+.x21box svg{display:block;max-width:100%}.x21cur{position:absolute;width:2px;background:var(--acc,#d98200);opacity:0;pointer-events:none;border-radius:2px;transition:left .09s linear,top .09s linear;z-index:2}
+.x21box .x21on,.x21box .x21on *{fill:#d94a00!important;stroke:#d94a00!important}.x21box .x21done,.x21box .x21done *{opacity:.55}.x21msg{min-height:1.3em;font-size:13px;margin-bottom:4px}`;document.head.appendChild(st);
+ const _ra=renderAll;renderAll=function(){const r=_ra.apply(this,arguments);try{nt21Ensure();const c=document.getElementById('notation');if(c&&c.open&&!NT21.on){clearTimeout(NT21.rt);NT21.rt=setTimeout(()=>nt21Render(false),120)}}catch(e){}return r};
+ [400,1300,3200,6500].forEach(t=>setTimeout(()=>{try{nt21Ensure()}catch(e){}},t));
+ setTimeout(()=>{try{Object.assign(window.__fretlab,{NT21,nt21Abc,nt21Source,nt21Render,nt21Play,nt21Stop})}catch(e){}},0)})();
+
+/* ================= 22: animated guitar tab – follows the selected instrument/tuning (scale, interval, chord, melody) ================= */
+const TB22={tab:'scale',names:true,loop:false,bpm:0,follow:true,on:false,tok:0,raf:0,pos:[],evs:[],sig:'',cur:-1,W:0};
+try{const j=JSON.parse(localStorage.getItem('fretlab.tb22')||'null');if(j)['tab','names','loop','bpm','follow'].forEach(k=>{if(k in j&&typeof j[k]===typeof TB22[k])TB22[k]=j[k]})}catch(e){}
+const tb22Save=()=>{try{localStorage.setItem('fretlab.tb22',JSON.stringify({tab:TB22.tab,names:TB22.names,loop:TB22.loop,bpm:TB22.bpm,follow:TB22.follow}))}catch(e){}};
+const tb22Tempo=()=>TB22.bpm>0?TB22.bpm:Math.max(40,Math.min(240,state.bpm||100));
+/* choose string/fret for each note: stay close to the previous hand position, avoid very high frets */
+function tb22Single(m,prev,tun,maxF){let best=null;
+ tun.forEach((o,s)=>{const f=m-o;if(f<0||f>maxF)return;const c=Math.abs(f-prev.f)+(f>12?.6:0)+Math.abs(s-prev.s)*.35+(f===0?-.8:0);if(!best||c<best.c)best={s,f,c}});
+ return best}
+function tb22Chord(ms,prev,tun,maxF){ms=ms.slice().sort((a,b)=>a-b);let best=null;const n=tun.length;
+ (function go(i,from,acc){if(i===ms.length){const fr=acc.filter(a=>a.f>0).map(a=>a.f),span=fr.length?Math.max(...fr)-Math.min(...fr):0,mean=fr.length?fr.reduce((a,b)=>a+b,0)/fr.length:0,c=span*2+Math.abs(mean-prev.f)*.5+(mean>12?3:0);if(!best||c<best.c)best={c,acc:acc.slice()};return}
+  for(let s=from;s<n;s++){const f=ms[i]-tun[s];if(f<0||f>maxF)continue;acc.push({s,f});go(i+1,s+1,acc);acc.pop()}})(0,0,[]);
+ if(best)return best.acc;
+ /* not playable on distinct strings: place what fits, one note per string */
+ const out=[],used=new Set();ms.forEach(m=>{const b=tb22Single(m,prev,tun,maxF);if(b&&!used.has(b.s)){used.add(b.s);out.push({s:b.s,f:b.f})}});return out}
+function tb22Layout(evs0){const tun=tn(),maxF=state.frets||22;
+ /* keep the tab in a comfortable range: if the lowest note would sit an octave or more above the lowest open string, bring everything down */
+ let lo=1e9;evs0.forEach(e=>(e.ch&&e.ch.length?e.ch:(e.m!==null&&e.m!==undefined?[e.m]:[])).forEach(m=>{if(m<lo)lo=m}));
+ const base=Math.min(...tun),sh=lo<1e9&&lo-base>=12?-12*Math.floor((lo-base)/12):0;
+ const evs=sh?evs0.map(e=>Object.assign({},e,e.ch?{ch:e.ch.map(m=>m+sh)}:(e.m!==null&&e.m!==undefined?{m:e.m+sh}:{}))):evs0;let prev={s:2,f:state.win?(state.wlo||1):2};const L=[];let x=70,t=0;
+ const U=Math.max(30,Math.min(46,520/Math.max(8,evs.length/2)));/* px per eighth */
+ evs.forEach((e,i)=>{const len=e.len||1,w=Math.max(len*U,26);let notes=[];
+  if(e.ch&&e.ch.length)notes=tb22Chord(e.ch,prev,tun,maxF);else if(e.m!==null&&e.m!==undefined){const b=tb22Single(e.m,prev,tun,maxF);if(b)notes=[{s:b.s,f:b.f}]}
+  if(notes.length){const fr=notes.filter(n=>n.f>0);prev={s:notes[0].s,f:fr.length?Math.round(fr.reduce((a,n)=>a+n.f,0)/fr.length):0}}
+  L.push({i,x:x+16,x0:x,w,len,notes,t,text:e.text||'',rest:!notes.length,playable:notes.length>0||(e.m===null||e.m===undefined)});x+=w;t+=len});
+ return{L,end:x+30,total:t,tun,shift:sh}}
+function tb22Svg(lay,title){
+ const tun=lay.tun,n=tun.length,GAP=24,top=50,H=top+(n-1)*GAP+74,W=lay.end,o=[];
+ o.push(`<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="Guitar tablature: ${title.replace(/"/g,'')}" font-family="Roboto,Arial,sans-serif">`);
+ const y=s=>top+(n-1-s)*GAP;/* lowest string at the bottom */
+ for(let s=0;s<n;s++)o.push(`<line x1="46" x2="${W-14}" y1="${y(s)}" y2="${y(s)}" stroke="#2a2118" stroke-width="${(1+ (n-1-s)*0.0).toFixed(2)}" opacity=".85"/>`);
+ o.push(`<line x1="46" x2="46" y1="${y(n-1)}" y2="${y(0)}" stroke="#2a2118" stroke-width="2"/>`);
+ /* TAB clef */
+ const mid=(y(n-1)+y(0))/2;o.push(`<g font-weight="700" fill="#2a2118" font-size="${Math.min(22,GAP*.9)}" text-anchor="middle"><text x="22" y="${mid-GAP*.55}">T</text><text x="22" y="${mid+GAP*.1}">A</text><text x="22" y="${mid+GAP*.75}">B</text></g>`);
+ /* string names */
+ if(TB22.names)tun.forEach((m,s)=>o.push(`<text x="40" y="${y(s)+4}" font-size="10" text-anchor="end" fill="#7a6a55">${dn(pcName(m%12))}</text>`));
+ /* bars every 8 eighths */
+ for(let t=8;t<lay.total;t+=8){const e=lay.L.find(l=>l.t>=t);if(!e)break;const bx=e.x0-3;o.push(`<line x1="${bx}" x2="${bx}" y1="${y(n-1)}" y2="${y(0)}" stroke="#2a2118" stroke-width="1.3"/>`)}
+ o.push(`<line x1="${W-14}" x2="${W-14}" y1="${y(n-1)}" y2="${y(0)}" stroke="#2a2118" stroke-width="2.4"/><line x1="${W-19}" x2="${W-19}" y1="${y(n-1)}" y2="${y(0)}" stroke="#2a2118" stroke-width="1"/>`);
+ /* notes */
+ let beamY=y(0)+42;
+ lay.L.forEach(l=>{
+  if(l.text)o.push(`<text x="${l.x}" y="${y(n-1)-14}" font-size="12" font-weight="700" text-anchor="middle" fill="#8a4b00">${l.text.replace(/&/g,'&amp;').replace(/</g,'&lt;')}</text>`);
+  const g=[`<g class="x22ev" data-i="${l.i}">`];
+  if(l.rest)g.push(`<text x="${l.x}" y="${mid+4}" font-size="15" text-anchor="middle" fill="#7a6a55">𝄾</text>`);
+  l.notes.forEach(nt=>{const s=String(nt.f),w=s.length*8+6;g.push(`<rect class="x22bg" x="${l.x-w/2}" y="${y(nt.s)-9}" width="${w}" height="18" rx="9" fill="#fffdf8"/><text class="x22fr" x="${l.x}" y="${y(nt.s)+5}" font-size="14" font-weight="700" text-anchor="middle" fill="#1d1710">${s}</text>`)});
+  /* rhythm stems under the staff */
+  const sy=y(0)+14,ey=beamY;if(!l.rest||true){if(l.len<8)g.push(`<line class="x22st" x1="${l.x}" x2="${l.x}" y1="${sy}" y2="${ey}" stroke="#2a2118" stroke-width="1.4"/>`);
+   if(l.len===4||l.len===3)g.push(`<circle cx="${l.x}" cy="${ey+3}" r="3.6" fill="#fffdf8" stroke="#2a2118" stroke-width="1.4"/>`);else if(l.len>=8)g.push(`<circle cx="${l.x}" cy="${ey-4}" r="4.2" fill="#fffdf8" stroke="#2a2118" stroke-width="1.4"/>`);else g.push(`<circle cx="${l.x}" cy="${ey+2}" r="3.2" fill="#2a2118"/>`)}
+  g.push('</g>');o.push(g.join(''))});
+ /* beams: pair consecutive eighth notes inside a beat */
+ for(let k=0;k<lay.L.length-1;k++){const a=lay.L[k],b=lay.L[k+1];if(a.len===1&&b.len===1&&Math.floor(a.t/2)===Math.floor(b.t/2)&&a.t%2===0)o.push(`<line x1="${a.x}" x2="${b.x}" y1="${beamY}" y2="${beamY}" stroke="#2a2118" stroke-width="3.4"/>`);else if(a.len===1&&(a.t%2===1||!(b.len===1&&Math.floor(a.t/2)===Math.floor(b.t/2)))&&!(k>0&&lay.L[k-1].len===1&&Math.floor(lay.L[k-1].t/2)===Math.floor(a.t/2)))o.push(`<line x1="${a.x}" x2="${a.x+8}" y1="${beamY}" y2="${beamY-6}" stroke="#2a2118" stroke-width="2"/>`)}
+ const last=lay.L[lay.L.length-1];if(last&&last.len===1&&!(lay.L.length>1&&lay.L[lay.L.length-2].len===1&&Math.floor(lay.L[lay.L.length-2].t/2)===Math.floor(last.t/2)))o.push(`<line x1="${last.x}" x2="${last.x+8}" y1="${beamY}" y2="${beamY-6}" stroke="#2a2118" stroke-width="2"/>`);
+ o.push('</svg>');return o.join('')}
+function tb22Ascii(lay){const n=lay.tun.length,rows=Array.from({length:n},(_,s)=>dn(pcName(lay.tun[s]%12)).padEnd(2)+'|');
+ lay.L.forEach(l=>{const w=Math.max(2,String(Math.max(0,...l.notes.map(x=>x.f))).length)+1;for(let s=0;s<n;s++){const nt=l.notes.find(x=>x.s===s);rows[s]+=(nt?String(nt.f):'').padEnd(w,'-')+(l.len>=4?'-'.repeat(2):'-')}
+  if((l.t+l.len)%8===0)for(let s=0;s<n;s++)rows[s]+='|'});
+ return rows.slice().reverse().join('\n')}
+function tb22Stop(){TB22.tok++;TB22.on=false;cancelAnimationFrame(TB22.raf);tb22Mark(-1);const b=document.getElementById('tb22play');if(b)b.textContent='▶ Play';const c=document.getElementById('tb22cur');if(c)c.style.opacity='0'}
+function tb22Mark(i){const box=document.getElementById('tb22box');if(!box)return;box.querySelectorAll('.x22ev').forEach(g=>{const k=+g.dataset.i;g.classList.toggle('x22on',k===i);g.classList.toggle('x22done',i>=0&&k<i)})}
+async function tb22Render(force){
+ const card=document.getElementById('tabsec');if(!card||!card.open)return;const box=document.getElementById('tb22box');if(!box)return;
+ const src=nt21Source(TB22.tab),sig=JSON.stringify([TB22.tab,TB22.names,tb22Tempo(),state.tun,state.capo,state.frets,src&&src.title,src&&src.evs.map(e=>e.m+':'+(e.ch||'')+e.len)]);
+ if(!force&&sig===TB22.sig)return;TB22.sig=sig;tb22Stop();
+ const msg=document.getElementById('tb22msg'),holder=document.getElementById('tb22svg');
+ if(!src){holder.innerHTML='';TB22.evs=[];TB22.pos=[];msg.textContent='Nothing to show for this tab yet – pick a '+(TB22.tab==='melody'?'melody pattern in the Melody section':TB22.tab==='chord'?'chord':TB22.tab)+'.';return}
+ const lay=tb22Layout(src.evs);TB22.lay=lay;TB22.evs=src.evs;holder.innerHTML=tb22Svg(lay,src.title);
+ const skipped=lay.L.filter(l=>!l.rest&&!l.notes.length).length,miss=lay.L.filter(l=>(src.evs[l.i].m!==null&&src.evs[l.i].m!==undefined||src.evs[l.i].ch)&&!l.notes.length).length;
+ let pr=(PRESETS[state.tuning]||[])[0]||'Custom tuning';try{pr=instr8(XS8().instr)[1]+' – '+pr}catch(e){}
+ msg.textContent=src.title+' · '+lay.tun.length+' strings, '+pr+(state.capo?', capo '+state.capo:'')+' · '+tb22Tempo()+' BPM'+(lay.shift?` · written ${-lay.shift/12} octave${lay.shift<-12?'s':''} lower so it fits the instrument`:'')+(miss?` · ${miss} note${miss>1?'s':''} out of range for this instrument (not shown)`:'');
+ TB22.W=lay.end;const cur=document.getElementById('tb22cur');if(cur){cur.style.height=((lay.tun.length-1)*24+78)+'px'}}
+function tb22Play(){
+ if(TB22.on){tb22Stop();return}const lay=TB22.lay,evs=TB22.evs;if(!lay||!evs.length||!audio())return;
+ TB22.on=true;const my=++TB22.tok,eighth=60000/tb22Tempo()/2,t0=performance.now()+120,box=document.getElementById('tb22box'),cur=document.getElementById('tb22cur'),svg=box.querySelector('svg');
+ const b=document.getElementById('tb22play');if(b)b.textContent='■ Stop';let k=0;const total=lay.total*eighth;
+ const xAt=ms=>{/* interpolate the cursor between event centres */let i=0;const L=lay.L;while(i<L.length-1&&ms>=L[i+1].t*eighth)i++;const a=L[i],nx=L[i+1];if(!nx)return a.x;const f=Math.min(1,Math.max(0,(ms-a.t*eighth)/((nx.t-a.t)*eighth)));return a.x+(nx.x-a.x)*f};
+ const topPx=32;
+ const step=now=>{if(TB22.tok!==my)return;const ms=now-t0;
+  while(k<lay.L.length&&ms>=lay.L[k].t*eighth){const l=lay.L[k],e=evs[l.i];tb22Mark(k);
+   if(l.notes.length){const ms2=l.notes.map(nt=>lay.tun[nt.s]+nt.f);ms2.forEach((m,j)=>setTimeout(()=>{if(TB22.tok===my){pluck(m,.88);flash(m%12)}},j*(ms2.length>2?26:0)))}k++}
+  if(ms>=0){const x=xAt(Math.min(ms,total));if(cur){cur.style.opacity='1';cur.style.transform='translateX('+(x-1)+'px)';cur.style.top=topPx+'px'}
+   if(TB22.follow){const want=x-box.clientWidth*.3;if(Math.abs(box.scrollLeft-want)>4)box.scrollLeft+=(want-box.scrollLeft)*.18}}
+  if(ms>=total+200){if(TB22.loop){TB22.on=false;box.scrollLeft=0;tb22Play()}else tb22Stop();return}
+  TB22.raf=requestAnimationFrame(step)};
+ TB22.raf=requestAnimationFrame(step)}
+function tb22Html(){const T=[['scale','Scale'],['interval','Interval'],['chord','Chord'],['melody','Melody']];
+ return `<div class="x21bar"><span class="x21tabs">${T.map(([k,t])=>`<button type="button" class="x21t${TB22.tab===k?' on':''}" data-x="tb22Tab" data-k="${k}">${t}</button>`).join('')}</span>
+ <button type="button" class="btn main sm" id="tb22play" data-x="tb22Play">▶ Play</button>
+ <label class="x21f"><input type="checkbox" data-xc="tb22Opt" data-k="loop"${TB22.loop?' checked':''}> Loop</label>
+ <label class="x21f"><input type="checkbox" data-xc="tb22Opt" data-k="follow"${TB22.follow?' checked':''}> Follow</label>
+ <label class="x21f"><input type="checkbox" data-xc="tb22Opt" data-k="names"${TB22.names?' checked':''}> String names</label>
+ <label class="x21f">Tempo <input type="range" min="40" max="200" value="${tb22Tempo()}" data-xi="tb22Bpm" style="width:110px"> <span id="tb22bpm">${tb22Tempo()}</span></label>
+ <button type="button" class="btn sm" data-x="tb22Copy">Copy as text</button></div>
+ <div class="x21msg mut" id="tb22msg" role="status"></div>
+ <div class="x21box x22box" id="tb22box"><div class="x22cur" id="tb22cur"></div><div id="tb22svg"></div></div>
+ <p class="mut" style="margin:4px 0 0;font-size:12px">Uses the instrument and tuning chosen in the Fretboard section (string count, tuning, capo, number of frets). Fret numbers sit on the string lines; the stems underneath show the rhythm. Press Play to watch the cursor and the lit-up frets follow the sound.</p>`}
+function tb22Ensure(){
+ if(document.getElementById('tabsec'))return;const ref=document.getElementById('notation')||document.getElementById('engines')||document.getElementById('settings');if(!ref||!ref.parentNode)return;
+ const d=document.createElement('details');d.className='card x7 x7sec';d.id='tabsec';d.innerHTML='<summary><span class="stt">🎸 Guitar tab – animated, follows your instrument</span><span class="sth" id="sth_tabsec"></span></summary><div id="tb22body"></div>';
+ ref.parentNode.insertBefore(d,ref);d.addEventListener('toggle',()=>{if(d.open){document.getElementById('tb22body').innerHTML=tb22Html();TB22.sig='';tb22Render(true)}else tb22Stop()});
+ try{if(!CORE8.includes('tabsec'))CORE8.push('tabsec');syncLayout8()}catch(e){}}
+XA.tb22Tab=el=>{TB22.tab=el.dataset.k;tb22Save();document.getElementById('tb22body').innerHTML=tb22Html();TB22.sig='';tb22Render(true)};
+XA.tb22Play=()=>tb22Play();
+XA.tb22Copy=()=>{if(!TB22.lay)return;const t=tb22Ascii(TB22.lay);try{navigator.clipboard.writeText(t).then(()=>toast('Tab copied as text'),()=>toast('Could not copy'))}catch(e){toast('Could not copy')}};
+XA.tb22Opt=el=>{const k=el.dataset.k;TB22[k]=el.checked;tb22Save();if(k==='names'){TB22.sig='';tb22Render(true)}};
+XA.tb22Bpm=el=>{TB22.bpm=+el.value;const s=document.getElementById('tb22bpm');if(s)s.textContent=el.value;tb22Save();clearTimeout(TB22.dt);TB22.dt=setTimeout(()=>{TB22.sig='';tb22Render(true)},250)};
+(function(){const st=document.createElement('style');st.textContent=`.x22box{background:#fffdf8;padding:6px 0}.x22box svg{display:block;max-width:none}.x22cur{position:absolute;left:0;width:2px;background:var(--acc,#d98200);opacity:0;pointer-events:none;border-radius:2px;z-index:2;will-change:transform}
+.x22box .x22on .x22fr{fill:#fff}.x22box .x22on .x22bg{fill:#d94a00}.x22box .x22on .x22st{stroke:#d94a00;stroke-width:2.4}.x22box .x22done{opacity:.5}`;document.head.appendChild(st);
+ const _ra=renderAll;renderAll=function(){const r=_ra.apply(this,arguments);try{tb22Ensure();const c=document.getElementById('tabsec');if(c&&c.open&&!TB22.on){clearTimeout(TB22.rt);TB22.rt=setTimeout(()=>tb22Render(false),140)}}catch(e){}return r};
+ [450,1400,3300,6600].forEach(t=>setTimeout(()=>{try{tb22Ensure()}catch(e){}},t));
+ setTimeout(()=>{try{Object.assign(window.__fretlab,{TB22,tb22Layout,tb22Svg,tb22Ascii,tb22Render,tb22Play,tb22Stop})}catch(e){}},0)})();
+
+/* ================= 23: every other section's options in dropdown buttons (same idea as the Fretboard) ================= */
+const BK23={on:true,open:{},cfg:{},obs:new Map(),busy:false};
+try{if(localStorage.getItem('fretlab.bk23')==='0')BK23.on=false}catch(e){}
+/* host: where the option blocks live; map(item,index,auto)->button label | null (always visible) | undefined (use auto label) */
+/* rules: [regex tested on "[#ids] text", label | null = keep always visible] – first match wins; unmatched blocks get an automatic label */
+const bk23Mk=rules=>(it,i)=>{const s='['+it.els.map(e=>e.id?'#'+e.id:'').join('')+'] '+it.els.map(e=>e.textContent).join(' ').replace(/\s+/g,' ').trim();for(const [re,l] of rules)if(re.test(s))return l;return undefined};
+BK23.cfg={
+ settings:{host:'#settings',map:(it,i)=>i===0?'General':undefined},
+ sec_practice:{host:'#practice',map:bk23Mk([[/^\[[^\]]*\] Practice/,'Metronome & drone']])},
+ tools:{host:'#tools',map:(it,i)=>i===0?'Export & images':i<3?'Share code':'Data & backup'},
+ sec_info:{host:'#info',map:(it,i)=>!it.head&&it.els[0].tagName!=='DETAILS'&&i<8?null:bk23Mk([[/Chords in this scale/i,'Chords'],[/Modes of these/i,'Modes'],[/scale & its modes|& its modes/i,'Parent scale'],[/Brightness/i,'Brightness'],[/One note away/i,'Related scales'],[/Melody generator/i,'Melody'],[/My notes/i,'My notes']])(it,i)},
+ engines:{host:'#engBody',map:bk23Mk([[/^\[[^\]]*\] Guitars/,'Guitars'],[/^\[[^\]]*\] Keyboards/,'Keyboards'],[/^\[[^\]]*\] Bass/,'Bass'],[/^\[[^\]]*\] Drums/,'Drums'],[/^\[[^\]]*\] Use one/,'One engine for all'],[/^\[[^\]]*\] Master effect/,'Master effect'],[/^\[[^\]]*\] Clipping/,'Clipping'],[/^\[[^\]]*\] About/,'About']])},
+ jamband:{host:'#jbBody',map:bk23Mk([[/^\[[^\]]*\] Demo jams|^\[[^\]]*\] Band setup/,'Demo & band'],[/^\[[^\]]*\] Show the playing/,'Display'],[/^\[[^\]]*\] Progression|^\[[^\]]*\] Chord fretboard/,'Progression'],[/^\[[^\]]*\] Guitar 1/,'🎸 Guitar 1'],[/^\[[^\]]*\] Guitar 2/,'🎸 Guitar 2'],[/^\[[^\]]*\] Guitar 3/,'🎸 Guitar 3'],[/^\[[^\]]*\] Keyboard 2/,'🎹 Keyboard 2'],[/^\[[^\]]*\] Keyboard 3/,'🎹 Keyboard 3'],[/^\[[^\]]*\] Keyboard/,'🎹 Keyboard 1'],[/^\[[^\]]*\] Melody line/,'🎼 Melody & solo'],[/^\[[^\]]*\] Pedals/,'🎛 Pedals & amps'],[/^\[[^\]]*\] Root and 5th/,'🎸 Bass: root & 5th'],[/^\[[^\]]*\] Bass 2/,'🎸 Bass 2'],[/^\[[^\]]*\] Bass/,'🎸 Bass'],[/^\[[^\]]*\] Song builder/,'Song builder'],[/^\[[^\]]*\] Drums/,'🥁 Drums'],[/^\[[^\]]*\] Melodic pattern 2/,'Melodic pattern 2'],[/^\[[^\]]*\] Melodic pattern 3/,'Melodic pattern 3'],[/^\[[^\]]*\] Melodic pattern/,'Melodic pattern 1'],[/Sound in MIDI|Export length/,'Export']])},
+ songs8:{host:'#songs8Body',map:bk23Mk([[/^\[[^\]]*\] Piece/,'Piece'],[/^\[[^\]]*\] Tempo/,'Tempo'],[/Import options/,'Import'],[/^\[[^\]]*\] (Treble|Bass|Part)/,'Tracks'],[/^\[[^\]]*\] \d+ notes/,null],[/^\[[^\]]*\] Chords/,'Chords'],[/^\[[^\]]*\] Export\b/,'Export'],[/Export options/,'Export options'],[/#x8songtab/,'ASCII tab'],[/^\[[^\]]*\] [^▶]*· /,null]])},
+ tabx8:{host:'#tabx8Body',map:bk23Mk([[/^\[[^\]]*\] Add/,'Add'],[/^\[[^\]]*\] Pick from/,'Pick from lists'],[/^\[[^\]]*\] Empty|#/,'List'],[/^\[[^\]]*\] Title/,'Layout'],[/^\[[^\]]*\] Export/,'Export']])},
+ melody:{host:'#melBody',map:bk23Mk([[/^\[[^\]]*\] Tab/,'Tab']])},
+ designer:{host:'#designerBody'},
+ prog9:{host:'#prog9Body',map:bk23Mk([[/^\[#x9plist\]|\d+ progressions – in/,null],[/^\[[^\]]*\] Search/,'Search & filter'],[/^\[[^\]]*\] Export as/,'Export style'],[/^\[[^\]]*\] Current/,'Export current'],[/^\[[^\]]*\] All listed/,'Export all']])},
+ exporthub:{host:'#xhBody',map:bk23Mk([[/^\[[^\]]*\] Export/,'Source']])},
+ jamdaw:{host:'#dawBody',map:bk23Mk([[/^\[[^\]]*\] Demo jam/,'Demo jam'],[/#dawTlScroll|#dawRollScroll/,null],[/^\[[^\]]*\] Chord \d/,'Chord'],[/Move/,'Edit chords'],[/Section/,'Section'],[/piano roll/i,'Song piano roll']])},
+ nde:{host:'#ndeBody',map:bk23Mk([[/#ndeDia/,null],[/This diagram set/,'Export set']])},
+ tdecks:{host:'#tdBody',map:bk23Mk([[/#tdOut/,null],[/^\[[^\]]*\] Browse/,'Mode'],[/^\[[^\]]*\] Deck/,'Deck']])}
+};
+function bk23Clean(t){t=String(t||'').replace(/\s+/g,' ').trim();t=t.split(/ – | — |\(|:|\n/)[0].trim();if(t.length>22){const c=t.slice(0,22),i=c.lastIndexOf(' ');t=(i>8?c.slice(0,i):c)+'…'}return t}
+function bk23Lead(el){
+ const lg=el.querySelector(':scope>legend,:scope>summary,:scope>.lbl,:scope>label,:scope>span.lbl,:scope>b,:scope>strong');if(lg&&lg.textContent.trim())return lg.textContent;
+ const c=el.querySelector('.lbl,label,legend,summary,b,strong');if(c&&c.textContent.trim())return c.textContent;
+ /* first text node */
+ for(const n of el.childNodes){const t=(n.nodeType===3?n.textContent:(n.nodeType===1&&!/^(SELECT|INPUT|BUTTON|TEXTAREA)$/.test(n.tagName)?n.textContent:'')).trim();if(t)return t}
+ return el.textContent}
+function bk23Items(host,head){
+ const items=[];let cur=null;
+ [...host.children].forEach(el=>{
+  if(el.classList.contains('x23bar')||el.tagName==='SUMMARY'||el.tagName==='SCRIPT'||el.tagName==='STYLE')return;
+  if(/^H[2-4]$/.test(el.tagName)){cur={els:[el],lead:el.textContent,head:true};items.push(cur);return}
+  if(cur&&cur.head&&!/^(FIELDSET|DETAILS)$/.test(el.tagName)){cur.els.push(el);return}
+  cur=null;items.push({els:[el],lead:bk23Lead(el),head:false})});
+ return items}
+function bk23Pinned(it){const el=it.els[0],t=it.els.map(e=>e.textContent).join(' ').trim();
+ if(/^(P|HR|SCRIPT)$/.test(el.tagName))return true;if(!t&&!it.els.some(e=>e.querySelector('input,select,button,canvas,svg')))return true;
+ if(/^[▶⏹■▷]/.test(t)&&!/^(FIELDSET)$/.test(el.tagName))return true;return false}
+function bk23Groups(cfg,items){
+ const g=[],by=new Map(),pin=[];
+ items.forEach((it,i)=>{if(bk23Pinned(it)){pin.push(it);return}
+  const auto=bk23Clean(it.lead);let lab=cfg.map?cfg.map(it,i,String(it.lead||'').replace(/\s+/g,' ').trim()):undefined;if(lab===null){pin.push(it);return}if(lab===undefined)lab=auto||'Options '+(g.length+1);
+  if(!by.has(lab)){const o={k:'g'+g.length,label:lab,items:[]};by.set(lab,o);g.push(o)}by.get(lab).items.push(it)});
+ return{groups:g,pinned:pin}}
+function bk23Apply(id){
+ const cfg=BK23.cfg[id],card=document.getElementById(id);if(!cfg||!card)return;
+ const host=cfg.host==='#'+id?card:(card.querySelector(cfg.host)||document.querySelector(cfg.host));
+ let bar=document.getElementById('x23bar_'+id);
+ if(!host||!host.children.length){if(bar)bar.hidden=true;return}
+ const items=bk23Items(host,cfg.head),r=bk23Groups(cfg,items);
+ if(r.groups.length<3){if(bar)bar.hidden=true;items.forEach(it=>it.els.forEach(e=>e.classList.remove('x23h')));return}
+ if(!bar){bar=document.createElement('div');bar.id='x23bar_'+id;bar.className='x20bar x23bar';bar.setAttribute('data-card',id)}
+ /* the bar sits in front of the first option block, inside the same parent */
+ const first=items[0]&&items[0].els[0];if(first&&(bar.parentNode!==first.parentNode||bar.nextSibling!==first)){first.parentNode.insertBefore(bar,first)}
+ bar.hidden=false;const open=BK23.on?(BK23.open[id]||''):'*';
+ const sig=r.groups.map(g=>g.label).join('|')+'#'+BK23.on+'#'+open;
+ if(bar.dataset.sig!==sig){bar.dataset.sig=sig;
+  bar.innerHTML=BK23.on?r.groups.map(g=>`<button type="button" class="x20b${open===g.k?' on':''}" data-x="bk23" data-card="${id}" data-k="${g.k}" aria-expanded="${open===g.k}">${g.label.replace(/</g,'&lt;')} ${open===g.k?'▴':'▾'}</button>`).join('')+`<button type="button" class="x20b x20m" data-x="bk23Mode" title="Show every option at once, the classic layout">⊞ All options</button>`
+   :`<button type="button" class="x20b x20m" data-x="bk23Mode" title="Put the options in dropdown buttons">▾ Use dropdown buttons</button>`}
+ /* show only the open group; pinned blocks always stay */
+ r.groups.forEach(g=>g.items.forEach(it=>it.els.forEach(e=>{e.classList.toggle('x23h',BK23.on&&g.k!==open)})));
+ r.pinned.forEach(it=>it.els.forEach(e=>e.classList.remove('x23h')));
+ BK23.hosts=BK23.hosts||{};if(BK23.hosts[id]!==host){if(BK23.obs.get(id))BK23.obs.get(id).disconnect();const ob=new MutationObserver(()=>{clearTimeout(BK23['t'+id]);BK23['t'+id]=setTimeout(()=>{try{bk23Apply(id)}catch(e){}},60)});ob.observe(host,{childList:true});BK23.obs.set(id,ob);BK23.hosts[id]=host}}
+function bk23All(){Object.keys(BK23.cfg).forEach(id=>{try{bk23Apply(id)}catch(e){}})}
+XA.bk23=el=>{const id=el.dataset.card,k=el.dataset.k;BK23.open[id]=BK23.open[id]===k?'':k;const bar=document.getElementById('x23bar_'+id);if(bar)bar.dataset.sig='';bk23Apply(id)};
+XA.bk23Mode=()=>{BK23.on=!BK23.on;try{localStorage.setItem('fretlab.bk23',BK23.on?'1':'0')}catch(e){}document.querySelectorAll('.x23bar').forEach(b=>b.dataset.sig='');bk23All()};
+(function(){const st=document.createElement('style');st.textContent=`.x23h{display:none!important}.x23bar{margin:4px 0 8px}.x23bar[hidden]{display:none!important}`;document.head.appendChild(st);
+ const _ra=renderAll;renderAll=function(){const r=_ra.apply(this,arguments);try{clearTimeout(BK23.rt);BK23.rt=setTimeout(bk23All,160)}catch(e){}return r};
+ document.addEventListener('toggle',e=>{if(e.target&&e.target.tagName==='DETAILS'&&BK23.cfg[e.target.id])setTimeout(()=>{try{bk23Apply(e.target.id)}catch(x){}},250)},true);
+ [600,1800,4000,8000].forEach(t=>setTimeout(bk23All,t));
+ setTimeout(()=>{try{Object.assign(window.__fretlab,{BK23,bk23Apply,bk23All,bk23Items,bk23Groups})}catch(e){}},0)})();
+
 window.__fretlab={x102:{SC:()=>SC,CH:()=>CH,CHORDS:()=>CHORDS,SCALES:()=>SCALES,PROGS:()=>PROGS,progList,STRUMS9:()=>STRUMS9,DRUMS:()=>DRUMS,LESSONS:()=>LESSONS,LEX:()=>LEX,GAMES:()=>GAMES,GG:()=>GG,PRESETS:()=>PRESETS,TOK:()=>TOK,INSTR:()=>(typeof INSTR8!=="undefined"?INSTR8:null),voicingsFor,octaveNotes8,scaleSeq,chordMidis,progChords,rootMidi,tn,gpRead9,ptbRead9,midiRead9,gp5Write8,ptbWrite8,midiWrite8,asciiTab8,fit7Song10,quiz:()=>quiz,download:(b,n)=>download(b,n),XA:()=>XA,CHOPIN8:()=>CHOPIN8,midiScore9,keyEst10,keyFromName10,keyLabel10},x101:{vidAudioPCM,mp4Mux10,flvMux10,audioCodec10,aacASC10,vidAudioEnc,pcm16FLV10},x10:{LESSONS,LES_UNITS,CHD10,parseNotes10,scaleSteps10,lesEnter,lesPlay,LEX:()=>LEX,voicingsFor,progList,PROG10,DR10,FEAT10,BUGS10:()=>BUGS10.concat(BUGS10_EXTRA),vidTimeline,vidPrepare,gifEncode,mp4Mux,flvMux,vidH264,vidGif,VID,hushAll10,playing10,les10},x9:{PROG9,PROG9_CATS,FEAT9,FEAT9N,UI9,UI9N,STRUMS9,importAny9,midiRead9,midiScore9,gpRead9,gpifRead9,ptbRead9,bcfz9,bcfs9,unzip9,scoreToSong9,posBox9,progSong9,progAll9,barChords9,curProg9,makeZip9,sv9,importFile9},x8:{XS8,INSTR8,setInstr8,octaveNotes8,octaveFor8,tabText8,specOf8,relatedFor8,pkgPages8,tlSong8,songBuild8,midiParse,midiToSong8,asciiTab8,gp5Write8,ptbWrite8,midiWrite8,SG8,UI8,UI8N,curItem8,buildPDF,exportSong8},x7:{XA,TK,DRILLS,parseChordSym,transposeText,idChord,parseNote,intervalBetween,applyInterval,romanFor,capoOptions7,symStyle,allCards,cardFace,ACH,achCheck,GLOSS,TIPS,TKORDER,DRTABS,PTTABS,STRUMS,MOODS,PATH,sanitizeV7,XS,THEME_LIST,symStyle,setBpm,tempoOf,v7Key},SELF:()=>SELF_HTML,cleanSelf,makeZip,buildPDF,buildDOCX,exRun,exItems,exCollect,exPages,boardSVG,buildPlatform,melEvents,melEnsure,MP,melTab,melText,melMidiBytes,markerSVG,SHAPES,FXS,PALETTES,VPRESETS,applyVPreset,sanitizeV6,designerHTML,crc32,parseSeq,MELP,ALLSET,AKA,dropVoicings,parseProg,pickVoicing,capoHTML,progSheetSVG,libraryText,qsItems,anyScaleChords,neighbours,gapMute,ivPool,MEL:()=>MEL,FAMS,rot,degToks,TOK,chordScales,charNotes,scaleStats,famTableRows,famTableText,filterSelect,stepFamily,CH,SC:()=>SC,hearColour,midiFile,smf,sheetSVG,timedStart,quizTimer,pickStr,newHTML,dailyPlan,streakDays,tapTempo,clockTick:()=>clockTick(),drumHit,bassNote,DRUMS,cagedFor,CAGED,CAGED_ROOT,chordBoxes,triadSets,subsFor,chordSheet,patSeq,progList,secondaryDoms,midiMsg,livePcs,tstrFill,histGo,pianoSVG,staffSVG,legendOff,hist:()=>hist,state:()=>state,quiz:()=>quiz,prog:()=>prog,detectPitch,voicingsFor,renderAll,asciiTab,exportSvgString,SCALES,CHORDS,PROGS,tunerShow,computePos:()=>computePos(),metToggle,clock:()=>clock};
 })();
 </script>
