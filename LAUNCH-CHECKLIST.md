@@ -7,7 +7,7 @@ Done by the build and tested in a desktop Chrome test browser: self-test, offlin
 - [ ] Install the Windows, Mac and Linux packages on real machines.
 - [ ] Install and run the Android project build (Android Studio) on a device; try Save and Print.
 - [ ] Record a video in MP4 and FLV and play it in the players your audience uses (AAC audio is the least-tested part).
-- [ ] Open a few real Guitar Pro and Power Tab files (the importers were tested on files made by FretLab).
+- [ ] Open a few real Guitar Pro and Power Tab files (the importers were tested on files made by ManicRulesGuitar).
 - [x] Licence chosen: GPL-3.0-or-later (`LICENSE`). Optionally put your own name in the copyright line of README.md and add a contact address for problem reports.
 - [x] `sitemap.xml` added – check that the address in it (jorj2026.github.io/fretlab) is your real one.
 - [ ] Ask two or three people to try a first-time visit with the Quick tour.

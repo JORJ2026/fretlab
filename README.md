@@ -1,10 +1,10 @@
-# FretLab 12 – Original + Beta
+# ManicRulesGuitar 12 – Original + Beta
 
 An offline fretboard app for guitar, bass, banjo, mandolin, ukulele, violin, viola and cello. Opening the site asks
 which version to use:
 
 * **Original** – the full original site (`original/`), with its Navigate menu, Controls, Export Studio, lessons, courses and quizzes.
-* **New Beta – FretLab 12** (`beta/index.html`, one self-contained file):
+* **New Beta – ManicRulesGuitar 12** (`beta/index.html`, one self-contained file):
   * **Lessons mode**: 2,223 interactive guitar lessons in 41 units, from absolute basics to advanced, in a separate uncluttered view (`beta/index.html#lessons`, or `#lesson-12` for one lesson);
   * **Video mode**: animates the current scale, chord, interval, progression, marked notes, quiz question or song with a title, and exports GIF, MP4 or FLV (16:9, square or vertical);
   * **Game mode**: 100 games for notes, intervals, chords, scales, modes, keys and ear training (`beta/index.html#games`);
@@ -12,7 +12,12 @@ which version to use:
   * **Strings & ranges**: 1 to 32 strings, and a first/last fret for each string;
   * **End on root chord** after a scale;
   * videos with sound (MP4 and FLV);
-  * Roboto typeface built in; every section but the fretboard starts collapsed;
+  * the fretboard is the only section shown at first; every other section starts collapsed, with a Menu button at the top right, a search box for sections and controls (`/`), and a Tools panel with a button for every section;
+  * an Export dropdown on the fretboard with every export, and an Open position button (frets 0–5);
+  * a searchable demo picker in the Jam Band, a "Nylon guitar only" option, and all 1,346 demo songs reviewed and re-arranged (proper bass, varied lead sounds, full song forms);
+  * Export all demos & patterns also exports scales, chords, intervals and progressions, can add drums to every demo and edits tempo, time signature, length, key, tracks and instruments for the batch;
+  * a mobile view with a one-tap Mobile / Desktop switch;
+  * Roboto typeface built in;
   * a ■ Stop button that appears whenever anything is playing;
   * 59 drum grooves (50 new: rock, funk, hip-hop, Latin, Afro-Caribbean, jazz, 6/8, metal…) and 1,745 progressions;
   * opens MIDI, Guitar Pro (3, 4, 5, 6 and 7/8) and Power Tab 1.7 files, plays them on the neck and converts between formats;
@@ -72,7 +77,7 @@ iPhone and iPad: open the site in Safari, then choose *Share → Add to Home Scr
 
 ## Help
 
-`FretLab-Guide.pdf` (in this folder, and linked from the start page and the Beta's ❔ Guide button) explains every feature, with screenshots and installation steps for each platform.
+`FretLab-Guide.pdf` (in this folder, and linked from the start page and the Beta's ❔ Guide button) explains every feature, with screenshots and installation steps for each platform (Part 1 shows the current screens; Part 2 is the earlier full manual, whose screenshots and the old FretLab name predate this update).
 
 ## Fonts
 
@@ -83,14 +88,14 @@ Roboto is included under the SIL Open Font License (`Roboto-OFL.txt`).
 * `beta/index.html?safe=1` starts with factory settings and does not read or write saved data.
 * See `PUBLISHING.md`, `LAUNCH-CHECKLIST.md`, `CHANGELOG.md`, `privacy.html` and `THIRD-PARTY-NOTICES.txt`.
 * **10.5:** the 🧪 Lab (header button or **Shift+L**) has 44 extra theory, sound and practice tools; `beta/index.html?lab=ivec` opens a tool directly.
-* **10.6:** a guided demo (▶ Demo in the header, **Shift+D**, or `beta/index.html?demo=1`) walks through every section, mode, tool and Lab tool with what / how / when text; `?kiosk=1` loops it for a display; `FEATURES.md` and `feature-reference.html` hold the same text.
+* **10.6:** a guided demo (▶ Demo in the header, **Shift+D**, or `beta/index.html?demo=1`) walks through every section, mode, tool and Lab tool with what / how / when text; `?kiosk=1` loops it for a display; `FEATURES.md` and `feature-reference.html` hold the same text (now 200 features, including the search box, Export dropdown, demo picker and Export all).
 * **10.7:** 100 polishes (touch targets, safe areas, accessibility, data safety, small behaviours – listed in the Beta's About › Polish & preferences) and a features landing page: `features.html` on the site and `beta/index.html?home=1` (or **Shift+H**) in the app, with one button per feature; `?feature=<id>` opens one feature directly.
 * **10.8:** the default volume is 30% lower (56%, was 80%; anyone still on the old default is lowered once). Export Studio › Page now has **Diagrams per page**, **Diagram size** and an **Auto** orientation, alongside paper size and portrait/landscape.
 * **10.9:** scale/interval/lesson playback is scheduled on the audio clock (even timing); 2,123 more lessons (214 in 41 units, including one on every interval, chord type, scale and chord progression); a **Finger drill** (🖐 Drill, `beta/index.html#drill`) with random 8-measure patterns of fingers 1–4.
 
 ## Licence
 
-FretLab is free software, released under the **GNU General Public License v3.0 or later** (see `LICENSE`).
-Copyright (C) 2026 the FretLab authors. You may use, study, share and change it, as long as copies and changes stay
+ManicRulesGuitar is free software, released under the **GNU General Public License v3.0 or later** (see `LICENSE`).
+Copyright (C) 2026 the ManicRulesGuitar authors. You may use, study, share and change it, as long as copies and changes stay
 under the same licence. It comes with no warranty. Bundled third-party libraries and the Roboto font keep their own
 licences – see `THIRD-PARTY-NOTICES.txt`.

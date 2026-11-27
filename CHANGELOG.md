@@ -2,6 +2,43 @@
 
 ## Unreleased
 
+- Every dropdown in the app now opens as a searchable list, like the demo song picker (search appears for lists of more than eight options; works with keyboard and touch).
+
+- Every dropdown in the app now opens as a searchable list, like the demo song picker (search appears for lists of more than eight options; works with keyboard and touch).
+
+- Documentation refreshed for the new interface: the guided demo (now 199 features, 9 new and 6 rewritten entries), FEATURES.md, feature-reference.html, features.html, README, What's new and the welcome text.
+- How-to guide: a new Part 1 with 13 pages of current screenshots in front of the earlier full manual (Part 2).
+- Toast messages now have square corners like the rest of the UI.
+
+- Renamed the app to ManicRulesGuitar in all visible text (file names inside downloads keep their old names).
+- Section titles no longer have icons; the "Scales" label after the name in the header is gone.
+- The tip note under the header is off by default; tick "Show the tip note" in Tools to bring it back.
+- New "Export" dropdown on the Fretboard with every export option (pictures, MIDI/tab, audio/video, Export Studio, sharing).
+- Square corners everywhere; the header buttons are spaced and wrap instead of overlapping, on desktop and mobile.
+
+- Demo review (1,346 songs): every demo now gets a real bass (electric, upright, cello or nylon by style instead of synth), varied lead/solo sounds per song, short 4-8 chord loops are arranged as intro/verses/choruses/solo/final chorus/outro, Combo and Chill songs get second guitar, lead and solo parts in the right sections, MIDI chart pieces get cello bass, grand piano and strings.
+- Jam Band: searchable demo picker (name, style, tempo, chords) with style filter, previous/next/random; "Nylon guitar only" checkbox for a plain nylon-guitar default band.
+- Fretboard is the only section shown by default; all other sections are collapsed until opened (choices are remembered); new search box (also the / key) finds sections and controls.
+- Menu button sits at the top right of the header on desktop and mobile.
+
+- Export all: scales, chords and intervals can be exported (any root or all 12; arpeggio or strummed).
+- Export all: drum part options - add drums to demos that have none (e.g. the 47 classical demos), replace the groove, drums on every item, or none; choose any groove.
+- Export all: "Edit every exported item" - tempo (set or %), time signature, beats per chord, bars per chord, repeat, length limit, key, per-track on/off and sound for every instrument. Also shown in Export Studio's Jam Band & songs tab.
+
+- Video/audio export can now be made from the scale, chord or interval on the fretboard.
+- Fretboard animations light only the octave actually sounding.
+- Navigate menu always stays on screen; Controls opens the Fretboard Root dropdown.
+- Tools lists a button for every section/page; the same list is in the mobile dock (plus Controls, Open pos., Jam Band, Export).
+- Open position shows frets 0-5 only.
+- Export Studio: new "Jam Band & songs" tab (with chord progressions) and diagrams-per-page / size options on Selection.
+- Old pages (Theory Decks, Neck Diagrams ...) now also update the main fretboard (name-matching).
+- Mobile: debounced switch, floating always-visible Mobile/Desktop button, Jam Band populates when pinned.
+
+- Jam Band stability: the final output now has automatic headroom (the master level is lowered smoothly when many instruments play, before the limiter has to squash it), and notes are capped (the oldest fading notes are faded out cleanly when too many ring at once – drums are never cut). Playback also recovers if the browser suspends the audio.
+- Drums in song arrangements: intro, break and outro sections of the chill/electronic songs now keep a light version of the groove instead of dropping the drums.
+- Scale, interval, chord, notation and tab playback is scheduled on the audio clock, so timing stays even when the page is busy.
+- Jam Strip shows the title of the loaded demo song or pattern (or its strum pattern and drums). Video exports have a new “Song / pattern title” option, and the Jam Strip has “Title in video”.
+
 - Font: every page now uses Arial Narrow (text, buttons, menus, tab and notation labels, and pictures/videos drawn on canvas). Where Arial Narrow is not installed it falls back to Liberation Sans Narrow, Nimbus Sans Narrow, then Arial. ASCII tab and code boxes stay monospaced so columns line up.
 
 - Dropdown buttons everywhere: the sections with many options now use the same button bar as the Fretboard – Settings, Practice, Share/export, Information, Sound engines, Jam Band (one button per instrument: Guitar 1–3, Keyboard 1–3, Melody & solo, Bass, Bass 2, Drums, Melodic pattern 1–3, plus Demo & band, Display, Progression, Pedals & amps, Song builder and Export), Song player, Tab export, Melodic patterns, Neck Designer, Progression library, Export Hub, Jam DAW and Neck Diagram Explorer. Click a button to open that group, click again to close it; play buttons and results stay visible. “⊞ All options” in each section brings back the classic layout.
