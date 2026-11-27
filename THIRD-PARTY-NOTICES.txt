@@ -54,6 +54,7 @@ section 3) and ask every contributor to agree to the change first. This file is 
 Sound engines (engines/ folder, loaded on demand; all MIT-compatible with GPL-3.0)
   Tone.js 15.1.22        engines/tone.js        MIT   (C) Yotam Mann and contributors
   Wad 4.13.4             engines/wad.js         MIT   (C) Rob Serota
+  abcjs                  engines/abcjs.js       MIT   (C) Paul Rosen and Gregory Dyke
   Pizzicato.js 0.6.4     engines/pizzicato.js   MIT   (C) Alejandro Mangui
   Tuna.js 1.1.3          engines/tuna.js        MIT   (C) Oskar Eriksson, DinahMoe AB
   jsfxr 1.4.1            engines/sfxr.js, riff.js   MIT / public domain (sfxr by Tomas Pettersson)
