@@ -1,4 +1,4 @@
-# FretLab 10.9 – feature reference
+# FretLab 12 – feature reference
 
 190 features, each with what it is, how to use it and when to use it. The same text is shown by the guided demo (Shift+D).
 

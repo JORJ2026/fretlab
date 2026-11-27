@@ -1,2 +1,4 @@
 User-agent: *
 Allow: /
+
+Sitemap: https://jorj2026.github.io/fretlab/sitemap.xml

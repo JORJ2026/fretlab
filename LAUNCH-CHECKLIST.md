@@ -8,8 +8,8 @@ Done by the build and tested in a desktop Chrome test browser: self-test, offlin
 - [ ] Install and run the Android project build (Android Studio) on a device; try Save and Print.
 - [ ] Record a video in MP4 and FLV and play it in the players your audience uses (AAC audio is the least-tested part).
 - [ ] Open a few real Guitar Pro and Power Tab files (the importers were tested on files made by FretLab).
-- [ ] Choose and add a licence for FretLab itself (none is included) and, if wanted, a contact address for problem reports.
-- [ ] Add a `sitemap.xml` with your real web address once you know it.
+- [x] Licence chosen: GPL-3.0-or-later (`LICENSE`). Optionally put your own name in the copyright line of README.md and add a contact address for problem reports.
+- [x] `sitemap.xml` added – check that the address in it (jorj2026.github.io/fretlab) is your real one.
 - [ ] Ask two or three people to try a first-time visit with the Quick tour.
 - [ ] Run the guided demo (Shift+D) once on a phone and once on a desktop; check the card is readable and Esc / Exit restores your settings.
 - [ ] Try `beta/index.html?kiosk=1` on the screen you plan to use for a display.

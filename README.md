@@ -1,10 +1,10 @@
-# FretLab 10.6 – Original + Beta
+# FretLab 12 – Original + Beta
 
 An offline fretboard app for guitar, bass, banjo, mandolin, ukulele, violin, viola and cello. Opening the site asks
 which version to use:
 
 * **Original** – the full original site (`original/`), with its Navigate menu, Controls, Export Studio, lessons, courses and quizzes.
-* **New Beta – FretLab 10.6** (`beta/index.html`, one self-contained file):
+* **New Beta – FretLab 12** (`beta/index.html`, one self-contained file):
   * **Lessons mode**: 2,223 interactive guitar lessons in 41 units, from absolute basics to advanced, in a separate uncluttered view (`beta/index.html#lessons`, or `#lesson-12` for one lesson);
   * **Video mode**: animates the current scale, chord, interval, progression, marked notes, quiz question or song with a title, and exports GIF, MP4 or FLV (16:9, square or vertical);
   * **Game mode**: 100 games for notes, intervals, chords, scales, modes, keys and ear training (`beta/index.html#games`);
@@ -42,13 +42,16 @@ No build step is needed. Any static host works the same way (Netlify, Cloudflare
 
 | File | What it is |
 |---|---|
-| `FretLab-10.6-Windows.zip` | `FretLab.exe` (x64) and `FretLab-arm64.exe`, an installer `.bat` and the site |
-| `FretLab-10.6-Mac.zip` | `FretLab.app` for Apple Silicon and Intel, plus an installer |
-| `FretLab-10.6-Linux.zip` | x64 and ARM64 binaries, plus `install-linux.sh` for a menu entry |
-| `FretLab-10.6-Android-Project.zip` | Android Studio project; the app has no INTERNET permission |
-| `FretLab-10.6-Beta.html` | The Beta as one HTML file that opens straight from disk |
+| `FretLab-12-Windows.zip` | `FretLab.exe` (x64) and `FretLab-arm64.exe`, `install-windows.bat` and the site |
+| `FretLab-12-Mac.zip` | `FretLab.app` for Apple Silicon and Intel, plus `install-mac.command` |
+| `FretLab-12-Linux.zip` | x86-64 and ARM64 programs plus `install-linux.sh` for a menu entry |
+| `FretLab-12-Android-Project.zip` | Android Studio project (no INTERNET permission) with the Beta built in |
+| `FretLab-12-Beta.html` | The Beta as one HTML file that opens straight from disk |
+| `FretLab-JamBand-DAW.html` | The Jam Band page and DAW as one HTML file |
 
-The desktop apps serve the bundled site on `127.0.0.1` only and open your browser, so both modes work fully offline.
+The desktop apps serve the bundled site on `127.0.0.1` only, open your browser, and quit a few minutes after the last
+tab is closed. Their source is in `desktop/` (Go, standard library only); the Android project is in `android/`
+(run `android/prepare-assets.sh` once before building from the repository).
 iPhone and iPad: open the site in Safari, then choose *Share → Add to Home Screen*.
 
 ## Run locally without installing
@@ -84,3 +87,10 @@ Roboto is included under the SIL Open Font License (`Roboto-OFL.txt`).
 * **10.7:** 100 polishes (touch targets, safe areas, accessibility, data safety, small behaviours – listed in the Beta's About › Polish & preferences) and a features landing page: `features.html` on the site and `beta/index.html?home=1` (or **Shift+H**) in the app, with one button per feature; `?feature=<id>` opens one feature directly.
 * **10.8:** the default volume is 30% lower (56%, was 80%; anyone still on the old default is lowered once). Export Studio › Page now has **Diagrams per page**, **Diagram size** and an **Auto** orientation, alongside paper size and portrait/landscape.
 * **10.9:** scale/interval/lesson playback is scheduled on the audio clock (even timing); 2,123 more lessons (214 in 41 units, including one on every interval, chord type, scale and chord progression); a **Finger drill** (🖐 Drill, `beta/index.html#drill`) with random 8-measure patterns of fingers 1–4.
+
+## Licence
+
+FretLab is free software, released under the **GNU General Public License v3.0 or later** (see `LICENSE`).
+Copyright (C) 2026 the FretLab authors. You may use, study, share and change it, as long as copies and changes stay
+under the same licence. It comes with no warranty. Bundled third-party libraries and the Roboto font keep their own
+licences – see `THIRD-PARTY-NOTICES.txt`.

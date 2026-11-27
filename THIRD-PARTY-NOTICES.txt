@@ -1,10 +1,52 @@
 FretLab – third-party notices
 =============================
 
-Roboto (variable font, roboto-var.woff)
-  Copyright 2011 The Roboto Project Authors (https://github.com/googlefonts/roboto-3-classic)
-  Licensed under the SIL Open Font License, Version 1.1.
-  The full licence text is in Roboto-OFL.txt, next to this file.
+FretLab's own code, scales, chords, lessons, games and sounds are original work of the FretLab project. Sounds are
+generated in the browser; no audio samples from other works are included.
 
-All other code, scales, chords, lessons, games and sounds in FretLab are original work of the FretLab project.
-Sounds are generated in the browser; no audio samples from other works are included.
+FretLab's own code is released under the GNU General Public License, version 3 or (at your option) any later version
+(GPL-3.0-or-later). The full text is in the file LICENSE. See "How the licences fit together" at the end.
+
+The files below are bundled unchanged (minified where noted) from other projects.
+
+1. Roboto variable font (roboto-var.woff)
+   Copyright 2011 The Roboto Project Authors (https://github.com/googlefonts/roboto-3-classic)
+   SIL Open Font License 1.1 – full text in Roboto-OFL.txt.
+
+2. Libraries in original/vendor/ (used by the Original site's Export Studio, ebooks and sound)
+
+   Library        File                            Licence        Notes
+   -------------  ------------------------------  -------------  --------------------------------------------
+   DjVu.js 0.5.4  original/vendor/djvu.js         GPL-2.0-or-later  see section 3 – the only copyleft library
+   SheetJS CE     original/vendor/xlsx.full.min.js  Apache-2.0   v0.18.5, (C) 2013-present SheetJS LLC. Text: licenses/Apache-2.0.txt
+   jsPDF 2.5.1    original/vendor/jspdf.umd.min.js  MIT         (C) 2010-2021 James Hall, and contributors (see the file header)
+   html2canvas 1.4.1  original/vendor/html2canvas.min.js  MIT   (C) 2022 Niklas von Hertzen
+   JSZip 3.10.1   original/vendor/jszip.min.js    MIT (or GPL-3.0)  (C) Stuart Knightley and contributors; used here under the MIT option
+   docx           original/vendor/docx.js         MIT           (C) Dolan Miu and contributors; bundles small MIT/BSD helpers (see the file header)
+   Tone.js        original/vendor/tone.js         MIT           (C) Yotam Mann and contributors
+
+   The MIT text is in licenses/MIT.txt; the Apache-2.0 text is in licenses/Apache-2.0.txt. The copyright lines inside
+   each file's own header must stay in place.
+
+3. DjVu.js – GNU GPL v2 or later
+   Source: https://github.com/RussCoder/djvujs (library directory). Version 0.5.4, vendored from https://djvu.js.org/assets/dist/djvu.js.
+   Its licence files are original/vendor/djvu-LICENSE.txt, djvu-GPL-2.txt, djvu-UNLICENSE.txt and djvu-NOTICE.txt.
+   * What it does in FretLab: it writes .djvu files in the Export Studio, in your own browser. Nothing is uploaded.
+   * How it is loaded: only when someone exports DjVu. It is a separate file (original/vendor/djvu.js), not merged
+     into any other file, and is not used by the Beta, the Jam Band, the lessons or the games.
+   * The file is the library's own unminified source, so the corresponding source is included in this package.
+   * To publish FretLab without any GPL code, delete original/vendor/djvu.js, its four licence files, and the
+     "djvu" entries in original/offline-assets.js and sw.js. The Export Studio then shows its "DjVu encoder did not
+     load" message only if DjVu is chosen; every other format is unaffected.
+
+How the licences fit together
+-----------------------------
+FretLab as a whole is GPL-3.0-or-later. That works with everything bundled here:
+  * DjVu.js is "GPL-2.0 or later", so it may be used under GPL-3.0.
+  * SheetJS (Apache-2.0) is compatible with GPL-3.0 (not with GPL-2.0-only, which is why FretLab picks version 3).
+  * jsPDF, html2canvas, JSZip (MIT option), docx and Tone.js are MIT, which GPL-3.0 allows.
+  * Roboto (SIL OFL 1.1) is a font file shipped alongside, under its own licence.
+Because the whole site is served as readable source (no build step, nothing minified apart from the third-party
+libraries), the "corresponding source" the GPL asks for is the site itself. Keep the notice lines in each file.
+If you later want a non-GPL licence for FretLab, delete original/vendor/djvu.js and its four licence files (see
+section 3) and ask every contributor to agree to the change first. This file is a good-faith inventory, not legal advice.
