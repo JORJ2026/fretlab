@@ -99,7 +99,7 @@ public class MainActivity extends Activity {
                 runOnUiThread(() -> {
                     try {
                         android.print.PrintManager pm = (android.print.PrintManager) getSystemService(android.content.Context.PRINT_SERVICE);
-                        if (pm != null) pm.print("FretLab", web.createPrintDocumentAdapter("FretLab"), null);
+                        if (pm != null) pm.print("ManicRulesGuitar", web.createPrintDocumentAdapter("ManicRulesGuitar"), null);
                     } catch (Exception e) { Toast.makeText(MainActivity.this, "Printing is not available", Toast.LENGTH_LONG).show(); }
                 });
             }

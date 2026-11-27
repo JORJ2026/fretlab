@@ -1,9 +1,9 @@
-// FretLab desktop launcher.
+// ManicRulesGuitar desktop launcher.
 //
-// Serves the FretLab site from a "site" folder on 127.0.0.1 only (never on the network) and opens it in your browser.
-// Everything works offline. The program stops by itself a few minutes after the last FretLab browser tab is closed.
+// Serves the ManicRulesGuitar site from a "site" folder on 127.0.0.1 only (never on the network) and opens it in your browser.
+// Everything works offline. The program stops by itself a few minutes after the last ManicRulesGuitar browser tab is closed.
 //
-// Copyright (C) 2026 the FretLab authors. Licensed under the GNU General Public License, version 3 or later.
+// Copyright (C) 2026 the ManicRulesGuitar authors. Licensed under the GNU General Public License, version 3 or later.
 package main
 
 import (
@@ -55,7 +55,7 @@ func siteDir() (string, error) {
 			return d, nil
 		}
 	}
-	return "", fmt.Errorf("could not find the FretLab site folder (looked in: %s)", strings.Join(tried, ", "))
+	return "", fmt.Errorf("could not find the ManicRulesGuitar site folder (looked in: %s)", strings.Join(tried, ", "))
 }
 
 func openBrowser(url string) {
@@ -75,7 +75,7 @@ func openBrowser(url string) {
 	go cmd.Wait()
 }
 
-// alreadyRunning reports whether a FretLab launcher is already answering on the preferred port.
+// alreadyRunning reports whether a ManicRulesGuitar launcher is already answering on the preferred port.
 func alreadyRunning(port int) bool {
 	c := http.Client{Timeout: 700 * time.Millisecond}
 	resp, err := c.Get(fmt.Sprintf("http://127.0.0.1:%d/__fretlab", port))
@@ -145,7 +145,7 @@ func main() {
 	showVersion := flag.Bool("version", false, "print the version and exit")
 	flag.Parse()
 	if *showVersion {
-		fmt.Println("FretLab", version)
+		fmt.Println("ManicRulesGuitar", version)
 		return
 	}
 	for ext, t := range map[string]string{".webmanifest": "application/manifest+json", ".js": "text/javascript; charset=utf-8", ".woff": "font/woff", ".mjs": "text/javascript; charset=utf-8"} {
@@ -153,7 +153,7 @@ func main() {
 	}
 	root, err := siteDir()
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "FretLab:", err)
+		fmt.Fprintln(os.Stderr, "ManicRulesGuitar:", err)
 		os.Exit(1)
 	}
 	ln, err := net.Listen("tcp", fmt.Sprintf("127.0.0.1:%d", *port))
@@ -165,12 +165,12 @@ func main() {
 			return
 		}
 		if ln, err = net.Listen("tcp", "127.0.0.1:0"); err != nil {
-			fmt.Fprintln(os.Stderr, "FretLab: cannot start the local server:", err)
+			fmt.Fprintln(os.Stderr, "ManicRulesGuitar: cannot start the local server:", err)
 			os.Exit(1)
 		}
 	}
 	url := fmt.Sprintf("http://%s/", ln.Addr().String())
-	fmt.Println("FretLab", version, "is running at", url)
+	fmt.Println("ManicRulesGuitar", version, "is running at", url)
 
 	idle := 3 * time.Minute // tabs in the background only ping about once a minute
 	if v := os.Getenv("FRETLAB_IDLE"); v != "" {
@@ -198,7 +198,7 @@ func main() {
 	}
 	srv := &http.Server{Handler: handler(root), ReadHeaderTimeout: 10 * time.Second}
 	if err := srv.Serve(ln); err != nil {
-		fmt.Fprintln(os.Stderr, "FretLab:", err)
+		fmt.Fprintln(os.Stderr, "ManicRulesGuitar:", err)
 		os.Exit(1)
 	}
 }
