@@ -22,5 +22,5 @@ Increase the version in `sw.js` (the build does this) and upload all files. Open
 2. Upload the contents of this folder (not the folder itself) to the repository root, replacing existing files. Keep `.nojekyll`.
 3. Settings → Pages → Deploy from branch → `main` / root.
 4. Old links such as `/lessons.html` redirect to `/original/lessons.html`.
-5. Open the site once while online, then reload; the new service worker (`fretlab-site-v11`) replaces the old one.
+5. Open the site once while online, then reload; the new service worker (`fretlab-site-v12`) replaces the old one.
 Your saved data lives in your browser (localStorage on the same address), so it stays as long as the web address stays the same.
