@@ -1,1 +1,1 @@
-window.DL_SIZES={"FretLab-12-Beta.html": 12424043, "FretLab-JamBand-DAW.html": 12424084};
+window.DL_SIZES={"FretLab-12-Beta.html": 12528393, "FretLab-JamBand-DAW.html": 12528434};
