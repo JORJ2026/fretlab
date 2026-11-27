@@ -7558,7 +7558,7 @@ function vidAudioPCM(sr){
  if(!audio())throw new Error('Audio is not available in this browser');
  const tl=VID.tl,len=Math.ceil((tl.len+0.2)*sr),L=new Float32Array(len),R=new Float32Array(len);
  const tb=(state.timbre==='synth'||state.timbre==='organ'||NEWV.has(state.timbre))?'nylon':state.timbre,cache=new Map();
- const voice=m=>{let v=cache.get(m);if(v)return v;const b=makePluck(m,tb),src=b.getChannelData(0),r=b.sampleRate/sr,n=Math.floor(src.length/r),o=new Float32Array(n);
+ const voice=m=>{let v=cache.get(m);if(v)return v;const b=(ENG18.pcmVoice(m,tb)||makePluck(m,tb)),src=b.getChannelData(0),r=b.sampleRate/sr,n=Math.floor(src.length/r),o=new Float32Array(n);
   for(let i=0;i<n;i++){const x=i*r,j=x|0,fr=x-j;o[i]=src[j]*(1-fr)+(src[j+1]||0)*fr}cache.set(m,o);return o};
  const add=(m,t,vel,pan)=>{if(!Number.isFinite(m)||m<12||m>108)return;const v=voice(Math.round(m)),st=Math.round(t*sr),gl=vel*(1-Math.max(0,pan)*0.5),gr=vel*(1+Math.min(0,pan)*0.5);
   for(let i=0;i<v.length&&st+i<len;i++){if(st+i<0)continue;L[st+i]+=v[i]*gl;R[st+i]+=v[i]*gr}};
@@ -16626,7 +16626,7 @@ vidAudioPCM=function(sr){
  const tl=VID.tl,V=tl.vx||{},len=Math.ceil((tl.len+0.2)*sr),L=new Float32Array(len),R=new Float32Array(len);
  const appTb=(state.timbre==='synth'||state.timbre==='organ'||NEWV.has(state.timbre))?'nylon':state.timbre,tb=VX.inst==='app'?appTb:VX.inst,
   useReal=typeof rlFam==='function'&&(VX.real||(VX.inst!=='app'&&!['steel','nylon','electric'].includes(VX.inst))),rtb=VX.inst==='app'?state.timbre:VX.inst,cache=new Map();
- const voice=m=>{let v=cache.get(m);if(v)return v;let b;if(useReal){b=rlBuf(rlFam(rtb)||rlFam('nylon'),m)}else b=makePluck(m,tb);
+ const voice=m=>{let v=cache.get(m);if(v)return v;let b;if(useReal){b=rlBuf(rlFam(rtb)||rlFam('nylon'),m)}else b=(ENG18.pcmVoice(m,tb)||makePluck(m,tb));
   const src=b.getChannelData(0),r=b.sampleRate/sr,n=Math.floor(src.length/r),o=new Float32Array(n);for(let i=0;i<n;i++){const x=i*r,j=x|0,fr=x-j;o[i]=src[j]*(1-fr)+(src[j+1]||0)*fr}cache.set(m,o);return o};
  let seed=12345;const rnd=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296};
  const off=VX.aoff/1000,sp=VX.spread/100,pb=Math.max(-1,Math.min(1,VX.aPan/100)),strum=VX.strumMs/1000,hv=VX.vhum/100,ht=VX.thum/1000;
@@ -20701,6 +20701,290 @@ setTimeout(()=>{try{x17Load();x17Hash();[0,500,1500,3000].forEach(ms=>setTimeout
  bnRender=function(){if(boot){if(!pend){pend=1;const go=()=>setTimeout(run,60);if('requestIdleCallback' in window)requestIdleCallback(go,{timeout:1500});else setTimeout(go,900)}return}return _b.apply(this,arguments)};
  window.addEventListener('pointerdown',()=>{if(boot&&pend)run()},{once:true,capture:true})})();
 
+/* ================= 18: sound engines – Tone.js, Wad, Pizzicato.js, ZzFX, jsfxr (voices) and Tuna (master effects) =================
+   Every engine renders each voice once (a few seconds of audio, cached) and the app's own scheduler then plays that
+   sample on whatever audio context is active – the live one, or the offline one used for audio/video export –
+   so Jam Band timing, per-track instruments, channel strips and exports all keep working with any engine. */
+const ENG18=(function(){
+ const LSK='fretlab.eng18',SR=44100;
+ const E={cfg:{note:'howler',keys:'builtin',bass:'builtin',drum:'builtin',fx:'off',fxAmt:50},cache:new Map(),pend:new Map(),files:{},base:null,status:'',tick:0,fails:{}};
+ try{const j=JSON.parse(localStorage.getItem(LSK)||'null');if(j&&typeof j==='object')for(const k in E.cfg)if(typeof j[k]===typeof E.cfg[k])E.cfg[k]=j[k]}catch(e){}
+ const saveCfg=()=>{try{localStorage.setItem(LSK,JSON.stringify(E.cfg))}catch(e){}};
+ const ENGS=[
+  {id:'builtin',name:'FretLab built-in',roles:'note keys bass drum',info:'The original FretLab sound: plucked-string physics, synth and drum models.'},
+  {id:'howler',name:'Howler.js (default)',v:'2.2.4',lic:'MIT',files:[],roles:'note',info:'Sample player: every plucked-string note is a ready-made sample, one per note, played without pitch-shifting. Sounds the same as the built-in strings.'},
+  {id:'tone',name:'Tone.js',v:'15.1.22',lic:'MIT',files:['tone.js'],roles:'note keys bass drum',info:'Plucked-string, FM, mono-synth, membrane and metal-drum voices.'},
+  {id:'wad',name:'Wad',v:'4.13.4',lic:'MIT',files:['wad.js'],roles:'note keys bass drum',info:'Web Audio oscillators and noise with filters.'},
+  {id:'pizz',name:'Pizzicato.js',v:'0.6.4',lic:'MIT',files:['pizzicato.js'],roles:'note keys bass',info:'Wave sounds (no noise source, so no drums).'},
+  {id:'zzfx',name:'ZzFX',v:'1.4.0',lic:'MIT',files:[],roles:'note keys bass drum',info:'Tiny 8-bit style synth: odd shapes, bit-crush, slides.'},
+  {id:'sfxr',name:'jsfxr',v:'1.4.1',lic:'MIT / Unlicense',files:['riff.js','sfxr.js'],roles:'note keys bass drum',info:'Classic sfxr chip-sound generator.'}];
+ const byId=id=>ENGS.find(e=>e.id===id)||ENGS[0];
+ const ROLES=[['note','Guitars and plucked strings','Guitar 1, Guitar 2, melody and solo, and every note you tap'],['keys','Keyboards, synths and bowed','Keyboard 1–3 in Jam Band, organ, synth, strings'],['bass','Bass','Bass in the Jam Band and the backing band'],['drum','Drums','Jam Band drum kits and the practice drum machine']];
+ /* instrument id -> voice family */
+ const FAMOF={steel:'pl',twelve:'pl',mando:'pl',uke:'nyl',nylon:'nyl',harp:'nyl',banjo:'pl',muted:'mut',electric:'el',synth:'syn',organ:'org',kalimba:'bell',bell:'bell',bass:'bass',bowed:'bow',cello:'bow'};
+ const famOf=tb=>FAMOF[tb]||'kb';
+ const roleOfFam=f=>f==='bass'?'bass':(f==='pl'||f==='nyl'||f==='mut'||f==='el')?'note':'keys';
+ const FAMS={pl:{o:'sawtooth',a:.002,tau:.5,flt:2800,len:2.3,pl:1},nyl:{o:'triangle',a:.004,tau:.6,flt:1900,len:2.3,pl:1},el:{o:'sawtooth',a:.003,tau:1,flt:4200,len:2.6,pl:1,dist:2.5},mut:{o:'triangle',a:.002,tau:.09,flt:1300,len:.7},
+  bell:{o:'sine',a:.001,tau:.9,flt:9000,len:2.4},bow:{o:'sawtooth',a:.16,tau:4,flt:2300,len:2.4},syn:{o:'sawtooth',a:.004,tau:.7,flt:3200,len:1.9,pl:1},org:{o:'square',a:.008,tau:8,flt:2600,len:1.9},
+  kb:{o:'triangle',a:.004,tau:1.3,flt:5200,len:2.3,pl:1},bass:{o:'square',a:.004,tau:.55,flt:800,len:1.6,pl:1}};
+ const DL={k:.55,s:.4,h:.1,o:.5,r:1.1,y:1.9,t:.55,u:.65,c:.3,x:.12,b:.3,w:.07};
+ const DG={k:.9,s:.6,h:.2,o:.22,r:.18,y:.26,t:.65,u:.75,c:.5,x:.2,b:.16,w:.12};
+ /* drum recipes for engines that supply raw waves: [wave, Hz, sweep-from-ratio, sweep-time, filter, filter-Hz, decay, level] */
+ const DR={k:[['sine',52,3.4,.04,0,0,.11,1],['noise',0,0,0,'lp',900,.012,.35]],s:[['sine',185,1.5,.03,0,0,.06,.45],['noise',0,0,0,'hp',1400,.1,.9]],h:[['noise',0,0,0,'hp',7500,.028,1]],o:[['noise',0,0,0,'hp',6500,.16,1]],
+  r:[['noise',0,0,0,'bp',5200,.3,.7],['square',590,1,0,0,0,.12,.1],['square',845,1,0,0,0,.1,.08]],y:[['noise',0,0,0,'hp',4200,.55,1]],t:[['sine',150,1.7,.05,0,0,.16,1]],u:[['sine',100,1.7,.06,0,0,.2,1]],
+  c:[['noise',0,0,0,'bp',1250,.04,1]],x:[['square',1750,1,0,0,0,.015,.5],['noise',0,0,0,'bp',3000,.02,.6]],b:[['square',545,1,0,0,0,.09,.5],['square',815,1,0,0,0,.08,.4]],w:[['noise',0,0,0,'hp',9000,.03,1]]};
+ const REFN=[40,46,52,58,64,70,76,82,88],REFB=[28,34,40,46,52];
+ const hz=m=>440*Math.pow(2,(m-69)/12);
+ /* ---------- loading ---------- */
+ const inject=(url,text)=>new Promise((res,rej)=>{const s=document.createElement('script');s.onload=()=>{res()};s.onerror=()=>rej(new Error('load '+url));if(text!=null)s.textContent=text;else s.src=url;document.head.appendChild(s);if(text!=null)res()});
+ async function needFile(f){
+  if(E.files[f])return E.files[f];
+  return E.files[f]=(async()=>{const bases=E.base!==null?[E.base]:['engines/','../engines/','./engines/'];let err=null;
+   for(const b of bases){try{await inject(b+f);E.base=b;return true}catch(e){err=e}}
+   delete E.files[f];throw new Error('The engine file '+f+' was not found (it lives in the engines folder next to the app).')})();
+ }
+ /* Wad and Pizzicato build their audio graph when they load, so they are loaded again, bound to the context being rendered */
+ async function loadBound(file,glob,ctx){
+  await needFile(file); /* make sure the file is reachable and cached */
+  return new Promise((res,rej)=>{const AX=window.AudioContext,WX=window.webkitAudioContext,prev=window[glob],F=function(){return ctx};
+   window.AudioContext=F;window.webkitAudioContext=F;const s=document.createElement('script'),back=()=>{window.AudioContext=AX;window.webkitAudioContext=WX};
+   s.onload=()=>{const lib=window[glob];back();window[glob]=prev;res(lib)};s.onerror=()=>{back();rej(new Error('load '+file))};s.src=E.base+file+'?b='+(++E.tick);document.head.appendChild(s)});
+ }
+ /* ---------- small DSP helpers ---------- */
+ function bq(d,type,f,q){const w=2*Math.PI*Math.min(f,SR*.45)/SR,c=Math.cos(w),al=Math.sin(w)/(2*(q||.7071));let b0,b1,b2;
+  if(type==='lp'){b0=(1-c)/2;b1=1-c;b2=b0}else if(type==='hp'){b0=(1+c)/2;b1=-(1+c);b2=b0}else{b0=al;b1=0;b2=-al}
+  const a0=1+al,a1=-2*c/a0,a2=(1-al)/a0;b0/=a0;b1/=a0;b2/=a0;let x1=0,x2=0,y1=0,y2=0;const o=new Float32Array(d.length);
+  for(let i=0;i<d.length;i++){const x=d[i],y=b0*x+b1*x1+b2*x2-a1*y1-a2*y2;x2=x1;x1=x;y2=y1;y1=y;o[i]=y}return o}
+ function warp(d,r0,tt){const n=d.length,o=new Float32Array(n);let p=0;for(let i=0;i<n;i++){const t=i/SR,r=1+(r0-1)*Math.exp(-t/Math.max(.001,tt)),j=p|0,fr=p-j;o[i]=(d[j]||0)*(1-fr)+(d[j+1]||0)*fr;p+=r;if(p>=n-2)break}return o}
+ function shape(d,a,tau,len,rel){const n=Math.min(d.length,Math.floor(len*SR)),o=new Float32Array(Math.floor(len*SR)),A=Math.max(1,Math.floor(a*SR)),R=Math.floor((rel||.08)*SR);
+  for(let i=0;i<n;i++){let e=Math.exp(-(i/SR)/tau);if(i<A)e*=i/A;if(i>n-R)e*=(n-i)/R;o[i]=d[i]*e}return o}
+ function fin(d,peak){let m=0;for(let i=0;i<d.length;i++){if(!(d[i]===d[i])||!isFinite(d[i]))d[i]=0;const a=Math.abs(d[i]);if(a>m)m=a}if(m<1e-4)return null;const g=(peak||.8)/m,f=Math.min(d.length>>2,Math.floor(SR*.02));
+  for(let i=0;i<d.length;i++)d[i]*=g;for(let i=0;i<f;i++)d[d.length-1-i]*=i/f;return d}
+ function detect(d,lo,hi){const n=Math.min(d.length,16384),s0=Math.floor(SR*.04),w=Math.min(n-s0,6000);let best=0,bl=0;
+  const Lo=Math.floor(SR/hi),Hi=Math.floor(SR/lo),C=[];
+  for(let L=Lo;L<=Hi;L++){let sum=0,e1=0,e2=0;for(let i=0;i<w;i++){const a=d[s0+i],b=d[s0+i+L]||0;sum+=a*b;e1+=a*a;e2+=b*b}const c=sum/Math.sqrt(e1*e2+1e-9);C.push(c);if(c>best){best=c;bl=L}}
+  for(let i=1;i<C.length-1;i++){if(C[i]>=best*.9&&C[i]>=C[i-1]&&C[i]>=C[i+1]){bl=Lo+i;break}}
+  return bl?SR/bl:0}
+ /* ---------- ZzFX generator (MIT, Frank Force), embedded so no file is needed ---------- */
+ const ZZ=(()=>{let zzfxV=.3;return (p=1,k=.05,b=220,e=0,r=0,t=.1,q=0,D=1,u=0,y=0,v=0,z=0,l=0,E=0,A=0,F=0,c=0,w=1,m=0,B=0
+,N=0)=>{let M=Math,d=2*M.PI,R=44100,G=u*=500*d/R/R,C=b*=(1-k+2*k*M.random(k=[]))*d/R,
+g=0,H=0,a=0,n=1,I=0,J=0,f=0,h=N<0?-1:1,x=d*h*N*2/R,L=M.cos(x),Z=M.sin,K=Z(x)/4,O=1+K,
+X=-2*L/O,Y=(1-K)/O,P=(1+h*L)/2/O,Q=-(h+L)/O,S=P,T=0,U=0,V=0,W=0;e=R*e+9;m*=R;r*=R;t*=
+R;c*=R;y*=500*d/R**3;A*=d/R;v*=d/R;z*=R;l=R*l|0;p*=zzfxV;for(h=e+m+r+t+c|0;a<h;k[a++]
+=f*p)++J%(100*F|0)||(f=q?1<q?2<q?3<q?4<q?(g/d%1<D/2)*2-1:Z(g**3):M.max(M.min(M.tan(g)
+,1),-1):1-(2*g/d%2+2)%2:1-4*M.abs(M.round(g/d)-g/d):Z(g),f=(l?1-B+B*Z(d*a/l):1)*(4<q?
+f:(f<0?-1:1)*M.abs(f)**D)*(a<e?a/e:a<e+m?1-(a-e)/m*(1-w):a<e+m+r?w:a<h-c?(h-a-c)/t*w:
+0),f=c?f/2+(c>a?0:(a<h-c?1:(h-a)/c)*k[a-c|0]/2/p):f,N?f=W=S*T+Q*(T=U)+P*(U=f)-Y*V-X*(
+V=W):0),x=(b+=u+=y)*M.cos(A*H++),g+=x+x*E*(a*a*d%2-1),n&&++n>z&&(b+=v,C+=v,n=0),!l||++I%l
+||(b=C,u=G,n=n||1);return k}})();
+ /* ---------- raw waves from each engine: prim(osc, Hz, seconds) -> Float32Array ---------- */
+ const PRIM={
+  async zzfx(o,f,len){const shp={sine:0,triangle:1,sawtooth:2,square:3,noise:4}[o];const k=ZZ(1,0,(f||220)/(o==='square'?2:1),0,len,0,shp,1);return Float32Array.from(k)},
+  async sfxr(o,f,len){await needFile('riff.js');await needFile('sfxr.js');const J=window.jsfxr,P=new J.Params();P.wave_type=({square:0,sawtooth:1,sine:2,triangle:2,noise:3})[o];
+   P.sound_vol=.25;P.p_env_attack=0;P.p_env_sustain=1;P.p_env_punch=0;P.p_env_decay=.2;P.p_lpf_freq=1;P.p_hpf_freq=0;P.p_duty=.5;
+   if(o!=='noise'){const C=SFXC.c||await sfxCal(J);P.p_base_freq=Math.min(1,Math.sqrt(Math.max(.0001,(f||220)/C-.001)))}
+   const ctx={createBuffer:(c,n)=>({d:new Float32Array(n),getChannelData(){return this.d}}),createBufferSource:()=>({})};const src=J.sfxr.toWebAudio(JSON.parse(JSON.stringify(P)),ctx);
+   const out=new Float32Array(Math.floor(len*SR));out.set(src.buffer.d.subarray(0,out.length));return out},
+  async wad(o,f,len){const OFF=new OfflineAudioContext(1,Math.ceil((len+.1)*SR),SR),W=await loadBound('wad.js','Wad',OFF);
+   const w=new W({source:o,env:{attack:.002,decay:.001,sustain:1,hold:len,release:.02},volume:.8});w.play({pitch:f||220,wait:0.005});const b=await OFF.startRendering();return Float32Array.from(b.getChannelData(0).subarray(0,Math.floor(len*SR)))},
+  async pizz(o,f,len){if(o==='noise')throw new Error('no noise');const OFF=new OfflineAudioContext(1,Math.ceil((len+.1)*SR),SR),P=await loadBound('pizzicato.js','Pizzicato',OFF);
+   const s=new P.Sound({source:'wave',options:{type:o,frequency:f||220,attack:.001,release:.02,volume:.8}});s.play(0);const b=await OFF.startRendering();return Float32Array.from(b.getChannelData(0).subarray(0,Math.floor(len*SR)))}};
+ const SFXC={c:0};
+ async function sfxCal(J){const P=new J.Params();P.wave_type=2;P.sound_vol=.25;P.p_env_sustain=.5;P.p_env_decay=.1;P.p_env_attack=0;P.p_base_freq=.3;P.p_lpf_freq=1;P.p_hpf_freq=0;
+  const ctx={createBuffer:(c,n)=>({d:new Float32Array(n),getChannelData(){return this.d}}),createBufferSource:()=>({})};const b=J.sfxr.toWebAudio(JSON.parse(JSON.stringify(P)),ctx).buffer.d;
+  const f=detect(b,60,2000);SFXC.c=f/(.09+.001);return SFXC.c}
+ /* ---------- Tone.js full voices ---------- */
+ async function toneVoice(role,fam,m,kind){
+  await needFile('tone.js');const T=window.Tone,f=hz(m),len=role==='drum'?DL[kind]:role==='bass'?1.6:FAMS[fam].len;
+  const b=await T.Offline(()=>{
+   const out=T.getDestination();
+   if(role==='drum'){const N=(o)=>new T.NoiseSynth(o),M=o=>new T.MembraneSynth(o),Me=(fr,dec,h,mi,res,oct)=>new T.MetalSynth({frequency:fr,envelope:{attack:.001,decay:dec,release:.01},harmonicity:h,modulationIndex:mi,resonance:res,octaves:oct});
+    if(kind==='k'){const s=M({pitchDecay:.04,octaves:7,envelope:{attack:.001,decay:.38,sustain:0,release:.1}}).connect(out);s.triggerAttackRelease(52,.3,0,1)}
+    else if(kind==='s'){const hp=new T.Filter(1200,'highpass').connect(out);N({noise:{type:'white'},envelope:{attack:.001,decay:.17,sustain:0}}).connect(hp).triggerAttackRelease(.17,0,.9);M({pitchDecay:.02,octaves:2,envelope:{attack:.001,decay:.1,sustain:0,release:.05}}).connect(out).triggerAttackRelease(190,.08,0,.7)}
+    else if(kind==='h')Me(320,.05,5.1,32,6000,1.5).connect(out).triggerAttackRelease(320,.03,0,.8);
+    else if(kind==='o')Me(320,.35,5.1,32,6000,1.5).connect(out).triggerAttackRelease(320,.3,0,.8);
+    else if(kind==='r')Me(520,.9,3.1,16,5000,1.2).connect(out).triggerAttackRelease(520,.8,0,.5);
+    else if(kind==='y')Me(300,1.6,5.1,40,3500,1.5).connect(out).triggerAttackRelease(300,1.5,0,.8);
+    else if(kind==='t')M({pitchDecay:.05,octaves:2.5,envelope:{attack:.001,decay:.4,sustain:0,release:.1}}).connect(out).triggerAttackRelease(150,.3,0,1);
+    else if(kind==='u')M({pitchDecay:.06,octaves:2.5,envelope:{attack:.001,decay:.5,sustain:0,release:.1}}).connect(out).triggerAttackRelease(98,.4,0,1);
+    else if(kind==='c'){const bp=new T.Filter(1250,'bandpass').connect(out),n=N({noise:{type:'white'},envelope:{attack:.001,decay:.04,sustain:0}}).connect(bp);[0,.011,.022].forEach(d=>n.triggerAttackRelease(.04,d,.9));N({noise:{type:'white'},envelope:{attack:.002,decay:.16,sustain:0}}).connect(bp).triggerAttackRelease(.16,.03,.7)}
+    else if(kind==='x'){M({pitchDecay:.005,octaves:1,envelope:{attack:.001,decay:.04,sustain:0,release:.02}}).connect(out).triggerAttackRelease(1750,.02,0,.7)}
+    else if(kind==='b')Me(545,.2,1.5,2,2000,.5).connect(out).triggerAttackRelease(545,.15,0,.7);
+    else N({noise:{type:'white'},envelope:{attack:.001,decay:.03,sustain:0}}).connect(new T.Filter(9000,'highpass').connect(out)).triggerAttackRelease(.03,0,.7);
+    return}
+   if(role==='bass'){new T.MonoSynth({oscillator:{type:'square'},filter:{Q:3,type:'lowpass',rolloff:-24},filterEnvelope:{attack:.002,decay:.25,sustain:.2,release:.3,baseFrequency:130,octaves:3},envelope:{attack:.005,decay:.35,sustain:.45,release:.25}}).connect(out).triggerAttackRelease(f,1,0,.9);return}
+   if(fam==='pl'||fam==='nyl'||fam==='mut'){const P={pl:[1.6,4300,.985],nyl:[.7,2000,.975],mut:[1,900,.93]}[fam];new T.PluckSynth({attackNoise:P[0],dampening:P[1],resonance:P[2]}).connect(out).triggerAttack(f,0);return}
+   if(fam==='el'){const fl=new T.Filter(3400,'lowpass').connect(out),di=new T.Distortion(.35).connect(fl);new T.Synth({oscillator:{type:'fatsawtooth',count:2,spread:14},envelope:{attack:.003,decay:.7,sustain:.12,release:.5}}).connect(di).triggerAttackRelease(f,1.3,0,.9);return}
+   if(fam==='bell'){new T.FMSynth({harmonicity:3.5,modulationIndex:10,oscillator:{type:'sine'},envelope:{attack:.001,decay:1.9,sustain:0,release:1},modulation:{type:'square'},modulationEnvelope:{attack:.002,decay:.5,sustain:0,release:.5}}).connect(out).triggerAttackRelease(f,.6,0,.8);return}
+   if(fam==='bow'){const fl=new T.Filter(2600,'lowpass').connect(out),vb=new T.Vibrato(5.2,.1).connect(fl);new T.Synth({oscillator:{type:'fatsawtooth',count:3,spread:20},envelope:{attack:.2,decay:.2,sustain:.8,release:.5}}).connect(vb).triggerAttackRelease(f,1.7,0,.8);return}
+   if(fam==='syn'){new T.MonoSynth({oscillator:{type:'sawtooth'},filter:{Q:2,type:'lowpass',rolloff:-24},envelope:{attack:.005,decay:.5,sustain:.35,release:.5},filterEnvelope:{attack:.005,decay:.45,sustain:.1,release:.5,baseFrequency:300,octaves:3.5}}).connect(out).triggerAttackRelease(f,1,0,.9);return}
+   if(fam==='org'){new T.Synth({oscillator:{type:'custom',partials:[1,.7,.5,.35,.2,.1]},envelope:{attack:.012,decay:.01,sustain:1,release:.15}}).connect(out).triggerAttackRelease(f,1.5,0,.8);return}
+   new T.FMSynth({harmonicity:1,modulationIndex:2.2,oscillator:{type:'sine'},envelope:{attack:.004,decay:1.4,sustain:.05,release:.6},modulation:{type:'sine'},modulationEnvelope:{attack:.002,decay:.5,sustain:0,release:.5}}).connect(out).triggerAttackRelease(f,.9,0,.85);
+  },len,1,SR);
+  return Float32Array.from(b.getChannelData(0));
+ }
+ /* ---------- generic voice built on an engine's raw waves ---------- */
+ async function primVoice(eng,role,fam,m,kind){
+  const P=PRIM[eng];
+  if(role==='drum'){const L=DL[kind],out=new Float32Array(Math.floor(L*SR));
+   for(const [w,F,sw,st,ft,fh,tau,lv] of DR[kind]){let d=await P(w==='noise'?'noise':w,F,L);if(w!=='noise'&&sw>1)d=warp(d,sw,st);if(ft)d=bq(d,ft,fh,ft==='bp'?1.2:.7);
+    for(let i=0;i<out.length&&i<d.length;i++)out[i]+=d[i]*Math.exp(-(i/SR)/tau)*lv}
+   return out}
+  const C=role==='bass'?FAMS.bass:FAMS[fam],f=hz(m);let d=await P(C.o,f,C.len);
+  if(C.pl){const dark=bq(d,'lp',Math.max(200,C.flt/4),.7),br=bq(d,'lp',C.flt,.7),o=new Float32Array(d.length);for(let i=0;i<o.length;i++){const w=Math.exp(-(i/SR)/(C.tau*.35));o[i]=br[i]*w+dark[i]*(1-w)}d=o}
+  else d=bq(d,'lp',C.flt,.7);
+  if(C.dist){for(let i=0;i<d.length;i++)d[i]=Math.tanh(d[i]*C.dist)*.8}
+  return shape(d,C.a,C.tau,C.len,.12);
+ }
+ /* ---------- cache + queue ---------- */
+ let chain=Promise.resolve();
+ const key=(eng,role,fam,ref)=>eng+'|'+role+'|'+fam+'|'+ref;
+ function ensure(eng,role,fam,ref){
+  const k=key(eng,role,fam,ref);if(E.cache.has(k))return Promise.resolve(E.cache.get(k));if(E.pend.has(k))return E.pend.get(k);
+  const p=(chain=chain.then(async()=>{
+   try{let d=eng==='tone'?await toneVoice(role,fam,ref,fam):await primVoice(eng,role,fam,ref,fam);d=fin(d,.85);
+    let rm=ref;if(d&&!(role==='drum')&&(eng==='sfxr')){const f=detect(d,25,4200);if(f>0)rm=69+12*Math.log2(f/440)}
+    const v=d?{d,rm}:null;E.cache.set(k,v);return v}
+   catch(e){E.fails[eng]=String(e.message||e);E.cache.set(k,null);return null}finally{E.pend.delete(k)}}));
+  E.pend.set(k,p);return p;
+ }
+ const ALLM=[];for(let i=24;i<=100;i++)ALLM.push(i);const refsFor=(role,eng)=>eng==='howler'?ALLM:role==='bass'?REFB:REFN;
+ const nearest=(role,m)=>{const R=refsFor(role);let b=R[0];for(const r of R)if(Math.abs(r-m)<Math.abs(b-m))b=r;return b};
+ function wants(){ /* every voice the current settings could ask for */
+  const w=[];const add=(role,eng,fams)=>{if(eng==='builtin'||eng==='howler')return;fams.forEach(fam=>{if(role==='drum')Object.keys(DL).forEach(k=>w.push([eng,'drum',k,0]));else refsFor(role==='bass'?'bass':role).forEach(r=>w.push([eng,role==='bass'?'bass':role,fam,r]))})};
+  add('note',E.cfg.note,['pl','nyl','mut','el']);add('keys',E.cfg.keys,['kb','syn','org','bell','bow']);add('bass',E.cfg.bass,['bass']);add('drum',E.cfg.drum,['k']);return w}
+ const used=new Set();
+ function wantsUsed(){const w=[];used.forEach(s=>{const [role,fam]=s.split('|');if(role==='drum')return;const eng=E.cfg[role==='bass'?'bass':role];if(eng!=='builtin'&&eng!=='howler'&&byId(eng).roles.includes(role==='bass'?'bass':role))refsFor(role).forEach(r=>w.push([eng,role,fam,r]))});return w}
+ async function prewarm(onProg,all){
+  const w=wants().filter(x=>!E.cache.has(key(...x)));if(!w.length)return true;
+  let n=0;for(const x of w){await ensure(...x);n++;if(onProg)onProg(n/w.length)}return true}
+ const readyFor=(eng,role,fam)=>{const R=refsFor(role==='bass'?'bass':role);return R.some(r=>E.cache.get(key(eng,role,fam,r)))};
+ /* ---------- playback ---------- */
+ const abm=new WeakMap();
+ function audioBuf(ctx,k,v){let M=abm.get(ctx);if(!M){M=new Map();abm.set(ctx,M)}let b=M.get(k);if(!b){b=ctx.createBuffer(1,v.d.length,v.sr||SR);b.copyToChannel(v.d,0);M.set(k,b)}return b}
+ function howlerVoice(fam,m){const tb={pl:'steel',nyl:'nylon',el:'electric'}[fam];if(!tb||!AC)return null;const k=key('howler','note',fam,m)+'|'+state.sustain+'|'+state.a4+'|'+AC.sampleRate;let v=E.cache.get(k);if(v===undefined){const b=makePluck(m,tb),d=new Float32Array(b.length);b.copyToChannel?b.copyFromChannel(d,0):0;v={d,rm:m,sr:b.sampleRate};E.cache.set(k,v)}return v?{eng:'howler',r:m,v,k}:null}
+ function pick(role,fam,m){const eng=role==='bass'?E.cfg.bass:E.cfg[role];if(!eng||eng==='builtin')return null;
+  if(eng==='howler')return howlerVoice(fam,m);const R=refsFor(role),sorted=R.slice().sort((a,b)=>Math.abs(a-m)-Math.abs(b-m));
+  for(const r of sorted){const v=E.cache.get(key(eng,role,fam,r));if(v)return{eng,r,v,k:key(eng,role,fam,r)}}
+  used.add(role+'|'+fam);warmFam(eng,role,fam,m);return null}
+ const warming=new Set();
+ function warmFam(eng,role,fam,m){const k=eng+role+fam;if(warming.has(k))return;warming.add(k);const e=byId(eng);(async()=>{try{for(const f of e.files)await needFile(f);const R=refsFor(role).slice().sort((a,b)=>Math.abs(a-m)-Math.abs(b-m));for(const r of R)await ensure(eng,role,fam,r)}catch(x){}warming.delete(k)})()}
+ function rateFor(m,p){if(p.v.sr)return 1;return Math.pow(2,(m-p.v.rm)/12)*((state.a4||440)/440)}
+ function playNote(m,vel,tb){
+  const fam=famOf(tb),role=roleOfFam(fam),p=pick(role,fam,m);if(!p)return false;
+  const s=AC.createBufferSource();s.buffer=audioBuf(AC,p.k,p.v);s.playbackRate.value=rateFor(m,p);const g=AC.createGain(),t=AC.currentTime,sus=Math.max(.15,state.sustain||1),
+   lim=Math.min(s.buffer.duration/s.playbackRate.value,(FAMS[fam]||FAMS.pl).len*Math.min(1.6,.35+sus*.65));
+  const GN=p.v.sr?.9:(role==='bass'?.8:.7);if(p.v.sr){g.gain.value=GN*vel;s.connect(g);route7(g,m);s.start(t);return true}
+  g.gain.setValueAtTime(GN*vel,t);if(sus<1.4){g.gain.setValueAtTime(GN*vel,t+lim*.8);g.gain.linearRampToValueAtTime(0,t+lim)}
+  s.connect(g);route7(g,m);s.start(t);s.stop(t+lim+.05);return true}
+ function playBass(m,t,dur){
+  const p=pick('bass','bass',m);if(!p)return false;const s=AC.createBufferSource();s.buffer=audioBuf(AC,p.k,p.v);s.playbackRate.value=rateFor(m,p);const g=AC.createGain(),d=Math.max(.15,dur);
+  g.gain.setValueAtTime(.75,t);g.gain.setValueAtTime(.75,t+d*.85);g.gain.linearRampToValueAtTime(0,t+d+.06);s.connect(g);g.connect(backBus());s.start(t);s.stop(t+d+.12);return true}
+ function playDrum(kind,t,v){
+  const eng=E.cfg.drum;if(eng==='builtin'||!DL[kind])return false;const kk=key(eng,'drum',kind,0),x=E.cache.get(kk);if(!x){used.add('drum|'+kind);ensure(eng,'drum',kind,0);return false}
+  const s=AC.createBufferSource();s.buffer=audioBuf(AC,kk,x);const g=AC.createGain();g.gain.value=(DG[kind]||.3)*v*1.1;s.connect(g);g.connect(backBus());s.start(t);return true}
+ /* pitched, ready-made voice for the video/timeline audio mixers (they mix raw sample arrays) */
+ function pcmVoice(m,tb){const fam=famOf(tb),role=roleOfFam(fam),p=pick(role,fam,m);if(!p)return null;if(p.v.sr)return null;const r=rateFor(m,p),n=Math.floor(p.v.d.length/r),o=new Float32Array(n),s=p.v.d;
+  for(let i=0;i<n;i++){const x=i*r,j=x|0,fr=x-j;o[i]=((s[j]||0)*(1-fr)+(s[j+1]||0)*fr)*.7}
+  const sus=Math.max(.15,state.sustain||1),lim=Math.floor(Math.min(n,(FAMS[fam]||FAMS.pl).len*Math.min(1.6,.35+sus*.65)*SR)),f=Math.floor(lim*.2);for(let i=0;i<f;i++)o[lim-1-i]*=i/f;
+  return{getChannelData:()=>o.subarray(0,lim),sampleRate:SR}}
+ /* ---------- master effect (Tuna), rebuilt for every audio context the app creates ---------- */
+ const FXS=[['off','Off'],['chorus','Chorus'],['overdrive','Overdrive'],['delay','Delay'],['pingpong','Ping-pong delay'],['phaser','Phaser'],['tremolo','Tremolo'],['wahwah','Wah-wah'],['moog','Moog filter'],['bitcrusher','Bit-crusher'],['compressor','Compressor']];
+ const fxNodes=new WeakMap();
+ function fxApply(ctx){
+  const st=fxNodes.get(ctx);if(!st)return;const type=E.cfg.fx,a=Math.max(0,Math.min(1,E.cfg.fxAmt/100));
+  if(type!==st.type){try{st.in.disconnect()}catch(e){}try{st.dry.disconnect()}catch(e){}try{st.wet.disconnect()}catch(e){}if(st.fx){try{st.fx.disconnect()}catch(e){}st.fx=null}
+   st.type=type;
+   if(type==='off'||!window.Tuna){st.in.connect(st.out);st.type=type==='off'?'off':'off*'}
+   else{try{if(!st.tuna)st.tuna=new window.Tuna(ctx);const T=st.tuna,o={bypass:0};let fx;
+     if(type==='chorus')fx=new T.Chorus({rate:1.6,feedback:.25,delay:.0045,bypass:0});
+     else if(type==='overdrive')fx=new T.Overdrive({outputGain:-6,drive:.6,curveAmount:.7,algorithmIndex:0,bypass:0});
+     else if(type==='delay')fx=new T.Delay({feedback:.35,delayTime:300,wetLevel:1,dryLevel:0,cutoff:3000,bypass:0});
+     else if(type==='pingpong')fx=new T.PingPongDelay({wetLevel:1,feedback:.35,delayTimeLeft:250,delayTimeRight:375,bypass:0});
+     else if(type==='phaser')fx=new T.Phaser({rate:.8,depth:.5,feedback:.4,stereoPhase:30,baseModulationFrequency:700,bypass:0});
+     else if(type==='tremolo')fx=new T.Tremolo({intensity:.6,rate:5,stereoPhase:0,bypass:0});
+     else if(type==='wahwah')fx=new T.WahWah({automode:true,baseFrequency:.45,excursionOctaves:2.2,sweep:.4,resonance:12,sensitivity:.5,bypass:0});
+     else if(type==='moog')fx=new T.MoogFilter({cutoff:.35,resonance:2.6,bufferSize:4096,bypass:0});
+     else if(type==='bitcrusher')fx=new T.Bitcrusher({bits:7,normfreq:.25,bufferSize:4096,bypass:0});
+     else fx=new T.Compressor({threshold:-28,makeupGain:6,attack:8,release:250,ratio:6,knee:5,automakeup:false,bypass:0});
+     st.fx=fx;st.in.connect(st.dry);st.dry.connect(st.out);st.in.connect(fx);fx.connect(st.wet);st.wet.connect(st.out)}catch(e){st.in.connect(st.out);st.type='off*';E.status='Effect failed: '+e.message}}}
+  if(st.fx){st.wet.gain.value=a;st.dry.gain.value=1-a*.55}
+ }
+ function wireMaster(){ /* call after audio(): puts the effect stage between the compressor and the tone filter */
+  if(!AC||!compN||!toneF||fxNodes.has(AC))return;const ctx=AC,inp=ctx.createGain(),out=toneF;
+  try{compN.disconnect();compN.connect(inp);inp.connect(out)}catch(e){return}
+  fxNodes.set(ctx,{in:inp,out,fx:null,type:'off',dry:ctx.createGain(),wet:ctx.createGain(),tuna:null});
+  if(E.cfg.fx!=='off'){if(window.Tuna)fxApply(ctx);else needFile('tuna.js').then(()=>fxApply(ctx),()=>{})}}
+ async function setFx(type,amt){
+  if(type!==undefined)E.cfg.fx=type;if(amt!==undefined)E.cfg.fxAmt=amt;saveCfg();
+  if(E.cfg.fx!=='off'&&!window.Tuna){try{await needFile('tuna.js')}catch(e){E.status=e.message;E.cfg.fx='off'}}
+  if(AC)fxApply(AC);E.render&&E.render()}
+ /* ---------- selecting engines ---------- */
+ async function setEngine(role,id,quiet){
+  const e=byId(id);if(!e.roles.includes(role)){id='builtin'}E.cfg[role]=id;saveCfg();E.render&&E.render();if(id==='builtin')return true;
+  if(id==='howler'){E.status='Howler.js sample player ready.';E.render&&E.render();return true}
+  E.status='Loading '+e.name+'…';E.render&&E.render();
+  try{for(const f of e.files)await needFile(f);   if(role==='drum'){for(const k of Object.keys(DL)){await ensure(id,'drum',k,0)}}
+   else{const fams=role==='note'?['pl','nyl','mut','el']:role==='bass'?['bass']:['kb','syn','org','bell','bow'];let n=0;const tot=fams.length*(role==='bass'?REFB.length:REFN.length);
+    for(const fam of fams)for(const r of refsFor(role)){await ensure(id,role,fam,r);n++;E.status='Preparing '+e.name+' voices… '+Math.round(n/tot*100)+'%';E.render&&E.render()}}
+   const bad=E.fails[id];E.status=bad?e.name+' had a problem: '+bad:e.name+' ready.';if(bad){E.cfg[role]='builtin';saveCfg();delete E.fails[id]}
+  }catch(err){E.status=e.name+' could not be loaded – using the built-in sound. '+err.message;E.cfg[role]='builtin';saveCfg()}
+  E.render&&E.render();return E.cfg[role]===id}
+ async function setAll(id){for(const r of ['note','keys','bass','drum'])await setEngine(r,id)}
+ /* ---------- UI ---------- */
+ const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+ function html(){
+  const opt=(role,cur)=>ENGS.filter(e=>e.roles.includes(role)).map(e=>`<option value="${e.id}"${e.id===cur?' selected':''}>${esc(e.name)}</option>`).join('');
+  const rows=ROLES.map(([r,t,d])=>`<div class="eng18r"><div><b>${t}</b><div class="mut">${d}</div></div><select data-xc="engSet" data-r="${r}" aria-label="${t} sound engine">${opt(r,E.cfg[r])}</select><button class="btn sm" data-x="engTry" data-r="${r}" title="Hear it">▶ Hear</button></div>`).join('');
+  const all=`<div class="eng18r"><div><b>Use one engine for everything</b><div class="mut">Sets all four rows above</div></div><select data-xc="engAll" aria-label="All roles">${['<option value="">Choose…</option>'].concat(ENGS.map(e=>`<option value="${e.id}">${esc(e.name)}</option>`)).join('')}</select><span></span></div>`;
+  const fx=`<div class="eng18r"><div><b>Master effect</b><div class="mut">Tuna.js – applied to everything you hear and export</div></div><select data-xc="engFx" aria-label="Master effect">${FXS.map(([v,t])=>`<option value="${v}"${v===E.cfg.fx?' selected':''}>${t}</option>`).join('')}</select><label class="mut">Amount <input type="range" min="0" max="100" value="${E.cfg.fxAmt}" data-xi="engFxAmt"></label></div>`;
+  const list=ENGS.slice(1).map(e=>`<li><b>${esc(e.name)}</b> ${e.v?'v'+e.v+' · ':''}${e.lic||''} – ${esc(e.info)}</li>`).join('');
+  return `<p class="mut" style="margin:0 0 6px">Pick the sound engine for each part of the band. They work with the notes you tap, the practice drum machine, the Jam Band (every track, bass and drum kit), and the audio and video exports. Anything an engine cannot play is left to the built-in sound.</p>${rows}${all}${fx}<p class="eng18s" id="eng18s" role="status">${esc(E.status)}</p><details class="eng18i"><summary>About the engines</summary><ul>${list}<li><b>Tuna.js</b> v1.1.3 · MIT – master effects. <b>Howler.js</b> only plays ready-made audio files, so it has no part in a synthesized band.</li></ul></details>`}
+ function render(){const d=document.getElementById('engBody');if(!d)return;const s=document.getElementById('eng18s');if(s)s.textContent=E.status;const a=document.activeElement;if(a&&d.contains(a)&&a.tagName==='SELECT'&&a.dataset.r)return;
+  if(d.dataset.sig===JSON.stringify(E.cfg)&&s){s.textContent=E.status;return}d.dataset.sig=JSON.stringify(E.cfg);d.innerHTML=html()}
+ E.render=render;
+ function ensureCard(){
+  if(document.getElementById('engines'))return;const ref=document.getElementById('settings');if(!ref||!ref.parentNode)return;
+  const d=document.createElement('details');d.className='card x7 x7sec';d.id='engines';d.innerHTML='<summary><span class="stt">🎛 Sound engines – Tone.js, Wad, ZzFX and more</span><span class="sth" id="sth_engines"></span></summary><div id="engBody" class="eng18b"></div>';
+  ref.parentNode.insertBefore(d,ref);d.addEventListener('toggle',()=>{if(d.open)render()});render();try{if(!CORE8.includes('engines'))CORE8.push('engines');syncLayout8()}catch(e){}
+ }
+ const css=document.createElement('style');css.textContent='.eng18b{padding:6px 2px}.eng18r{display:grid;grid-template-columns:minmax(150px,1.5fr) minmax(150px,1fr) auto;gap:8px;align-items:center;padding:6px 0;border-top:1px solid var(--line,#ddd)}.eng18r .mut{font-size:.85em}.eng18s{min-height:1.3em;margin:8px 0 2px;font-size:.9em}.eng18i{margin-top:6px}.eng18i ul{margin:6px 0 0 18px;padding:0}@media(max-width:620px){.eng18r{grid-template-columns:1fr}}';document.head.appendChild(css);
+ XA.engSet=el=>{setEngine(el.dataset.r,el.value)};
+ XA.engAll=el=>{if(el.value)setAll(el.value);el.value=''};
+ XA.engFx=el=>{setFx(el.value)};
+ XA.engFxAmt=el=>{setFx(undefined,+el.value)};
+ XA.engTry=async el=>{const r=el.dataset.r;if(!audio())return;await prewarm();
+  if(r==='note'){[52,59,64,67,71,76].forEach((m,i)=>setTimeout(()=>{const o=state.timbre;state.timbre='steel';try{pluck(m,.9)}finally{state.timbre=o}},i*160))}
+  else if(r==='keys'){const o=state.timbre;[[60,64,67]].forEach(ch=>ch.forEach((m,i)=>setTimeout(()=>{state.timbre='kb';try{pluck(m,.8)}finally{state.timbre=o}},i*40)))}
+  else if(r==='bass'){const t=AC.currentTime+.05;[36,36,43,41].forEach((m,i)=>bassNote(m,t+i*.28,.24))}
+  else{const t=AC.currentTime+.05,pat=[['k',0],['h',0],['h',.25],['s',.5],['h',.5],['h',.75],['k',1],['o',1.25],['k',1.5],['s',2],['t',2.5],['u',2.75],['y',3]];pat.forEach(([k,b])=>drumHit(k,t+b*.42,1))}};
+ /* ---------- hooks into the app ---------- */
+ const _pluck=pluck;pluck=function(m,vel){if(E.cfg.note==='builtin'&&E.cfg.keys==='builtin'&&E.cfg.bass==='builtin')return _pluck.apply(this,arguments);
+  if(!audio())return _pluck.apply(this,arguments);m=Math.round(m);if(vel===undefined)vel=1;
+  if(m>=12&&m<=108&&playNote(m,vel,state.timbre)){try{lastPluck10=performance.now();touch()}catch(e){}return}return _pluck.apply(this,arguments)};
+ const _bass=bassNote;bassNote=function(m,t,dur){if(E.cfg.bass!=='builtin'&&AC&&playBass(m,t,dur))return;return _bass.apply(this,arguments)};
+ const _drum=drumHit;drumHit=function(kind,t,v){if(E.cfg.drum!=='builtin'&&AC&&playDrum(kind,t,v))return;return _drum.apply(this,arguments)};
+ const _audio=audio;audio=function(){const r=_audio.apply(this,arguments);if(r)try{wireMaster()}catch(e){}return r};
+ const _x17=x17Render;x17Render=async function(o,plan,onProg){try{await prewarmAll(onProg)}catch(e){}return _x17.apply(this,arguments)};
+ const _vp=vidPrepare;vidPrepare=async function(){try{await prewarmAll()}catch(e){}return _vp.apply(this,arguments)};
+ async function prewarmAll(onProg){ /* before an export: make sure every voice the project could use is ready, and the effect library is loaded */
+  if(E.cfg.fx!=='off'&&!window.Tuna)await needFile('tuna.js');
+  const J=(typeof jbS==='function')?jbS():null;if(J){[['note',J.chordInst],['note',J.g2Inst],['note',J.g3Inst],['note',J.melInst],['note',J.mel2Inst],['note',J.mel3Inst],['note',J.soloInst],['keys',J.kbInst],['keys',J.kb2Inst],['keys',J.kb3Inst]].forEach(([r,tb])=>{if(tb)used.add(roleOfFam(famOf(tb))+'|'+famOf(tb))});
+   [J.bassSnd,J.bass2Snd].forEach(tb=>{if(tb&&tb!=='synth')used.add(roleOfFam(famOf(tb))+'|'+famOf(tb))})}
+  used.add(roleOfFam(famOf(state.timbre))+'|'+famOf(state.timbre));
+  const w=wantsUsed().filter(x=>!E.cache.has(key(...x)));if(E.cfg.drum!=='builtin'&&E.cfg.drum!=='howler')Object.keys(DL).forEach(k=>{if(!E.cache.has(key(E.cfg.drum,'drum',k,0)))w.push([E.cfg.drum,'drum',k,0])});
+  if(E.cfg.bass!=='builtin'&&E.cfg.bass!=='howler')REFB.forEach(r=>{if(!E.cache.has(key(E.cfg.bass,'bass','bass',r)))w.push([E.cfg.bass,'bass','bass',r])});
+  let n=0;for(const x of w){const e=byId(x[0]);for(const f of e.files)await needFile(f);await ensure(...x);n++;if(onProg&&w.length>12&&n%6===0)onProg(Math.min(.01,n/w.length*.01))}
+ }
+ /* the timeline-video mixer builds notes straight from sample arrays: let it use an engine voice */
+ const api={x17:{load:()=>x17Load(),plan:o=>x17Plan(o),render:(...a)=>x17Render(...a),S:()=>X17S},cfg:E.cfg,E,ENGS,FAMS,famOf,pcmVoice,prewarm,prewarmAll,ensure,setEngine,setAll,setFx,ensureCard,render,playNote,playBass,playDrum,key,detect,toneVoice,primVoice,PRIM,SR,wantsUsed,fxApply};
+ return api;
+})();
+(function(){const _ra=renderAll;renderAll=function(){const r=_ra.apply(this,arguments);try{ENG18.ensureCard()}catch(e){}return r};
+ [300,1200,3000,6000].forEach(t=>setTimeout(()=>{try{ENG18.ensureCard()}catch(e){}},t));
+ setTimeout(()=>{try{window.__fretlab.ENG18=ENG18}catch(e){}},0);
+ /* engines chosen last time: prepare them quietly in the background after start-up */
+ setTimeout(async()=>{try{for(const r of ['note','keys','bass','drum'])if(ENG18.cfg[r]!=='builtin')await ENG18.setEngine(r,ENG18.cfg[r])}catch(e){}},2500)})();
 window.__fretlab={x102:{SC:()=>SC,CH:()=>CH,CHORDS:()=>CHORDS,SCALES:()=>SCALES,PROGS:()=>PROGS,progList,STRUMS9:()=>STRUMS9,DRUMS:()=>DRUMS,LESSONS:()=>LESSONS,LEX:()=>LEX,GAMES:()=>GAMES,GG:()=>GG,PRESETS:()=>PRESETS,TOK:()=>TOK,INSTR:()=>(typeof INSTR8!=="undefined"?INSTR8:null),voicingsFor,octaveNotes8,scaleSeq,chordMidis,progChords,rootMidi,tn,gpRead9,ptbRead9,midiRead9,gp5Write8,ptbWrite8,midiWrite8,asciiTab8,fit7Song10,quiz:()=>quiz,download:(b,n)=>download(b,n),XA:()=>XA,CHOPIN8:()=>CHOPIN8,midiScore9,keyEst10,keyFromName10,keyLabel10},x101:{vidAudioPCM,mp4Mux10,flvMux10,audioCodec10,aacASC10,vidAudioEnc,pcm16FLV10},x10:{LESSONS,LES_UNITS,CHD10,parseNotes10,scaleSteps10,lesEnter,lesPlay,LEX:()=>LEX,voicingsFor,progList,PROG10,DR10,FEAT10,BUGS10:()=>BUGS10.concat(BUGS10_EXTRA),vidTimeline,vidPrepare,gifEncode,mp4Mux,flvMux,vidH264,vidGif,VID,hushAll10,playing10,les10},x9:{PROG9,PROG9_CATS,FEAT9,FEAT9N,UI9,UI9N,STRUMS9,importAny9,midiRead9,midiScore9,gpRead9,gpifRead9,ptbRead9,bcfz9,bcfs9,unzip9,scoreToSong9,posBox9,progSong9,progAll9,barChords9,curProg9,makeZip9,sv9,importFile9},x8:{XS8,INSTR8,setInstr8,octaveNotes8,octaveFor8,tabText8,specOf8,relatedFor8,pkgPages8,tlSong8,songBuild8,midiParse,midiToSong8,asciiTab8,gp5Write8,ptbWrite8,midiWrite8,SG8,UI8,UI8N,curItem8,buildPDF,exportSong8},x7:{XA,TK,DRILLS,parseChordSym,transposeText,idChord,parseNote,intervalBetween,applyInterval,romanFor,capoOptions7,symStyle,allCards,cardFace,ACH,achCheck,GLOSS,TIPS,TKORDER,DRTABS,PTTABS,STRUMS,MOODS,PATH,sanitizeV7,XS,THEME_LIST,symStyle,setBpm,tempoOf,v7Key},SELF:()=>SELF_HTML,cleanSelf,makeZip,buildPDF,buildDOCX,exRun,exItems,exCollect,exPages,boardSVG,buildPlatform,melEvents,melEnsure,MP,melTab,melText,melMidiBytes,markerSVG,SHAPES,FXS,PALETTES,VPRESETS,applyVPreset,sanitizeV6,designerHTML,crc32,parseSeq,MELP,ALLSET,AKA,dropVoicings,parseProg,pickVoicing,capoHTML,progSheetSVG,libraryText,qsItems,anyScaleChords,neighbours,gapMute,ivPool,MEL:()=>MEL,FAMS,rot,degToks,TOK,chordScales,charNotes,scaleStats,famTableRows,famTableText,filterSelect,stepFamily,CH,SC:()=>SC,hearColour,midiFile,smf,sheetSVG,timedStart,quizTimer,pickStr,newHTML,dailyPlan,streakDays,tapTempo,clockTick:()=>clockTick(),drumHit,bassNote,DRUMS,cagedFor,CAGED,CAGED_ROOT,chordBoxes,triadSets,subsFor,chordSheet,patSeq,progList,secondaryDoms,midiMsg,livePcs,tstrFill,histGo,pianoSVG,staffSVG,legendOff,hist:()=>hist,state:()=>state,quiz:()=>quiz,prog:()=>prog,detectPitch,voicingsFor,renderAll,asciiTab,exportSvgString,SCALES,CHORDS,PROGS,tunerShow,computePos:()=>computePos(),metToggle,clock:()=>clock};
 })();
 </script>
