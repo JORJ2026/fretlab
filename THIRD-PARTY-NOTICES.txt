@@ -50,3 +50,12 @@ Because the whole site is served as readable source (no build step, nothing mini
 libraries), the "corresponding source" the GPL asks for is the site itself. Keep the notice lines in each file.
 If you later want a non-GPL licence for FretLab, delete original/vendor/djvu.js and its four licence files (see
 section 3) and ask every contributor to agree to the change first. This file is a good-faith inventory, not legal advice.
+
+Sound engines (engines/ folder, loaded on demand; all MIT-compatible with GPL-3.0)
+  Tone.js 15.1.22        engines/tone.js        MIT   (C) Yotam Mann and contributors
+  Wad 4.13.4             engines/wad.js         MIT   (C) Rob Serota
+  Pizzicato.js 0.6.4     engines/pizzicato.js   MIT   (C) Alejandro Mangui
+  Tuna.js 1.1.3          engines/tuna.js        MIT   (C) Oskar Eriksson, DinahMoe AB
+  jsfxr 1.4.1            engines/sfxr.js, riff.js   MIT / public domain (sfxr by Tomas Pettersson)
+  ZzFX 1.4.0 (embedded generator)                   MIT   (C) Frank Force
+  Howler.js 2.2.4 (engine name only: sample-player mode uses the app's own samples)   MIT (C) James Simpson

@@ -6,4 +6,6 @@ cd "$(dirname "$0")"
 mkdir -p app/src/main/assets
 cp ../downloads/FretLab-12-Beta.html app/src/main/assets/fretlab.html
 cp ../FretLab-Guide.pdf app/src/main/assets/FretLab-Guide.pdf
+mkdir -p app/src/main/assets/engines
+cp ../engines/*.js app/src/main/assets/engines/
 echo "Assets ready in app/src/main/assets"
