@@ -47,12 +47,12 @@ No build step is needed. Any static host works the same way (Netlify, Cloudflare
 
 | File | What it is |
 |---|---|
-| `FretLab-12-Windows.zip` | `FretLab.exe` (x64) and `FretLab-arm64.exe`, `install-windows.bat` and the site |
-| `FretLab-12-Mac.zip` | `FretLab.app` for Apple Silicon and Intel, plus `install-mac.command` |
-| `FretLab-12-Linux.zip` | x86-64 and ARM64 programs plus `install-linux.sh` for a menu entry |
-| `FretLab-12-Android-Project.zip` | Android Studio project (no INTERNET permission) with the Beta built in |
-| `FretLab-12-Beta.html` | The Beta as one HTML file that opens straight from disk |
-| `FretLab-JamBand-DAW.html` | The Jam Band page and DAW as one HTML file |
+| `ManicRulesGuitar-12-Windows.zip` | `ManicRulesGuitar.exe` (x64) and `ManicRulesGuitar-arm64.exe`, `install-windows.bat` and the site |
+| `ManicRulesGuitar-12-Mac.zip` | `ManicRulesGuitar.app` for Apple Silicon and Intel, plus `install-mac.command` |
+| `ManicRulesGuitar-12-Linux.zip` | x86-64 and ARM64 programs plus `install-linux.sh` for a menu entry |
+| `ManicRulesGuitar-12-Android-Project.zip` | Android Studio project (no INTERNET permission) with the Beta built in |
+| `ManicRulesGuitar-12-Beta.html` | The Beta as one HTML file that opens straight from disk |
+| `ManicRulesGuitar-JamBand-DAW.html` | The Jam Band page and DAW as one HTML file |
 
 The desktop apps serve the bundled site on `127.0.0.1` only, open your browser, and quit a few minutes after the last
 tab is closed. Their source is in `desktop/` (Go, standard library only); the Android project is in `android/`
@@ -77,7 +77,7 @@ iPhone and iPad: open the site in Safari, then choose *Share → Add to Home Scr
 
 ## Help
 
-`FretLab-Guide.pdf` (in this folder, and linked from the start page and the Beta's ❔ Guide button) explains every feature, with screenshots and installation steps for each platform (Part 1 shows the current screens; Part 2 is the earlier full manual, whose screenshots and the old FretLab name predate this update).
+`ManicRulesGuitar-Guide.pdf` (in this folder, and linked from the start page and the Beta's ❔ Guide button) explains every feature, with screenshots and installation steps for each platform (Part 1 shows the current screens; Part 2 is the earlier full manual, whose screenshots and the old ManicRulesGuitar name predate this update).
 
 ## Fonts
 

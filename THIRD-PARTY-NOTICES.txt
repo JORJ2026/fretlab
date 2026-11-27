@@ -1,10 +1,10 @@
-FretLab – third-party notices
+ManicRulesGuitar – third-party notices
 =============================
 
-FretLab's own code, scales, chords, lessons, games and sounds are original work of the FretLab project. Sounds are
+ManicRulesGuitar's own code, scales, chords, lessons, games and sounds are original work of the ManicRulesGuitar project. Sounds are
 generated in the browser; no audio samples from other works are included.
 
-FretLab's own code is released under the GNU General Public License, version 3 or (at your option) any later version
+ManicRulesGuitar's own code is released under the GNU General Public License, version 3 or (at your option) any later version
 (GPL-3.0-or-later). The full text is in the file LICENSE. See "How the licences fit together" at the end.
 
 The files below are bundled unchanged (minified where noted) from other projects.
@@ -31,24 +31,24 @@ The files below are bundled unchanged (minified where noted) from other projects
 3. DjVu.js – GNU GPL v2 or later
    Source: https://github.com/RussCoder/djvujs (library directory). Version 0.5.4, vendored from https://djvu.js.org/assets/dist/djvu.js.
    Its licence files are original/vendor/djvu-LICENSE.txt, djvu-GPL-2.txt, djvu-UNLICENSE.txt and djvu-NOTICE.txt.
-   * What it does in FretLab: it writes .djvu files in the Export Studio, in your own browser. Nothing is uploaded.
+   * What it does in ManicRulesGuitar: it writes .djvu files in the Export Studio, in your own browser. Nothing is uploaded.
    * How it is loaded: only when someone exports DjVu. It is a separate file (original/vendor/djvu.js), not merged
      into any other file, and is not used by the Beta, the Jam Band, the lessons or the games.
    * The file is the library's own unminified source, so the corresponding source is included in this package.
-   * To publish FretLab without any GPL code, delete original/vendor/djvu.js, its four licence files, and the
+   * To publish ManicRulesGuitar without any GPL code, delete original/vendor/djvu.js, its four licence files, and the
      "djvu" entries in original/offline-assets.js and sw.js. The Export Studio then shows its "DjVu encoder did not
      load" message only if DjVu is chosen; every other format is unaffected.
 
 How the licences fit together
 -----------------------------
-FretLab as a whole is GPL-3.0-or-later. That works with everything bundled here:
+ManicRulesGuitar as a whole is GPL-3.0-or-later. That works with everything bundled here:
   * DjVu.js is "GPL-2.0 or later", so it may be used under GPL-3.0.
-  * SheetJS (Apache-2.0) is compatible with GPL-3.0 (not with GPL-2.0-only, which is why FretLab picks version 3).
+  * SheetJS (Apache-2.0) is compatible with GPL-3.0 (not with GPL-2.0-only, which is why ManicRulesGuitar picks version 3).
   * jsPDF, html2canvas, JSZip (MIT option), docx and Tone.js are MIT, which GPL-3.0 allows.
   * Roboto (SIL OFL 1.1) is a font file shipped alongside, under its own licence.
 Because the whole site is served as readable source (no build step, nothing minified apart from the third-party
 libraries), the "corresponding source" the GPL asks for is the site itself. Keep the notice lines in each file.
-If you later want a non-GPL licence for FretLab, delete original/vendor/djvu.js and its four licence files (see
+If you later want a non-GPL licence for ManicRulesGuitar, delete original/vendor/djvu.js and its four licence files (see
 section 3) and ask every contributor to agree to the change first. This file is a good-faith inventory, not legal advice.
 
 Sound engines (engines/ folder, loaded on demand; all MIT-compatible with GPL-3.0)
