@@ -1,1 +1,1 @@
-window.DL_SIZES={"FretLab-12-Beta.html": 12528393, "FretLab-JamBand-DAW.html": 12528434};
+window.DL_SIZES={"FretLab-12-Android-Project.zip": 13110555, "FretLab-12-Beta.html": 12511332, "FretLab-12-Linux.zip": 23728911, "FretLab-12-Mac.zip": 23894289, "FretLab-12-Windows.zip": 23788198, "FretLab-JamBand-DAW.html": 12511373};
