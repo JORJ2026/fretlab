@@ -1047,3 +1047,116 @@
 - **What it is:** Generates 8 measures of random 2-, 3- or 4-note finger patterns from fingers 1–4 in any order (1-3-2-4, 1-3, 2-1-3 …), the same on every string or different on each, with the neck, the tab and sound.
 - **How to use it:** Click 🖐 Drill, choose the notes per pattern, the strings, the starting fret and the tempo, press ↻ New drill, then ▶ Play all.
 - **When to use it:** When you want to build finger independence and a clean left hand.
+
+
+## Update 13 additions
+
+- **Instruments (55):** banjo 4/5/6-string and variants, ukulele family, mandolin family, bouzouki, balalaika, bowed strings, oud, lute, shamisen, 12/8-string guitars, basses. Pick one under Fretboard > Instrument; the tuning follows.
+- **Instrument-style neck:** necks only (no body). Its own wood, markers and fret look per instrument, banjo short 5th string with peg, doubled courses, a redrawn nut. Switch off with "Instrument-style neck".
+- **More options (15 each):** Instrument (handedness, capo, frets, names, pitch, neck look), Play (direction, loop, tempo, strum, drums, sound, reverb, drone, bass) and Diagram (marker shape, effect, text, size, opacity, colours, fret numbers, neck length).
+- **Picker families:** chord, scale, progression, tuning and instrument lists fold into collapsed families.
+- **Fret ranges:** per-string first and last fret update the fretboard live, in every mode.
+
+## Update 14 additions
+
+- **More options in Position, Fret window, Practice pattern, Tune and Export (15 each, 75 in all)** behind a "More options" fold in each dropdown. Practice trainers, tuning shortcuts (every string up or down, drop the lowest string, reverse, copy) and Export Studio page settings are now one click from the fretboard.
+
+## Update 15 additions
+
+- **Mobile view improvements (100+):** one-row swipeable dropdown bar, Fit/Scroll neck button, bottom-sheet pickers, full-screen dialogs, bigger touch targets, landscape layout, safe-area support, haptics and keep-awake while playing. Phones only; desktop is unchanged.
+
+## Update 16 additions
+
+- **Playback lab 2 (101 more features):** an effects bus (compressor, delay with ping-pong and tempo sync, chorus, flanger, tremolo, auto-pan, auto filter, lo-fi, soft clipper), note shaping and layers, Jam Band balance, feel and bar-variation settings, drum feel, tab-behaviour options, 20 more tools and 10 presets. Open it from the Playback lab button; everything starts off.
+
+## Update 17 additions
+
+- **Header lab 2 (102 more features):** scroll-hide and shrink, floating look, logo, button, tab and colour styling, patterns and filters, more status strip items, extra quick controls, menu auto-close, reading-progress line, undo and redo, 20 more tools and 10 presets. Open it from the Header button; nothing changes until you choose.
+
+## Update 18 additions
+
+- **UX lab 2 (100 more):** 80 new switches for keyboard, screen readers, contrast, touch, reading, feedback, layout, printing, reliability, motion and text size, 20 tools that mark problem spots on the page and give a UX score, and 9 presets. Open it from the UX button.
+
+## Update 19 additions
+
+- **Export all 2 (103 more):** pick exactly which demo songs and patterns to export, control file and folder names, add a manifest, checksums and README, adjust tempo, key, feel and levels, tune the audio and video settings, and get time-left, stop-on-failure and finish alerts. Open it from Export all, under More options.
+
+## Update 20 additions
+
+- **Export audio/video 2 (93 more):** shape the sound (trims, count-in cut, silence trim, fades with curves, repeat, loop-ready, reverse, filters, stereo, saturation, bit-crush, loudness target, limiter), full MP3 tags with cover art, WAV info and chord cue points, file-name templates, subtitle, lyrics and CSV side files, wake lock, chime and history, backdrops, overlays, title cards, waveform and meters, 20 tools and 11 presets. Open it from the Export audio/video button, under More options.
+
+## Update 21 additions
+
+- **Jam 5 fix and Jam 5 lab 2:** the Jam 5 button now opens the Jam Band page with the Jam Band 5 panel open. The panel gains 67 options in 8 groups, 20 tools (random feel and dynamics, key and tempo changes, drums only, solo next track, copy chord chart and roman numerals, practice stats, rotate and reverse chords), 10 quick styles (shuffle blues, tight rock, lazy pocket, funk 16ths, ballad, jazz swing, Latin push, practice drill, metal tight, neutral) and 12 more progression styles.
+
+## Update 22 additions
+
+- **Lesson lab 2:** 83 options, 20 tools and 10 presets for the Lessons view (reading look, layout, reading aids, notes, bookmarks, stars, flags, timer, goals, question helpers), behind a new 🎓 Lesson lab 2 button.
+
+## Update 23 additions
+
+- **Games lab 2:** 80 options, 20 tools and 10 presets for the Games view (rules, questions, look, game list, play helpers, finish screen), behind a new 🎮 Games lab 2 button.
+
+## Update 24 additions
+
+- **Drill lab 2:** 81 options, 20 tools and 10 presets for the Finger drill (pattern rules, playing, look, session), behind a new 🖐 Drill lab 2 button.
+
+## Update 25 additions
+
+- **Video lab 2:** 84 more video options (300 in all) in 7 new groups, 20 tools and 10 presets inside 🎞 More video settings: overlays, fretboard helpers, text, motion, loops, picture filters and file names.
+
+## Update 26 additions
+
+- **Library lab 2:** 81 options, 20 tools and 10 presets for the My library dialog (look, lists, pins and notes, naming rules, defaults, backups, export/import), behind a new 📚 Library lab 2 button.
+
+## Update 27 additions
+
+- **Navigate lab 2:** 76 options, 20 tools and 10 presets for the ☰ Navigate menu (look, rows, groups, search, pins, recent, filters, jump behaviour, keyboard shortcuts, saved layouts).
+
+## Update 28 additions
+
+- **Tools lab 2:** 74 options, 20 tools and 10 presets for the ⋯ Tools panel (look, quick buttons, section and page buttons, jump behaviour, key, saved choices).
+
+## Update 29 additions
+
+- **Export Hub lab 2:** 78 options, 20 tools and 10 presets for the 📤 Export Hub (look, format buttons, sources, file names, multi-format export, history, keys).
+
+## Update 30 additions
+
+- **Neck Diagram Explorer lab 2:** 85 options, 20 tools and 10 presets (frame, notes, fretboard, positions, behaviour, copy and save as SVG/PNG).
+
+## Update 31 additions
+
+- **Theory Decks lab 2:** 76 options, 20 tools and 10 presets (card look and contents, lists, flash-card timers, quiz, deal game, keys, shortcuts).
+
+## Update 32 additions
+
+- **Neck Designer lab 2:** 100 options, 20 tools and 10 presets (neck filters, wood, strings, frets, notes, labels, overlays, highlights, save as SVG/PNG).
+
+## Update 33 additions
+
+- **Melodic Patterns lab 2:** 77 options, 20 tools and 10 presets (note changes, rhythm, playback, path on the neck, panel look, keys).
+
+## Update 34 additions
+
+- **Practice lab 2:** 77 options, 20 tools and 10 presets (click sound, silent beats, tempo, session helpers, panel look, keys).
+
+## Update 35 additions
+
+- **Information lab 2:** 71 options, 20 tools and 10 presets (hide and fold parts, chips, headings, notes, panel look, keys, copy/save/print).
+
+## Update 36 additions
+
+- **Circle of fifths lab 2:** 74 options, 20 tools and 10 presets (circle shape, labels, highlights, lines, text beside, panel look, keys, walk round the circle).
+
+## Update 37 additions
+
+- **Favourites lab 2:** 75 options, 24 tools and 10 presets (show, sort, filter, pins and notes, chips, safe deleting, tour, panel look).
+
+## Update 38 additions
+
+- **Settings lab 2:** 73 options, 26 tools and 10 presets (hide settings, layout, search, lock, day/night theme, quick tools, snapshots, panel look).
+
+## Update 39 additions
+
+- **Guitar tab lab 2:** 76 options, 23 tools and 10 presets (fret numbers, staff, rhythm marks, cursor and playing note, practice playback, zoom, panel look, save as text or picture).
