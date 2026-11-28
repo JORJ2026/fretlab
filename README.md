@@ -1,10 +1,10 @@
-# ManicRulesGuitar 12 – Original + Beta
+# ManicRulesGuitar 1.00 – Original + Beta
 
 An offline fretboard app for guitar, bass, banjo, mandolin, ukulele, violin, viola and cello. Opening the site asks
 which version to use:
 
 * **Original** – the full original site (`original/`), with its Navigate menu, Controls, Export Studio, lessons, courses and quizzes.
-* **New Beta – ManicRulesGuitar 12** (`beta/index.html`, one self-contained file):
+* **New Beta – ManicRulesGuitar 1.00** (`beta/index.html`, one self-contained file):
   * **Lessons mode**: 2,223 interactive guitar lessons in 41 units, from absolute basics to advanced, in a separate uncluttered view (`beta/index.html#lessons`, or `#lesson-12` for one lesson);
   * **Video mode**: animates the current scale, chord, interval, progression, marked notes, quiz question or song with a title, and exports GIF, MP4 or FLV (16:9, square or vertical);
   * **Game mode**: 100 games for notes, intervals, chords, scales, modes, keys and ear training (`beta/index.html#games`);
