@@ -6,7 +6,7 @@ android {
         applicationId "com.fretlab.app"
         minSdk 24
         targetSdk 34
-        versionCode 20
+        versionCode 47
         versionName "12"
     }
     buildTypes { release { minifyEnabled false } }
