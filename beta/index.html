@@ -8,7 +8,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="ManicRulesGuitar">
-<title>ManicRulesGuitar 12 – Fretboard, Scales, Chords &amp; Intervals</title>
+<title>ManicRulesGuitar 1.00 – Fretboard, Scales, Chords &amp; Intervals</title>
 <link rel="manifest" href="../manifest.webmanifest">
 <link rel="apple-touch-icon" href="../icon-192.png">
 <meta name="description" content="ManicRulesGuitar: a free offline fretboard for guitar, bass, banjo, mandolin, ukulele and more. Scales, chords, intervals, ear training, lessons and games.">
@@ -18,7 +18,20 @@
 html.fl-enter body{animation:flFade .24s ease-out both}html.fl-enter #appRoot,html.fl-enter body>main,html.fl-enter body>.wrap{animation:flRise .25s cubic-bezier(.2,.7,.2,1) both}
 html.fl-leave body{opacity:0!important;transition:opacity .19s ease-in!important}html.fl-leave #appRoot,html.fl-leave body>main{transform:translateY(-8px);transition:transform .19s ease-in}
 #appRoot.fl-swap{animation:flSwap .22s cubic-bezier(.2,.7,.2,1)}#les10:not([hidden]),#gm10:not([hidden]){animation:flRise .24s cubic-bezier(.2,.7,.2,1)}#modal:not([hidden])>*{animation:flPop .22s ease-out}
-@media(prefers-reduced-motion:reduce){html.fl-enter body,html.fl-enter #appRoot,html.fl-enter body>main,#appRoot.fl-swap,#les10,#gm10,#modal>*{animation:none!important}html.fl-leave body{transition:none!important}}</style><script id="flPerf10">(function(){if(window.__flPerf10)return;window.__flPerf10=1;var si=window.setInterval;
+@media(prefers-reduced-motion:reduce){html.fl-enter body,html.fl-enter #appRoot,html.fl-enter body>main,#appRoot.fl-swap,#les10,#gm10,#modal>*{animation:none!important}html.fl-leave body{transition:none!important}}</style><script id="flMo59">/* u59/u60: page-wide watchers (label checks, input hints) are asked at most once per 4 s while music plays, and never so often that they use more than about a sixth of the time */
+(function(){var MO=window.MutationObserver;if(!MO||MO.__u59)return;
+function W(cb){var self=this,q=[],t=0,broad=false,last=0,cost=0;
+ function run(){t=0;var r=q;q=[];if(!r.length)return;var s=performance.now();try{cb.call(self,r,self)}catch(e){console.error(e)}var d=performance.now()-s;cost=cost*.5+d*.5;last=performance.now()}
+ var real=new MO(function(recs,obs){var busy=false;try{busy=!!(window.__flBusy&&window.__flBusy())}catch(e){}
+  if(broad&&busy){q=q.concat(recs);if(q.length>400)q=q.slice(-400);if(!t)t=setTimeout(run,4000);return}
+  if(broad&&cost>8){var wait=cost*5-(performance.now()-last);if(wait>30){q=q.concat(recs);if(q.length>400)q=q.slice(-400);if(!t)t=setTimeout(run,Math.min(wait,2500));return}}
+  if(q.length){recs=q.concat(recs);q=[];clearTimeout(t);t=0}
+  var s=performance.now();try{return cb.call(self,recs,self)}finally{cost=cost*.5+(performance.now()-s)*.5;last=performance.now()}});
+ this.observe=function(n,o){try{if(o&&o.subtree&&(n===document.body||n===document.documentElement||n===document))broad=true}catch(e){}return real.observe(n,o)};
+ this.disconnect=function(){clearTimeout(t);t=0;q=[];return real.disconnect()};
+ this.takeRecords=function(){return q.concat(real.takeRecords())}}
+W.prototype=MO.prototype;W.__u59=1;window.MutationObserver=W})();</script>
+<script id="flPerf10">(function(){if(window.__flPerf10)return;window.__flPerf10=1;var si=window.setInterval;
 /* update10: background timers pause while the tab is hidden, unless something is playing or recording */
 window.setInterval=function(f,ms){if(typeof f!=='function')return si.apply(window,arguments);var a=[].slice.call(arguments,2);return si.call(window,function(){if(document.hidden){var b=window.__flBusy11;if(!b||!b())return}return f.apply(this,a)},ms)};
 /* update10: writing the same text again is skipped, so clocks and status lines that refresh every 250 ms do not wake every page observer */
@@ -126,10 +139,10 @@ window.__flBlock=blk;window.__flRun=run;
 window.__flLazy=window.__flLazy||function(n){if(P[n])return P[n];var k='__FLDATA_'+n;P[n]=(window[k]!==undefined?Promise.resolve(window[k]):blk(n).then(function(b){if(b){run(b.textContent);return window[k]}return new Promise(function(res,rej){var s=document.createElement('script');s.src=n+'.js?v=12-34';s.async=true;s.onload=function(){res(window[k])};s.onerror=function(){P[n]=null;rej(new Error('Could not load '+n))};document.head.appendChild(s)})}));return P[n]}})();</script><script id="flA11yJs">(function(){if(window.__flA11y)return;window.__flA11y=1;var d=document;
 function txt(s){return (s||'').replace(/\s+/g,' ').trim()}
 function human(s){return txt(String(s||'').replace(/[-_]+/g,' ').replace(/([a-z])([A-Z])/g,'$1 $2'))}
-function named(e){return e.getAttribute('aria-label')||e.getAttribute('aria-labelledby')||(e.labels&&e.labels.length)||txt(e.title)}
-function pass(){try{
+function named(e){return e.getAttribute('aria-label')||e.getAttribute('aria-labelledby')||!!e.closest('label')||(e.id&&!!d.querySelector('label[for="'+e.id.replace(/["\\]/g,'\\$&')+'"]'))||txt(e.title)}
+var seen=new WeakSet();function pass(){try{
  d.querySelectorAll('img:not([alt])').forEach(function(i){i.setAttribute('alt',txt(i.title)||'')});
- d.querySelectorAll('input:not([type=hidden]):not([aria-label]):not([aria-labelledby]),select:not([aria-label]):not([aria-labelledby]),textarea:not([aria-label]):not([aria-labelledby])').forEach(function(e){if(named(e))return;var n=e.getAttribute('placeholder')||'';if(!n){var p=e.previousElementSibling;if(p&&!/^(INPUT|SELECT|TEXTAREA|BUTTON)$/.test(p.tagName))n=txt(p.textContent).slice(0,60)}if(!n){var par=e.parentElement;if(par&&par.children.length<=3)n=txt(par.textContent).slice(0,60)}if(!n)n=human(e.name||e.id||(e.type==='range'?'value':e.tagName.toLowerCase()));if(n)e.setAttribute('aria-label',n)});
+ d.querySelectorAll('input:not([type=hidden]):not([aria-label]):not([aria-labelledby]),select:not([aria-label]):not([aria-labelledby]),textarea:not([aria-label]):not([aria-labelledby])').forEach(function(e){if(seen.has(e))return;seen.add(e);if(named(e))return;var n=e.getAttribute('placeholder')||'';if(!n){var p=e.previousElementSibling;if(p&&!/^(INPUT|SELECT|TEXTAREA|BUTTON)$/.test(p.tagName))n=txt(p.textContent).slice(0,60)}if(!n){var par=e.parentElement;if(par&&par.children.length<=3)n=txt(par.textContent).slice(0,60)}if(!n)n=human(e.name||e.id||(e.type==='range'?'value':e.tagName.toLowerCase()));if(n)e.setAttribute('aria-label',n)});
  d.querySelectorAll('button:not([aria-label]):not([aria-labelledby]),[role=button]:not([aria-label]):not([aria-labelledby])').forEach(function(b){if(txt(b.textContent).replace(/[^\w]/g,'').length)return;var n=txt(b.title)||txt(b.getAttribute('data-tip'))||txt(b.getAttribute('data-title'));if(n)b.setAttribute('aria-label',n)});
  d.querySelectorAll('button svg:not([aria-hidden]),a svg:not([aria-hidden])').forEach(function(s){if(!s.querySelector('title'))s.setAttribute('aria-hidden','true')});
 }catch(e){}}
@@ -144,7 +157,7 @@ function landmarks(){try{var b=d.body;if(!b)return;var m=d.querySelector('main,[
 d.addEventListener('invalid',function(e){try{e.target.setAttribute('aria-invalid','true')}catch(x){}},true);
 d.addEventListener('input',function(e){var t=e.target;try{if(t.getAttribute&&t.getAttribute('aria-invalid')==='true'&&t.validity&&t.validity.valid)t.removeAttribute('aria-invalid')}catch(x){}},true);
 var last=new WeakMap();d.addEventListener('click',function(e){var b=e.target&&e.target.closest&&e.target.closest('button,a,[role=button]');if(!b)return;var t=txt(b.textContent)+' '+(b.title||'')+' '+(b.getAttribute('aria-label')||'');if(!/export|download|save|print|backup|zip|pdf|png|svg|midi|share/i.test(t)||/play|stop|toggle|show|hide/i.test(t))return;var n=Date.now(),p=last.get(b)||0;if(n-p<700){e.preventDefault();e.stopImmediatePropagation();return}last.set(b,n)},true);
-var q=0;function sched(){if(q)return;q=1;setTimeout(function(){(window.requestIdleCallback||function(c){c()})(function(){q=0;pass()},{timeout:2000})},400)}
+var q=0;function sched(){if(q)return;q=1;setTimeout(function(){(window.requestIdleCallback||function(c){c()})(function(){q=0;if(window.__flBusy&&window.__flBusy()){setTimeout(sched,2500);return}pass()},{timeout:2000})},400)}
 function boot(){landmarks();pass();try{new MutationObserver(function(r){for(var i=0;i<r.length;i++){var t=r[i].target;if(!(t.closest&&t.closest('svg')))return sched()}}).observe(d.body,{childList:true,subtree:true})}catch(e){}}
 function late(){setTimeout(function(){try{var hs=d.querySelectorAll('h1');if(hs.length>1)[].forEach.call(d.querySelectorAll('h1.fl-sr'),function(h){h.remove()})}catch(e){}},1500)}
 function idle9(f){(window.requestIdleCallback||function(c){setTimeout(c,1)})(f,{timeout:1200})}if(d.readyState==='loading')d.addEventListener('DOMContentLoaded',function(){idle9(boot)});else idle9(boot);if(d.readyState==='complete')late();else window.addEventListener('load',late);})();(function(){var d=document,modalWas=false;
@@ -201,7 +214,7 @@ function tables(){d.querySelectorAll('table:not([data-fl9])').forEach(function(t
 d.addEventListener('invalid',function(e){var f=e.target;try{var id=f.id||(f.id='fl9f'+Math.random().toString(36).slice(2,8));var m=d.getElementById(id+'-err');if(!m){m=d.createElement('span');m.className='fl-err';m.id=id+'-err';m.setAttribute('role','alert');f.insertAdjacentElement('afterend',m);var db=f.getAttribute('aria-describedby');f.setAttribute('aria-describedby',(db?db+' ':'')+m.id)}m.textContent=f.validationMessage||'Please check this field.'}catch(x){}},true);
 d.addEventListener('input',function(e){var f=e.target;try{if(f.validity&&f.validity.valid&&f.id){var m=d.getElementById(f.id+'-err');if(m)m.remove()}}catch(x){}},true);
 d.addEventListener('change',function(e){var f=e.target;try{if(f.type!=='file'||!f.files)return;var big=[].filter.call(f.files,function(x){return x.size>50*1024*1024});if(big.length){e.stopImmediatePropagation();e.preventDefault();var n=big[0].name;f.value='';msg('“'+n+'” is larger than 50 MB, so it was not opened. Pick a smaller file.')}}catch(x){}},true);
-var q=0;function run(){current();crumbs();fixes()}function sched(){if(q)return;q=1;setTimeout(function(){(window.requestIdleCallback||function(c){c()})(function(){q=0;fixes()},{timeout:2000})},500)}
+var q=0;function run(){current();crumbs();fixes()}function sched(){if(q)return;q=1;setTimeout(function(){(window.requestIdleCallback||function(c){c()})(function(){q=0;if(window.__flBusy&&window.__flBusy()){setTimeout(sched,3000);return}fixes()},{timeout:2000})},500)}
 function boot(){run();try{new MutationObserver(function(r){for(var i=0;i<r.length;i++){var t=r[i].target;if(!(t.closest&&t.closest('svg')))return sched()}}).observe(d.body,{childList:true,subtree:true})}catch(e){}setTimeout(run,1500)}
 if(d.readyState==='loading')d.addEventListener('DOMContentLoaded',boot);else boot()})();</script><style id="toastDock">/* notification bar docked to the bottom edge, full width */html body #x_toast{position:fixed!important;left:0!important;right:0!important;bottom:0!important;top:auto!important;transform:none!important;width:auto!important;max-width:none!important;margin:0!important;text-align:center!important;border-radius:0!important;padding:10px 16px calc(10px + env(safe-area-inset-bottom))!important;box-shadow:0 -3px 12px rgba(0,0,0,.22)!important;pointer-events:none}html body.mob7 #m7bar.on~#x_toast{bottom:calc(64px + env(safe-area-inset-bottom))!important;padding-bottom:10px!important}</style>
 <script>(function(){try{var d=document.documentElement,t='auto';if(!/[?&]safe=1/.test(location.search)){var r=localStorage.getItem('fretlab.v7');if(r){var o=JSON.parse(r);if(o&&typeof o.theme==='string')t=o.theme}}var dk=window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches;if(t==='auto')t=dk?'dark':'light';else if(t==='autotime'){var h=new Date().getHours();t=(h>=19||h<7)?'dark':'light'}t='light';var q=location.search,hh=location.hash,dp=/[?&](feature|home)=/.test(q)?2120:/[?&](demo|kiosk)=/.test(q)?1950:/[?&]lab=/.test(q)?1650:/[?&]about=1/.test(q)?1350:/^#(lessons?|games|drill)/i.test(hh)?260:0;window.__flDeep=dp;if(dp)d.classList.add('fl-deep');d.setAttribute('data-theme',t);d.classList.add('fl-boot');setTimeout(function(){d.classList.remove('fl-boot','fl-deep')},Math.max(3000,dp+900))}catch(e){}})()</script>
@@ -1222,7 +1235,7 @@ Object.defineProperty(P,'font',{configurable:true,get:d.get,set:function(v){var 
   <details class="card x7" id="prog9"><summary>🎹 Progression library – 1,745 progressions plus your own, export to MIDI, Guitar Pro and Power Tab</summary><div id="prog9Body"></div></details>
   <details class="card x7" id="tabx8"><summary>📝 Tab export – ASCII, MIDI, Guitar Pro, Power Tab</summary><div id="tabx8Body"></div></details>
   <details class="card x7" id="pkg8"><summary>📦 Study packages – clean PDF with related intervals, chords and scales</summary><div id="pkg8Body"></div></details>
-  <footer>ManicRulesGuitar 12 · 100% offline · all settings stored only on this device<span id="x_saved"></span> · <button class="btn sm" data-act="whatsnew">What’s new</button> <button class="btn sm" data-x="guide10">📖 Guide</button></footer>
+  <footer>ManicRulesGuitar 1.00 · 100% offline · all settings stored only on this device<span id="x_saved"></span> · <button class="btn sm" data-act="whatsnew">What’s new</button> <button class="btn sm" data-x="guide10">📖 Guide</button></footer>
 </div>
 <div id="x_tip" hidden></div><div id="x_toast" role="status" hidden></div><button id="x_top" hidden data-x="top" aria-label="Back to top" title="Back to top">↑</button>
 <div id="printArea"></div>
@@ -2291,7 +2304,7 @@ function buildPDF(pages,Wmm,Hmm,meta){
  // refresh ExtGState lists (states may be added on later pages)
  pageIds.forEach(pid=>{objs[pid]=objs[pid].replace(/\/ExtGState << [^>]* >>/,`/ExtGState << ${Object.entries(gsIds).map(([k,id])=>`/GS${k.replace('.','_')} ${id} 0 R`).join(' ')} >>`)});
  objs[pagesId]=`<< /Type /Pages /Kids [${pageIds.map(i=>i+' 0 R').join(' ')}] /Count ${pageIds.length} >>`;
- const infoId=add();objs[infoId]=`<< /Title ${pdfStr(meta.title||'ManicRulesGuitar')} /Author ${pdfStr(meta.author||'')} /Creator (ManicRulesGuitar 12) /Producer (ManicRulesGuitar 12) >>`;
+ const infoId=add();objs[infoId]=`<< /Title ${pdfStr(meta.title||'ManicRulesGuitar')} /Author ${pdfStr(meta.author||'')} /Creator (ManicRulesGuitar 1.00) /Producer (ManicRulesGuitar 1.00) >>`;
  const catId=add();objs[catId]=`<< /Type /Catalog /Pages ${pagesId} 0 R >>`;
  imgs.forEach(({id,op})=>{objs[id]={img:op.jpeg,w:op.pw,h:op.ph}});
  const out=[],L=s=>{const b=new Uint8Array(s.length);for(let i=0;i<s.length;i++)b[i]=s.charCodeAt(i)&255;return b};let pos=0;const offs=[];
@@ -2498,8 +2511,8 @@ function exCatalog(data,fmt){
  const csvq=v=>/[",\n;]/.test(String(v))?'"'+String(v).replace(/"/g,'""')+'"':String(v);
  if(fmt==='csv')return '﻿'+cols.join(',')+'\n'+rows.map(r=>cols.map(c=>csvq(r[c])).join(',')).join('\n');
  if(fmt==='tsv')return cols.join('\t')+'\n'+rows.map(r=>cols.map(c=>String(r[c]).replace(/\t/g,' ')).join('\t')).join('\n');
- if(fmt==='json')return JSON.stringify({app:'ManicRulesGuitar 12',title:state.exp.title,created:new Date().toISOString(),items:rows},null,1);
- if(fmt==='yaml')return `app: ManicRulesGuitar 12\ntitle: ${JSON.stringify(state.exp.title)}\nitems:\n`+rows.map(r=>'  - '+cols.map((c,k)=>(k?'    ':'')+c+': '+JSON.stringify(r[c])).join('\n')).join('\n');
+ if(fmt==='json')return JSON.stringify({app:'ManicRulesGuitar 1.00',title:state.exp.title,created:new Date().toISOString(),items:rows},null,1);
+ if(fmt==='yaml')return `app: ManicRulesGuitar 1.00\ntitle: ${JSON.stringify(state.exp.title)}\nitems:\n`+rows.map(r=>'  - '+cols.map((c,k)=>(k?'    ':'')+c+': '+JSON.stringify(r[c])).join('\n')).join('\n');
  if(fmt==='xml')return `<?xml version="1.0" encoding="UTF-8"?>\n<fretlab title="${xmlEsc(state.exp.title)}">\n`+rows.map(r=>`  <item ${cols.map(c=>`${c}="${xmlEsc(r[c])}"`).join(' ')}/>`).join('\n')+'\n</fretlab>';
  return `${state.exp.title}\n${'='.repeat(Math.max(3,state.exp.title.length))}\n\n`+rows.map(r=>`${String(r.n).padStart(3)}. ${r.name}\n     notes: ${r.notes}${r.formula?'\n     formula: '+r.formula:''}\n     ${r.group}`).join('\n\n');
 }
@@ -2510,7 +2523,7 @@ async function exRun(fmt){
   if(['csv','tsv','json','yaml','xml','txt'].includes(fmt)){const t=exCatalog(data,fmt);download(new Blob([t],{type:fmt==='json'?'application/json':fmt==='xml'?'application/xml':'text/plain'}),`${base}.${fmt}`);exProgress(1,1,`Saved ${data.length} rows as ${fmt.toUpperCase()}.`);return}
   if(fmt==='svgzip'){download(await makeZip(data.map((d,i)=>({name:`${String(i+1).padStart(3,'0')}-${safeName(d.name)}.svg`,data:d.svg}))),`${base}-svg.zip`);exProgress(1,1,`Zipped ${data.length} SVG diagrams.`);return}
   if(fmt==='midizip'){const files=[];const snap=exSnap();try{exItems().forEach((it,i)=>{exCapture(it);const ms=[...new Set([...ACT.values()].map(a=>(rootMidi()+a.semi)))].sort((a,b)=>a-b);const notes=it.kind==='chord'||it.kind==='prog'?ms.map(m=>({t:0,d:1900,m})):ms.concat([rootMidi()+12]).map((m,k)=>({t:k*240,d:220,m}));files.push({name:`${String(i+1).padStart(3,'0')}-${safeName(data[i].name)}.mid`,data:smf(notes,state.bpm)})})}finally{exRestore(snap)}download(await makeZip(files),`${base}-midi.zip`);exProgress(1,1,`Zipped ${files.length} MIDI files.`);return}
-  if(fmt==='html'){const h=`<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${xmlEsc(E.title)}</title><style>body{font-family:${CSSFONT[E.font]};color:${E.tCol};max-width:1100px;margin:24px auto;padding:0 16px}h1{color:${E.hCol}}.g{display:grid;grid-template-columns:repeat(${exLayout(1).cols},1fr);gap:${E.gy}px ${E.gx}px}figure{margin:0;${E.border!=='none'?`border:${E.border==='thick'?2:1}px ${E.border==='dashed'?'dashed':'solid'} ${E.borderCol};`:''}padding:4px}figure svg{width:${E.dsize||100}%;height:auto;display:block;margin:0 auto}figcaption{font-size:${E.cSize+3}px;text-align:center}@media print{figure{break-inside:avoid}}</style></head><body><h1>${xmlEsc(E.title)}</h1>${E.subtitle?`<h2>${xmlEsc(E.subtitle)}</h2>`:''}${E.author?`<p>${xmlEsc(E.author)}</p>`:''}${E.intro?`<p>${xmlEsc(E.intro).replace(/\n/g,'<br>')}</p>`:''}<div class="g">${data.map(d=>{const c=exCaptions(d).map((t,k)=>k?xmlEsc(t):`<b>${xmlEsc(t)}</b>`).join('<br>');return `<figure>${E.cap==='above'?`<figcaption>${c}</figcaption>`:''}${d.svg.replace('<svg ','<svg role="img" aria-label="'+xmlEsc(d.name)+'" ')}${E.cap==='below'?`<figcaption>${c}</figcaption>`:''}</figure>`}).join('')}</div><p style="font-size:12px;color:#888">Made with ManicRulesGuitar 12 – works offline.</p></bo`+`dy></html>`;download(new Blob([h],{type:'text/html'}),`${base}.html`);exProgress(1,1,`Saved an HTML page with ${data.length} diagrams.`);return}
+  if(fmt==='html'){const h=`<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${xmlEsc(E.title)}</title><style>body{font-family:${CSSFONT[E.font]};color:${E.tCol};max-width:1100px;margin:24px auto;padding:0 16px}h1{color:${E.hCol}}.g{display:grid;grid-template-columns:repeat(${exLayout(1).cols},1fr);gap:${E.gy}px ${E.gx}px}figure{margin:0;${E.border!=='none'?`border:${E.border==='thick'?2:1}px ${E.border==='dashed'?'dashed':'solid'} ${E.borderCol};`:''}padding:4px}figure svg{width:${E.dsize||100}%;height:auto;display:block;margin:0 auto}figcaption{font-size:${E.cSize+3}px;text-align:center}@media print{figure{break-inside:avoid}}</style></head><body><h1>${xmlEsc(E.title)}</h1>${E.subtitle?`<h2>${xmlEsc(E.subtitle)}</h2>`:''}${E.author?`<p>${xmlEsc(E.author)}</p>`:''}${E.intro?`<p>${xmlEsc(E.intro).replace(/\n/g,'<br>')}</p>`:''}<div class="g">${data.map(d=>{const c=exCaptions(d).map((t,k)=>k?xmlEsc(t):`<b>${xmlEsc(t)}</b>`).join('<br>');return `<figure>${E.cap==='above'?`<figcaption>${c}</figcaption>`:''}${d.svg.replace('<svg ','<svg role="img" aria-label="'+xmlEsc(d.name)+'" ')}${E.cap==='below'?`<figcaption>${c}</figcaption>`:''}</figure>`}).join('')}</div><p style="font-size:12px;color:#888">Made with ManicRulesGuitar 1.00 – works offline.</p></bo`+`dy></html>`;download(new Blob([h],{type:'text/html'}),`${base}.html`);exProgress(1,1,`Saved an HTML page with ${data.length} diagrams.`);return}
   const L0=exLayout(1),wpx=Math.round(L0.imgW/25.4*150*E.scale);
   if(['pngzip','jpgzip','webpzip'].includes(fmt)){const type={pngzip:'image/png',jpgzip:'image/jpeg',webpzip:'image/webp'}[fmt],ext={pngzip:'png',jpgzip:'jpg',webpzip:'webp'}[fmt];const w=Math.round(1264*E.scale/2);
    const r=await exRaster(data,w,type,E.jq/100);download(await makeZip(r.map((x,i)=>({name:`${String(i+1).padStart(3,'0')}-${safeName(data[i].name)}.${ext}`,data:x.bytes,store:true}))),`${base}-${ext}.zip`);exProgress(1,1,`Zipped ${r.length} ${ext.toUpperCase()} images.`);return}
@@ -2740,9 +2753,9 @@ V6READY=true;sanitizeV6();
 /* ================= audio ================= */
 let AC=null,master=null,dryG=null,wetG=null,conv=null,compN=null;
 function audio(){
- if(!AC){const C=window.AudioContext||window.webkitAudioContext;if(!C)return null;AC=new C();
+ if(!AC){const C=window.AudioContext||window.webkitAudioContext;if(!C)return null;try{AC=(navigator.maxTouchPoints>0&&window.matchMedia&&matchMedia('(pointer:coarse)').matches)?new C({latencyHint:'playback'}):new C()}catch(e){AC=new C()}
   master=AC.createGain();compN=AC.createDynamicsCompressor();dryG=AC.createGain();wetG=AC.createGain();conv=AC.createConvolver();
-  const L=Math.floor(AC.sampleRate*1.8),ir=AC.createBuffer(2,L,AC.sampleRate);
+  const L=Math.floor(AC.sampleRate*((navigator.maxTouchPoints>0&&(navigator.hardwareConcurrency||8)<=4)?1.1:1.8)),ir=AC.createBuffer(2,L,AC.sampleRate);
   for(let c=0;c<2;c++){const d=ir.getChannelData(c);let seed=12345+c*777;for(let i=0;i<L;i++){seed=(seed*1664525+1013904223)>>>0;d[i]=((seed/4294967296)*2-1)*Math.pow(1-i/L,3.2)}}
   conv.buffer=ir;master.connect(dryG);dryG.connect(compN);master.connect(conv);conv.connect(wetG);wetG.connect(compN);toneF=AC.createBiquadFilter();toneF.type='lowpass';toneF.Q.value=0.5;compN.connect(toneF);toneF.connect(AC.destination);toneApply();
  }
@@ -2801,7 +2814,7 @@ function strumNotes(m){
  const hj=state.human;order.forEach((x,i)=>setTimeout(()=>{pluck(x,Math.max(0.3,0.75+0.25*(i%2)+(Math.random()-0.5)*hj*0.6));flash(x)},Math.max(0,i*delay*(1+(Math.random()-0.5)*hj*0.5)+Math.random()*hj*14)));
 }
 function flash(pc){
- {const L=document.querySelectorAll('#fb .mk[data-pc="'+pc+'"]');L.forEach(e=>e.classList.remove('hit'));if(L.length){void L[0].getBoundingClientRect();L.forEach(e=>{e.classList.add('hit');setTimeout(()=>e.classList.remove('hit'),420)})}}
+ {const L=document.querySelectorAll('#fb .mk[data-pc="'+pc+'"]');L.forEach(e=>e.classList.remove('hit'));if(L.length){const go=()=>L.forEach(e=>{e.classList.add('hit');setTimeout(()=>e.classList.remove('hit'),420)});if(window.__flBusy&&window.__flBusy())requestAnimationFrame(go);else{void L[0].getBoundingClientRect();go()}}}
 }
 /* drone */
 let drone=null,droneKey='';
@@ -3391,7 +3404,7 @@ function libraryHTML(){
   (loose.length?`<h3>Other</h3><div class="pills">${loose.map(s=>`<button class="pill${s.k===state.scale?' on':''}" data-act="libGo" data-k="${s.k}">${s.n}</button>`).join('')}</div>`:'')+'</div>';
 }
 function libraryText(){
- const L=[`ManicRulesGuitar 12 scale library – ${SCALES.length} scales`,''];
+ const L=[`ManicRulesGuitar 1.00 scale library – ${SCALES.length} scales`,''];
  FAMS.forEach(F=>{L.push(F.name);F.keys.forEach((k,i)=>{const s=SC[k];L.push(`  ${i+1}. ${s.n.padEnd(40)} ${s.t.map(tl).join(' ')}${AKA[k]?'   aka '+AKA[k].join(', '):''}`)});L.push('')});
  SCALES.filter(s=>s.fam==null).forEach(s=>L.push(`${s.n.padEnd(43)} ${s.t.map(tl).join(' ')}`));
  return L.join('\n');
@@ -4004,18 +4017,18 @@ const F7=[
 ['Data & settings',['Settings profiles','Favourites export/import','Practice log CSV','Copy as Markdown']]
 ];
 const F7N=F7.reduce((a,g)=>a+g[1].length,0);
-function newHTML7(){let n=0;return `<h2>What's new in ManicRulesGuitar 12</h2>
+function newHTML7(){let n=0;return `<h2>What's new in ManicRulesGuitar 1.00</h2>
 <p><b>Every section is now collapsible and starts collapsed</b> (your choice is remembered), and the default instrument is the <b>nylon-string guitar</b>. The theme button now toggles light/dark reliably (Shift+T cycles every theme).</p>
 <p><b>${F7N} new features:</b></p>
 <div style="max-height:46vh;overflow:auto">`+F7.map(g=>`<p><b>${g[0]}</b><br>`+g[1].map(x=>`${++n}. ${x}`).join('<br>')+'</p>').join('')+`</div>
 <div class="row"><button class="btn main" data-act="closeModal">Let's play</button></div>`}
-function helpHTML(){return `<h2>ManicRulesGuitar 12 – help</h2>
+function helpHTML(){return `<h2>ManicRulesGuitar 1.00 – help</h2>
 <p><b>Shortcuts</b> (when not typing in a box)</p>
 <p><kbd>1</kbd>–<kbd>6</kbd> modes · <kbd>←</kbd><kbd>→</kbd> root ±1 semitone (<kbd>Shift</kbd> = a 5th) · <kbd>↑</kbd><kbd>↓</kbd> previous/next scale, chord or progression · <kbd>Space</kbd> play · <kbd>Esc</kbd> stop all / close · <kbd>M</kbd> metronome · <kbd>T</kbd> light/dark · <kbd>Shift</kbd>+<kbd>T</kbd> all themes · <kbd>O</kbd> expand/collapse all · <kbd>G</kbd> jump to section · <kbd>F</kbd> focus mode (just the neck) · <kbd>H</kbd> show / hide the header menu · <kbd>Shift</kbd>+<kbd>I</kbd> About · <kbd>Shift</kbd>+<kbd>L</kbd> Lab tools · <kbd>Shift</kbd>+<kbd>D</kbd> guided demo · <kbd>Shift</kbd>+<kbd>H</kbd> all features · <kbd>/</kbd> search · <kbd>Shift</kbd>+<kbd>M</kbd> mute · <kbd>Shift</kbd>+<kbd>P</kbd> presentation · <kbd>D</kbd> drone · <kbd>E</kbd> export studio · <kbd>V</kbd> video mode · <kbd>L</kbd> lessons</p>
 <p><b>Quiz &amp; games</b>: <kbd>1</kbd>–<kbd>4</kbd> answer · <kbd>Enter</kbd> next question. <b>Lessons</b>: <kbd>←</kbd><kbd>→</kbd> previous/next lesson · <kbd>Space</kbd> play/stop the first example · <kbd>N</kbd> next unfinished · <kbd>Esc</kbd> back.</p>
 <p>• Drop a MIDI, Guitar Pro or Power Tab file anywhere on the page to open it in the Song player (K plays / pauses).<br>• The strum editor (Practice tools) has 100 patterns, a metronome click and a count-in.<br>• Click a string's name to hide or show that string.<br>• Click a legend item to hide that note.<br>• Click the board, then use the arrow keys to move the cursor.<br>• The page starts in a simple view – ☰ Navigate opens any section, Show all sections shows everything. ■ Stop appears while anything plays.<br>• 🎓 Lessons, 🎮 Games, 🎬 Video and 📚 My library are in the header; 🎸 Strings &amp; ranges is next to the tuning in Settings.<br>• <button class="btn sm" data-x="guide10">❔ Open the illustrated guide (PDF)</button></p>
 <div class="row"><button class="btn" data-act="whatsnew">What's new</button><button class="btn" data-x="about104">About</button><button class="btn" data-x="lab105">🧪 Lab</button><button class="btn" data-x="tour104" data-v="0">Quick tour</button><button class="btn main" data-act="closeModal">Close</button></div>`}
-function welcomeHTML(){return `<h2>Welcome to ManicRulesGuitar 12</h2>
+function welcomeHTML(){return `<h2>Welcome to ManicRulesGuitar 1.00</h2>
 <p>An offline guitar fretboard for scales, chords, intervals and ear training.</p>
 <p>• <b>Tap any fret</b> to hear it (nylon guitar by default).<br>• Pick a <b>mode</b> at the top, then a root and a scale or chord.<br>• Only the fretboard is shown at first; use ☰ Navigate, Show all sections or the search box (press <b>/</b>) for every tool.<br>• 🎓 Lessons teaches guitar from the very first steps.<br>• Press <b>?</b> any time for shortcuts.</p>
 <div class="row"><button class="btn main" data-act="closeModal">Let's play</button><button class="btn" data-x="demo106">▶ Take the guided demo</button><button class="btn" data-x="home107">🏠 All features</button></div>`}
@@ -4071,7 +4084,7 @@ document.addEventListener('click',e=>{
  const d=el.dataset;
  switch(d.act){
   case 'tab':if(d.v!==state.mode){seqTok++;try{melStop()}catch(e){}}setMode(d.v);renderAll();break;
-  case 'root':state.pc=+d.v;state.voicing=null;prog.cur=-1;prog.voicing=null;pluck(rootMidi());renderAll();break;
+  case 'root':state.pc=+d.v;state.voicing=null;prog.cur=-1;prog.voicing=null;renderAll();break;
   case 'spell':state.spell={auto:'sharp',sharp:'flat',flat:'auto'}[state.spell];renderAll();break;
   case 'play':playCurrent(false);break;
   case 'playh':playCurrent(true);break;
@@ -4089,7 +4102,7 @@ document.addEventListener('click',e=>{
   case 'tune':{const s=+d.s;state.tun[s]=Math.min(108,Math.max(12,state.tun[s]+(+d.d)));state.tuning='custom';state.voicing=null;prog.voicing=null;pluck(tn()[s]);renderAll();break}
   case 'openStrings':strumNotes(tn());break;
   case 'showStrings':state.hide=[];renderAll();break;
-  case 'cof':state.pc=+d.pc;if(state.mode==='progress'){const nt=d.t==='min'?'minor':'major';if(nt!==state.pkeyType){state.pkeyType=nt;state.pidx=0}}else{state.scale=d.t==='min'?'minor':'major';if(state.mode==='quiz'||state.mode==='explore')state.mode='scales'}state.pos=0;state.voicing=null;prog.cur=-1;prog.voicing=null;pluck(rootMidi());renderAll();break;
+  case 'cof':state.pc=+d.pc;if(state.mode==='progress'){const nt=d.t==='min'?'minor':'major';if(nt!==state.pkeyType){state.pkeyType=nt;state.pidx=0}}else{state.scale=d.t==='min'?'minor':'major';if(state.mode==='quiz'||state.mode==='explore')state.mode='scales'}state.pos=0;state.voicing=null;prog.cur=-1;prog.voicing=null;renderAll();break;
   case 'progChord':progSelect(+d.i,true);break;
   case 'progPlay':progPlay();break;
   case 'qtype':if(quiz.type!==d.v){quiz.score=0;quiz.total=0;quiz.streak=0}quiz.type=d.v;quiz.cur=null;quiz.msg=null;renderAll();break;
@@ -4326,7 +4339,7 @@ document.addEventListener('keydown',e=>{
  if(e.ctrlKey||e.metaKey||e.altKey)return;
  const k=e.key;
  if(k>='1'&&k<='6'){setMode(MODEKEYS[+k-1]);renderAll();return}
- if(k==='ArrowRight'||k==='ArrowLeft'){e.preventDefault();const d=(k==='ArrowRight'?1:-1)*(e.shiftKey?7:1);state.pc=((state.pc+d)%12+12)%12;state.voicing=null;prog.cur=-1;prog.voicing=null;pluck(rootMidi());renderAll();return}
+ if(k==='ArrowRight'||k==='ArrowLeft'){e.preventDefault();const d=(k==='ArrowRight'?1:-1)*(e.shiftKey?7:1);state.pc=((state.pc+d)%12+12)%12;state.voicing=null;prog.cur=-1;prog.voicing=null;renderAll();return}
  if(k==='ArrowUp'||k==='ArrowDown'){
   e.preventDefault();const d=k==='ArrowDown'?1:-1;
   if(state.mode==='scales'){const i=SCALES.findIndex(s=>s.k===state.scale);if(e.shiftKey){const gs=[...new Set(SCALES.map(s=>s.g))],gi=gs.indexOf(SCALES[i].g),ng=gs[(gi+d+gs.length)%gs.length];state.scale=SCALES.find(s=>s.g===ng).k}else state.scale=SCALES[(i+d+SCALES.length)%SCALES.length].k;state.pos=0;state.ov=-1}
@@ -5183,7 +5196,7 @@ function renderData(){
  const sh=$('#sth_tools');if(sh)sh.textContent='· '+backupHint();
 }
 document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('[data-act=backup]')){XS().lastBackup=Date.now();save();renderData()}},true);
-XA.favExp=()=>{download(new Blob([JSON.stringify({app:'ManicRulesGuitar 12',favs:state.favs},null,1)],{type:'application/json'}),'manicrulesguitar-favourites.json');flashMsg('Favourites exported.');toast('Favourites exported ('+state.favs.length+').')};
+XA.favExp=()=>{download(new Blob([JSON.stringify({app:'ManicRulesGuitar 1.00',favs:state.favs},null,1)],{type:'application/json'}),'manicrulesguitar-favourites.json');flashMsg('Favourites exported.');toast('Favourites exported ('+state.favs.length+').')};
 XA.favImp=el=>{const f=el.files&&el.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const o=JSON.parse(r.result),a=Array.isArray(o)?o:o.favs;if(!Array.isArray(a))throw 0;
  const ok=a.filter(x=>x&&typeof x==='object'&&typeof x.mode==='string'&&Number.isFinite(x.pc)&&typeof x.label==='string'),have=new Set(state.favs.map(x=>JSON.stringify(x)));let n=0;
  ok.forEach(x=>{const s=JSON.stringify(x);if(!have.has(s)&&state.favs.length<200){state.favs.push(x);have.add(s);n++}});save();favRender();secUpdate();toast(n+' favourite'+(n===1?'':'s')+' imported.')}catch(e){toast('That file is not a ManicRulesGuitar favourites file.')}};r.readAsText(f);el.value=''};
@@ -5194,7 +5207,7 @@ XA.mdCopy=()=>{
  if(m==='scales'){const s=SC[state.scale];t+=`- Scale: ${s.n}\n- Formula: ${s.t.map(tl).join(' ')}\n- Notes: ${s.t.map(spell).join(' ')}\n`}
  else if(m==='chords'){const c=CH[state.chord];t+=`- Chord: ${c.n}\n- Formula: ${c.t.map(tl).join(' ')}\n- Notes: ${c.t.map(spell).join(' ')}\n`}
  else if(m==='progress'){t+=`- Chords: ${progChords().map(c=>c.name).join(' – ')}\n`}
- let tab=null;try{tab=asciiTab()}catch(e){}if(tab)t+='\n```\n'+tab+'\n```\n';t+='\n_Made with ManicRulesGuitar 12_\n';
+ let tab=null;try{tab=asciiTab()}catch(e){}if(tab)t+='\n```\n'+tab+'\n```\n';t+='\n_Made with ManicRulesGuitar 1.00_\n';
  COPYMSG10='Copied as Markdown.';copyText(fixAcc(t))};
 XA.rst=el=>{
  if(!el.dataset.arm){el.dataset.arm='1';el.dataset.orig=el.textContent;el.textContent='Tap again to confirm';setTimeout(()=>{if(el.dataset.arm){delete el.dataset.arm;el.textContent=el.dataset.orig}},4000);return}
@@ -5488,7 +5501,7 @@ function setInstr8(id,quiet){
  if(PRESETS[I[2]]&&PRESETS[I[2]][1]){state.tuning=I[2];state.tun=PRESETS[I[2]][1].slice()}
  state.timbre=I[3];state.frets=I[4];XS8().fretless=I[5];state.capo=0;state.voicing=null;if(typeof prog!=='undefined')prog.voicing=null;state.marks=[];state.hide=[];
  const tsel=$('#selTimbre');if(tsel)tsel.value=state.timbre;
- renderAll();if(!quiet){toast(I[1]+(I[5]?' – fretless fingerboard, finger positions shown':''));try{pluck(rootMidi())}catch(e){}}
+ renderAll();if(!quiet){toast(I[1]+(I[5]?' – fretless fingerboard, finger positions shown':''))}
 }
 XA.instr8=el=>{if(state.srng){state.srng=null;toast('Per-string fret ranges were reset for the new instrument')}setInstr8(el.value)};
 XA.fretless8=el=>{XS8().fretless=el.checked;renderAll()};
@@ -5510,7 +5523,7 @@ function layout8(){
  <button class="x8b main" data-act="exStudio" title="Export Studio (E)">Export</button>
  <a class="x8b ghost" href="../index.html?choose" id="x8switch" title="Choose Original or Beta mode">Mode ⇄</a>`;
  H.appendChild(right);H.after(tools);
- const br=document.createElement('div');br.className='x8beta';br.innerHTML='<b>ManicRulesGuitar 12 Beta</b> · simple view – the neck, its controls and the tab. Use <b>☰ Navigate</b> or <b>Show all sections</b> for everything else.';
+ const br=document.createElement('div');br.className='x8beta';br.innerHTML='<b>ManicRulesGuitar 1.00</b> · simple view – the neck, its controls and the tab. Use <b>☰ Navigate</b> or <b>Show all sections</b> for everything else.';
  tools.after(br);
  const ir=document.createElement('div');ir.className='row x8inst';ir.id='x8inst';
  const bw=$('#boardCard .boardwrap');if(bw){bw.parentNode.insertBefore(ir,bw);const tw=document.createElement('div');tw.id='x8tabwrap';tw.className='x8tabwrap';bw.after(tw)}
@@ -5710,7 +5723,7 @@ function relatedFor8(it){
 function pkgPages8(it){
  const P=XS8().pkg,paper=P.paper==='Letter'?[215.9,279.4]:[210,297],[PW,PH]=paper,M=14,CW=PW-2*M;const sp=specOf8(it);if(!sp)throw new Error('Nothing selected');
  const pages=[];let ops,y;const I=instr8(XS8().instr);
- const newPage=()=>{ops=[];pages.push({ops});y=M;ops.push({t:'text',x:M,y:PH-7,text:winAnsi(`ManicRulesGuitar 12 · ${sp.label} · ${instrLabel10()}`),size:7,col:'#9a8f80',font:'helv'});ops.push({t:'text',x:PW-M,y:PH-7,text:'Page '+pages.length,size:7,col:'#9a8f80',align:'right',font:'helv'})};
+ const newPage=()=>{ops=[];pages.push({ops});y=M;ops.push({t:'text',x:M,y:PH-7,text:winAnsi(`ManicRulesGuitar 1.00 · ${sp.label} · ${instrLabel10()}`),size:7,col:'#9a8f80',font:'helv'});ops.push({t:'text',x:PW-M,y:PH-7,text:'Page '+pages.length,size:7,col:'#9a8f80',align:'right',font:'helv'})};
  const need=h=>{if(y+h>PH-14)newPage()};
  const head=(t,sub)=>{need(16);ops.push({t:'fill',x:M,y:y,w:CW,h:.6,col:'#e3a03a'});y+=6;ops.push({t:'text',x:M,y:y,text:winAnsi(t),size:13,bold:true,col:'#241a10',font:'helv'});y+=4;if(sub){ops.push({t:'text',x:M,y:y+1,text:winAnsi(sub),size:7.5,col:'#6d6257',font:'helv'});y+=5}y+=2};
  newPage();
@@ -5852,7 +5865,7 @@ const UI8=[
 ['Player and exports',['Transport bar with a large Play / Pause','Position slider with elapsed and total time','Tempo slider shows percent and BPM live','Pieces grouped: Ballades, Études, Nocturnes, Mazurkas, Waltzes…','Statistics line explains moved octaves and left-out notes','Monospaced tab preview with aligned figures','Export buttons grouped under one label','Numbered tab-export list','Move up, move down and remove on each list item','Package card shows what the PDF will contain','Vector PDF with a dark title band','PDF section headings with an accent rule','PDF footer with page numbers','PDF dots colour-coded with outlined roots','A message confirms every export']],
 ['Polish and accessibility',['Theme changes fade smoothly','All new animations respect “reduce motion”','Printing hides the new navigation and tools','ARIA labels on every new control','Larger touch targets in the Navigate menu','Divider and title in the Navigate menu','Badge styling for practice counts','Softer, centred footer','Dialog backdrop gently blurred','Dialog buttons aligned to the right','Mode chooser at start: Original or new Beta','Chooser remembers your choice','Chooser works offline and on every platform','Same look in all themes for the new parts','Faster first paint: the heavy sections stay closed until opened','Beta keeps all 7.0 features one tap away','Section menu shows only sections that apply to the current mode','Instrument change confirms with a short message','Tab panel follows the position window','Song dots clear as each note ends']]];
 const UI8N=UI8.reduce((a,g)=>a+g[1].length,0);
-function newHTML8(){let n=0;return `<h2>What's new in ManicRulesGuitar 12 (Beta)</h2>
+function newHTML8(){let n=0;return `<h2>What's new in ManicRulesGuitar 1.00</h2>
 <p><b>The fretboard is the only section shown at first</b>; every other section is collapsed and hidden until you open it with <b>☰ Navigate</b>, <b>Show all sections</b>, <b>⋯ Tools</b> or the new <b>search box</b> (press <kbd>/</kbd>). The <b>Menu</b> button is at the top right, and the tip note is off unless you tick it in Tools.</p><p><b>New in this update:</b> an <b>Export dropdown</b> on the fretboard; <b>Open position</b> (frets 0–5); a <b>searchable demo picker</b> and a <b>Nylon guitar only</b> option in the Jam Band; <b>Export all</b> now covers scales, chords and intervals, adds drums to every demo and lets you edit tempo, meter, length and instruments; every one of the 1,346 demo songs was reviewed and given a proper bass, varied lead sounds and a full arrangement; square corners everywhere.</p>
 <p><b>New:</b> a <b>tab under the diagram</b> showing one octave of the scale, chord or interval. There are new instruments (<b>bass, banjo, mandolin, violin, viola, cello, ukulele</b>) and <b>PDF study packages</b> with related intervals, chords and scales. The <b>tab export</b> writes ASCII, MIDI, Guitar Pro 5 and Power Tab. The <b>Chopin MIDI library</b> plays on the neck, with treble and bass parts and a tempo control.</p>
 <p><b>${UI8N} UI and visual improvements:</b></p><div style="max-height:40vh;overflow:auto">`+UI8.map(g=>`<p><b>${g[0]}</b><br>`+g[1].map(x=>`${++n}. ${x}`).join('<br>')+'</p>').join('')+`</div>
@@ -6895,12 +6908,13 @@ function songDraw8(){
  OV8_EXTRA=act;ovRender8();
 }
 /* coloured dots per part (overrides the two-colour 8.0 drawing) */
+var OVH59='';
 function ovRender8(active){
- const fb=$('#fb');if(!fb||!LAYOUT)return;let g=fb.querySelector('#x8ov');if(g)g.remove();const parts=[];
+ const fb=$('#fb');if(!fb||!LAYOUT)return;let g=fb.querySelector('#x8ov');const parts=[];
  if(XS8().tab&&XS8().tabMark&&TAB8)TAB8.cols.forEach(col=>col.forEach(n=>{if(n.s<0||n.f<LAYOUT.F0)return;const[x,y]=LAYOUT.xy(n.s,n.f);parts.push(`<circle cx="${x}" cy="${y}" r="15.5" fill="none" stroke="#ffb300" stroke-width="2" stroke-dasharray="3 2.5" opacity=".95"/>`)}));
  if(active)active.forEach(n=>{if(n.s<0||n.f<LAYOUT.F0)return;const[x,y]=LAYOUT.xy(n.s,n.f);parts.push(`<circle cx="${x}" cy="${y}" r="17" fill="rgba(255,179,0,.35)" stroke="#ff8f00" stroke-width="3"/>`)});
  OV8_EXTRA.forEach(n=>{if(n.s<0||n.f<LAYOUT.F0||n.s>=tn().length)return;const[x,y]=LAYOUT.xy(n.s,n.f);const c=PCOL9[(n.part||0)%8];parts.push(`<g><circle cx="${x}" cy="${y}" r="14" fill="${c}" opacity=".92" stroke="#fff" stroke-width="2"/><text x="${x}" y="${y+4}" text-anchor="middle" font-size="11" font-weight="800" fill="#fff">${n.f}</text></g>`)});
- if(!parts.length)return;g=document.createElementNS('http://www.w3.org/2000/svg','g');g.id='x8ov';g.setAttribute('pointer-events','none');g.innerHTML=parts.join('');fb.appendChild(g);
+ const html=parts.join('');if(!parts.length){if(g)g.remove();OVH59='';return}if(g&&OVH59===html)return;OVH59=html;if(g){g.innerHTML=html;return}g=document.createElementNS('http://www.w3.org/2000/svg','g');g.id='x8ov';g.setAttribute('pointer-events','none');g.innerHTML=html;fb.appendChild(g);
 }
 /* ---------- writers: tempo map + velocities + any number of tracks ---------- */
 function exportSong8(song,f){
@@ -7535,7 +7549,7 @@ function lesHTML(){
 function lesRender(){const r=$('#les10');if(!r)return;lesStop();r.innerHTML=lesHTML();const m=r.querySelector('.l10main');if(m)m.scrollTop=0;window.scrollTo(0,0);const on=r.querySelector('.l10li.on');if(on)on.scrollIntoView({block:'nearest'});const h=r.querySelector('.l10main h1,.l10main h2');if(h){h.tabIndex=-1;try{h.focus({preventScroll:true})}catch(e){}}const L=LESSONS[les10().i];if(L)document.title=`Lesson ${les10().i+1}: ${L.t} – ManicRulesGuitar`}
 function lesEnter(i){if(i!=null)les10().i=i;document.body.classList.add('les10');$('#les10').hidden=false;stopAll();lesRender();save();if(location.hash!=='#lessons')safeHist10('#lessons')}
 XA.lesOpenMode=()=>lesEnter();
-XA.lesExit=()=>{lesStop();document.title=`ManicRulesGuitar 12 – Fretboard, Scales, Chords & Intervals`;document.body.classList.remove('les10');$('#les10').hidden=true;if(location.hash==='#lessons')safeHist10(location.pathname+location.search);renderAll()};
+XA.lesExit=()=>{lesStop();document.title=`ManicRulesGuitar 1.00 – Fretboard, Scales, Chords & Intervals`;document.body.classList.remove('les10');$('#les10').hidden=true;if(location.hash==='#lessons')safeHist10(location.pathname+location.search);renderAll()};
 XA.lesGo=el=>{const i=+el.dataset.i;if(i<0||i>=LESSONS.length)return;les10().i=i;save();lesRender();document.body.classList.remove('l10navopen')};
 XA.lesMenu=()=>document.body.classList.toggle('l10navopen');
 XA.lesPlay=el=>{const id=el.dataset.id;if(el.textContent.includes('Stop')){lesStop();return}lesPlay(id)};
@@ -8612,7 +8626,7 @@ function diag104(){const f=feats104();let L=['ManicRulesGuitar '+V104()+' (Beta)
  'Installed app (standalone): '+(standalone104()?'yes':'no'),'Online: '+(navigator.onLine?'yes':'no'),'Safe mode: '+(window.__safe104?'on':'off'),
  'Instrument/tuning: '+(state.tuning||'?')+' / '+(state.tun?state.tun.length+' strings':'?'),'Saved data: '+fmtB104(storBytes104()),'Text size: '+SET104.size,'','Feature support:'];
  f.forEach(x=>L.push('  '+(x[1]?'✔':'✘')+' '+x[0]));L.push('','Recent errors ('+ERR104.length+'):');if(!ERR104.length)L.push('  none');ERR104.forEach(x=>L.push('  '+x));return L.join('\n')}
-function V104(){return '12'}
+function V104(){return '1.00'}
 /* self-test */
 function selftest104(){const R=[],T=(n,f)=>{let ok=false,d='';try{const r=f();ok=r===true||r===undefined?true:!!r;if(typeof r==='string'){d=r}}catch(e){d=e.message}R.push([n,ok,d])};
  T('Saved settings can be written and read',()=>{localStorage.setItem('fl.t','x');const r=localStorage.getItem('fl.t')==='x';localStorage.removeItem('fl.t');return r});
@@ -8678,7 +8692,7 @@ setTimeout(()=>{try{if(window.__safe104){const d=document.createElement('div');d
  const miss=feats104().filter(x=>/Local storage|Web Audio|Canvas/.test(x[0])&&!x[1]).map(x=>x[0]);if(miss.length)toast('This browser does not support: '+miss.join(', ')+'. Some features will not work.');
  if(/[?&]about=1/.test(location.search))XA.about104()}catch(e){}},1200);
 
-const BUGS104=["About ManicRulesGuitar dialog: version, build date, what ManicRulesGuitar is and live counts of scales, chords and tunings (header ⓘ button, Help, or Shift+I; also opens from ?about=1)", "About › Privacy statement: runs entirely on your device, no accounts, analytics or tracking, nothing leaves the device except files you export", "About › Licences & credits (Roboto, SIL OFL 1.1) and a statement that everything you create is yours", "About › Terms: provided “as is”, with a reminder to keep backups", "About › Troubleshooting for the common launch-day problems: no sound, lost settings, a broken-looking page, installing", "About › Diagnostics report (version, build, browser, screen, language, installed or not, online, tuning, saved size, feature support, recent errors)", "Copy report button puts the diagnostics on the clipboard", "Report a problem button saves ManicRulesGuitar-report.txt with blank “what happened / expected / steps” fields plus the diagnostics", "Error catcher: unexpected script errors are kept (last 20) and shown once as a gentle notice instead of failing silently", "Unhandled promise rejections are caught and listed the same way", "Feature-support table (storage, sound, canvas, video recording, MIDI, service worker, clipboard, share, fullscreen, persistent storage)", "Start-up compatibility check: tells you if the browser lacks storage, sound or canvas, which the app needs", "Storage meter: shows how much saved data ManicRulesGuitar uses and the browser's allowance", "Protect my data: asks the browser for persistent storage so settings and library are not auto-cleaned", "Reset settings only: restores factory settings but keeps your library (asks to click twice)", "Reset everything: wipes all ManicRulesGuitar data on this device including the library (asks to click twice)", "Audio test: plays a 440 Hz tone and reports the audio state, to separate “no sound” from muted devices", "Self-test: eight quick checks (storage, settings round-trip, scales, chords, tunings, fretboard, sound, library)", "Offline / back-online notices", "Check for updates button for the hosted and installed versions", "“ManicRulesGuitar was updated – reload” notice when a new version has been installed in the background", "Share button (system share sheet, or copies the link)", "Copy link button", "Five-step Quick tour (About, or Help › Quick tour)", "Help now has About and Quick tour buttons", "“Skip to the fretboard” link for keyboard and screen-reader users", "Text size setting (small, normal, large, extra large) that is remembered", "Stronger keyboard focus outline on every control", "Automatic accessible names for icon-only buttons", "Dialogs are now proper dialogs for screen readers (role, label), keep Tab inside, and give focus back to the button that opened them", "The browser tab title follows the current mode (for example “Scales – ManicRulesGuitar 12”)", "Safe mode: open the app with ?safe=1 to start from factory settings without reading or overwriting your saved data", "Back up button in About › Your data (downloads all settings and the library)", "Search and social preview tags (description, Open Graph, Twitter card, colour scheme) in the page head", "Message for browsers with JavaScript turned off"];
+const BUGS104=["About ManicRulesGuitar dialog: version, build date, what ManicRulesGuitar is and live counts of scales, chords and tunings (header ⓘ button, Help, or Shift+I; also opens from ?about=1)", "About › Privacy statement: runs entirely on your device, no accounts, analytics or tracking, nothing leaves the device except files you export", "About › Licences & credits (Roboto, SIL OFL 1.1) and a statement that everything you create is yours", "About › Terms: provided “as is”, with a reminder to keep backups", "About › Troubleshooting for the common launch-day problems: no sound, lost settings, a broken-looking page, installing", "About › Diagnostics report (version, build, browser, screen, language, installed or not, online, tuning, saved size, feature support, recent errors)", "Copy report button puts the diagnostics on the clipboard", "Report a problem button saves ManicRulesGuitar-report.txt with blank “what happened / expected / steps” fields plus the diagnostics", "Error catcher: unexpected script errors are kept (last 20) and shown once as a gentle notice instead of failing silently", "Unhandled promise rejections are caught and listed the same way", "Feature-support table (storage, sound, canvas, video recording, MIDI, service worker, clipboard, share, fullscreen, persistent storage)", "Start-up compatibility check: tells you if the browser lacks storage, sound or canvas, which the app needs", "Storage meter: shows how much saved data ManicRulesGuitar uses and the browser's allowance", "Protect my data: asks the browser for persistent storage so settings and library are not auto-cleaned", "Reset settings only: restores factory settings but keeps your library (asks to click twice)", "Reset everything: wipes all ManicRulesGuitar data on this device including the library (asks to click twice)", "Audio test: plays a 440 Hz tone and reports the audio state, to separate “no sound” from muted devices", "Self-test: eight quick checks (storage, settings round-trip, scales, chords, tunings, fretboard, sound, library)", "Offline / back-online notices", "Check for updates button for the hosted and installed versions", "“ManicRulesGuitar was updated – reload” notice when a new version has been installed in the background", "Share button (system share sheet, or copies the link)", "Copy link button", "Five-step Quick tour (About, or Help › Quick tour)", "Help now has About and Quick tour buttons", "“Skip to the fretboard” link for keyboard and screen-reader users", "Text size setting (small, normal, large, extra large) that is remembered", "Stronger keyboard focus outline on every control", "Automatic accessible names for icon-only buttons", "Dialogs are now proper dialogs for screen readers (role, label), keep Tab inside, and give focus back to the button that opened them", "The browser tab title follows the current mode (for example “Scales – ManicRulesGuitar 1.00”)", "Safe mode: open the app with ?safe=1 to start from factory settings without reading or overwriting your saved data", "Back up button in About › Your data (downloads all settings and the library)", "Search and social preview tags (description, Open Graph, Twitter card, colour scheme) in the page head", "Message for browsers with JavaScript turned off"];
 function newHTML104(){return `<h2>What's new in ManicRulesGuitar 10.4 (Beta)</h2><p>${BUGS104.length} launch-preparation additions in the app (plus site files):</p><ol class="x102list">${BUGS104.map(x=>`<li>${x}</li>`).join('')}</ol><p class="mut">Earlier: <button class="btn" data-x="new103">10.3</button> <button class="btn" data-x="new102">10.2</button></p><div class="row"><button class="btn main" data-act="closeModal">OK</button></div>`}
 
 /* ================= 10.5 Lab ================= */
@@ -8968,7 +8982,7 @@ setTimeout(()=>{try{const m=/[?&]lab=([a-z0-9]+)/.exec(location.search);if(m)lab
 
 const META105=['Search box that filters all Lab tools by name or topic','Pin your favourite tools to the top of the list (★)','Recent results: the last 10 results you produced, one click to reopen the tool','Copy result button on every tool','Save result as a text file on every tool','Play button: hear the notes, chord or rhythm a tool produced','Show on the fretboard: marks a result’s notes on the neck (Explore mode)','Shift+L and the header 🧪 button open the Lab','Deep link: add ?lab=toolname to the address (for example beta/index.html?lab=ivec)'];
 const GRP105={Analyse:'Theory & analysis',Sound:'Sound, physics & gear',Practice:'Practice',Charts:'Charts & setlists'};
-function newHTML105(){const n=LAB105.length+META105.length;return `<h2>What's new in ManicRulesGuitar 12 (Beta)</h2><p><b>${n} new features</b> – the 🧪 Lab (header button or <kbd>Shift</kbd>+<kbd>L</kbd>) holds ${LAB105.length} new tools plus ${META105.length} workspace features:</p>`+Object.keys(GRP105).map(g=>`<h3>${GRP105[g]}</h3><ul class="x102list">`+LAB105.filter(t=>t.grp===g).map(t=>`<li><b>${esc5(t.name)}</b> – ${esc5(t.desc)}</li>`).join('')+'</ul>').join('')+`<h3>Workspace</h3><ul class="x102list">${META105.map(x=>`<li>${x}</li>`).join('')}</ul><p class="mut">Earlier: <button class="btn" data-x="new104">10.4</button> <button class="btn" data-x="new103">10.3</button></p><div class="row"><button class="btn main" data-act="closeModal">OK</button></div>`}
+function newHTML105(){const n=LAB105.length+META105.length;return `<h2>What's new in ManicRulesGuitar 1.00</h2><p><b>${n} new features</b> – the 🧪 Lab (header button or <kbd>Shift</kbd>+<kbd>L</kbd>) holds ${LAB105.length} new tools plus ${META105.length} workspace features:</p>`+Object.keys(GRP105).map(g=>`<h3>${GRP105[g]}</h3><ul class="x102list">`+LAB105.filter(t=>t.grp===g).map(t=>`<li><b>${esc5(t.name)}</b> – ${esc5(t.desc)}</li>`).join('')+'</ul>').join('')+`<h3>Workspace</h3><ul class="x102list">${META105.map(x=>`<li>${x}</li>`).join('')}</ul><p class="mut">Earlier: <button class="btn" data-x="new104">10.4</button> <button class="btn" data-x="new103">10.3</button></p><div class="row"><button class="btn main" data-act="closeModal">OK</button></div>`}
 
 /* ================= 10.6 Demo mode – steps ================= */
 const DEMO105=[];
@@ -10443,7 +10457,7 @@ if(/^#drill/i.test(location.hash))setTimeout(()=>{const M=$('#modal');if(M&&!M.h
 
 /* ================= 11 what's new ================= */
 XA.new108=()=>showModal(newHTML108());
-function newHTML(){const U=LES_UNITS.slice(10,23);return `<h2>What's new in ManicRulesGuitar 12 (Beta)</h2><ul class="x102list"><li><b>Version 58:</b> New: nine pattern libraries (4,500 patterns) as Jam Band demos under Patterns › … (drums, bass, guitar riffs, jazz, fingerpicking, alternating bass, banjo rolls, metal, piano) and a Pattern parts panel in Jam Band and the Jam DAW: pick a pattern for each instrument separately and merge them, for example jazz drums with a banjo roll.</li><li><b>Version 57:</b> New: Build songs – a grouped library in Jam Band, the Jam DAW and the analysis pages. Buckethead by file (sections, riffs, solos, 2-bar progressions) and Carcassi by version (whole etudes, 2-bar progressions, phrases); add them one after another to build a song. Riffs and solos are also Jam Band demos, and the demo and drum menus are grouped by artist and file.</li><li><b>Version 56:</b> New: 🎸 Buckethead Analysis and 🎼 Matteo Carcassi Analysis (sections, riffs, solos, chords, drum patterns), 305 MIDI pieces to view and edit in the Jam DAW and 930 Buckethead drum patterns (Drums › Buckethead).</li><li><b>Version 55:</b> Practice lab 3 – 12 click voices, in-beat and bar patterns, clave and a second beat (polyrhythm), count-in and start delay, practice intervals with rest and rising tempo, tempo ramps, trainer extras, five practice routines, better tap tempo, weekly and monthly goals, and a lab with settings and presets. The metronome button now always goes through the lab hooks.</li><li><b>Version 54:</b> Drills lab 2 – the quiz drill screens work again (a name clash had replaced them with the finger drill), plus 15 new drill types (fretboard, intervals, chord tones, keys, ear training), mixed and weak-spot drills, rounds with timers, 5 new flashcard decks with daily limits, 4 new learning-path levels, a better scoreboard and a lab with settings and presets.</li><li><b>Version 53:</b> Sound lab 2 – an output chain for the whole app (equaliser, saturation, tremolo, chorus, delay, stereo, reverb shaping, compressor, safety limiter), a level meter and spectrum, a recorder, test sounds, engine switches and saved sounds.</li><li><b>Version 52:</b> Theory toolkit lab 2 – 22 new theory tools (inversions, modes, diatonic chords, secondary dominants, tritone substitution, negative harmony, delay times, cents, note locator, chord scales, Nashville numbers and more) plus settings, presets and a history.</li><li><b>Version 51:</b> Standard notation lab 2 – settings, tools and presets for the notation section (transpose, order, two octaves, chord modes, names as degrees or Do Re Mi, note colours, count-in, click, loops, ABC/SVG export, print).</li><li><b>Version 50:</b> Tuner lab 2 – settings, tools and presets for the tuner (smoothing, noise gate, meter range, in-tune lock with beep, guided string-by-string tuning, string buttons, history strip, reference tones, log).</li><li><b>Version 49:</b> Chord voicings lab 2 – settings, tools and presets for the voicing diagrams and lists (dot labels, fingers, left-handed, filters, sorting, favourites, hear on hover, chord finder and more).</li><li><b>Version 48:</b> Drums now start at 100 % in every Jam Band, Jam DAW and Studio song. New: ⬆ Amplify drums (off by default, up to 500 %) and drum effects (compressor, overdrive, distortion, reverb, echo and more) in Jam Band, Jam DAW and the Studio.</li><li><b>Version 47:</b> New: 🎹 Basic MIDI Player – import MIDI, Guitar Pro and Power Tab files, make playlists and listen in the app. 🎚 Studio gets 500 improvements.</li><li><b>Version 46:</b> New: 🎚 Studio – the Jam Band as a DAW (timeline with a lane per instrument, mixer, piano roll, browser for demos, patterns and songs, new-song wizard, undo). The Jam Band pages stay as they are.</li><li><b>Version 45:</b> Fix: an instrument whose box is unchecked in Jam Band (Solo, Melody, Guitar 2, Keys, Drums) now stays off even when a song section would switch it on; songs that use such sections now show the box ticked. New: ▶ Preview in the Jam Band audio/video export (hear the first seconds as MP3 or WAV before exporting) and ▶ on every sound in 🎼 One instrument through all sounds.</li><li><b>Version 44:</b> Header buttons light up while their panel is open (Tools shows ✕ so you know a second click closes it). Better-sounding guitar for notes, intervals, chords, scales, Jam Band and exports (switch in Sound engines → Guitar tone). An engine choice for every Jam Band instrument, in every Jam Band entry point. Sound menus now stay open while you try sounds. New: Jam Band → 🎼 One instrument through all sounds, a zip of one MP3 per sound.</li><li><b>Version 43:</b> Piano and staff lab 2: 100 options and 26 tools (piano range, key sizes and colours, dot shapes and labels as names, intervals, Do Re Mi or Hz, mirrored keys; staff with treble, bass or grand staff, stems, note shapes, wrapped staves, bar lines; frame and caption; play up, down or as a chord; copy as names, MIDI, ABC or LilyPond; save SVG or PNG) plus 10 presets, behind the new ⚙ Piano and staff lab 2 button.</li><li><b>Version 42:</b> Library pages lab 2: one lab for all 38 library pages (Export Studio, Scales, Chords, Lessons, Theory Decks pages and the rest): 100 options and 31 tools (zoom, text, colour modes, reading ruler, contents panel, find, headings menu, frame, bookmarks, auto-scroll, read aloud, save and print) plus 10 presets, behind the new ⚙ Page lab 2 button on every page.</li><li><b>Version 41:</b> Controls lab 2: 100 options and 25 tools (root buttons by circle of fifths or rotating, intervals or Do Re Mi on them, colour lines, hide or dim buttons; scale row with quick scale buttons, notes and formula, name big, locks; recent keys; keys, key tour, relative and parallel key, random root and scale; layout and panel look) plus 10 presets, behind the new ⚙ Controls lab 2 button.</li><li><b>Version 40:</b> Fretboard lab 2: 100 options and 24 tools (hide notes by name, fret, string or open strings, note size and labels as intervals, numbers or fret, rings on roots, colour by octave, fret range and coloured zone, string and fret wire look, octave lines and distances in mm, crosshair, readout and copies lighting up under the mouse, play on hover, click and double-click actions, neck width and look, panel look; copy and save the neck as text or picture) plus 10 presets, behind the new ⚙ Fretboard lab 2 button.</li><li><b>Version 39:</b> Guitar tab lab 2: 76 options and 23 tools (fret number shapes, sizes and colours, note names under the numbers, staff lines, bar numbers and beat grid, stems and beat counts, cursor and playing-note look, silent guitar with click, count-in, play speed, loop count, zoom, panel look; copy and save the tab as text or picture) plus 10 presets, behind the new ⚙ Tab lab 2 button.</li><li><b>Version 38:</b> Settings lab 2: 73 options and 26 tools (hide settings you never use, columns and look of the settings page, search box, lock, day and night theme by the clock, quick theme, text, marker, tuning and sound tools, snapshots of all settings, copy and save all settings, keys) plus 10 presets, behind the new ⚙ Settings lab 2 button.</li><li><b>Version 37:</b> Favourites lab 2: 75 options and 24 tools (sort, group, filter and search favourites, pin and add notes, rename, move, copy, tour with sound, chip look, safe deleting, keys, panel look; copy and export the list) plus 10 presets, behind the new ⚙ Favourites lab 2 button.</li><li><b>Version 36:</b> Circle of fifths lab 2: 74 options and 20 tools (turn, flip and resize the circle, key signatures and roman numerals on the keys, neighbour, relative and family highlights, lines and arrows, notes and chords of the key, panel look, keys; walk round the circle, copy and save the key table) plus 10 presets, behind the new ⚙ Circle of fifths lab 2 button.</li><li><b>Version 35:</b> Information lab 2: 71 options and 20 tools (hide or fold any part, numbered headings, chip size and layout, heading look, notes box with word count and lock, panel look, keys; copy, save and print the information) plus 10 presets, behind the new ⚙ Information lab 2 button.</li><li><b>Version 34:</b> Practice lab 2: 77 options and 20 tools (own click sound, accent patterns, silent beats and bars, off-beat and swing clicks, tempo limits and words, auto speed-up, session timer, rest reminders, screen flash, keys; log and goal tools) plus 10 presets, behind the new ⚙ Practice lab 2 button.</li><li><b>Version 33:</b> Melodic Patterns lab 2: 77 options and 20 tools (change the notes: move, reverse, invert, skip, pedal, mix, rests; rhythm feels and timing; click, loop count and pauses; path, dots, labels and cursor on the neck; panel look; keys) plus 10 presets, behind the new ⚙ Patterns lab 2 button.</li><li><b>Version 32:</b> Neck Designer lab 2: 100 options and 20 tools (neck filters, wood tint, shine, grain, binding, strings, frets, nut, notes and labels, zone and fret highlights, grid, ruler, watermark, captions; surprise me, style steps, save SVG or PNG) plus 10 presets, behind the new ⚙ Designer lab 2 button.</li><li><b>Version 31:</b> Theory Decks lab 2: 76 options and 20 tools (card look and contents, lists and filters, flash-card timers, quiz and deal settings, keys; page, deck and view shortcuts, favourites, copy and CSV export) plus 10 presets, behind the new ⚙ Decks lab 2 button.</li><li><b>Version 30:</b> Neck Diagram Explorer lab 2: 85 options and 20 tools (frame, notes, fretboard, positions, behaviour; duplicate, transpose, play, copy and save diagrams as SVG or PNG) plus 10 presets, behind the new ⚙ Explorer lab 2 button in the explorer.</li><li><b>Version 29:</b> Export Hub lab 2: 78 options and 20 tools for the 📤 Export Hub (look, format buttons, sources, file names with date, time and number, multi-format export, history, keys) plus 10 presets, behind the new ⚙ Export Hub lab 2 button in the hub.</li><li><b>Version 28:</b> Tools lab 2: 74 options and 20 tools for the ⋯ Tools panel (look, quick buttons, section and page buttons with icons, numbers, pins, state dots, search, sorting, filters, jump behaviour, keyboard key, saved choices) plus 10 presets, behind the new ⚙ Tools lab 2 button in the panel.</li><li><b>Version 27:</b> Navigate lab 2: 76 options and 20 tools for the ☰ Navigate menu (look, rows, icons, groups, search, pins, recent, filters, jump behaviour, keyboard shortcuts, saved layouts) plus 10 presets, behind the new ⚙ Navigate lab 2 button in the menu.</li><li><b>Version 26:</b> Library lab 2: 81 options and 20 tools for the My library dialog (look, sorting, pins, notes, dates, search, formulas, naming rules, defaults for new scales, strums and grooves, backups, export and import options, duplicates, random makers) plus 10 presets, behind the new 📚 Library lab 2 button.</li><li><b>Version 25:</b> Video lab 2: 84 more options in 7 new groups of the 🎞 More video settings (frame and guides, fretboard helpers, text, motion and beat, timeline, picture, file names), 20 tools (random looks, slots, settings files, PNG frames, loop, estimates) and 10 presets.</li><li><b>Version 24:</b> Drill lab 2: 81 options and 20 tools for the Finger drill (which fingers, pattern length, shapes, neighbour and jump rules, fixed seeds, your own patterns, note length, rests, backwards repeats, a fret shift per string, Play all loop, auto-new and tempo steps, look, timer, rounds and goals) plus 10 presets, behind the new 🖐 Drill lab 2 button.</li><li><b>Version 23:</b> Games lab 2: 80 options and 20 tools for the Games view (lives, blitz length and time bonus, question counts, time per question, hints, skips, forgiven mistakes, missed questions coming back, shuffled answers, letters, colours, game list filters and sorting, favourites, streaks, goals, finish screen extras) plus 10 presets, behind the new 🎮 Games lab 2 button.</li><li><b>Version 22:</b> Lesson lab 2: 83 options and 20 tools for the Lessons view (reading look, layout, reading aids, notes, bookmarks, confidence stars, flags, timer, daily goal and streak, question numbering, shuffle, answer keys) plus 10 presets, behind the new 🎓 Lesson lab 2 button.</li><li><b>Version 21:</b> The Jam 5 button now opens the Jam Band page and the Jam Band 5 panel (it did nothing from the main page). Jam Band 5 gains 67 options, 20 tools, 10 quick styles and 12 more progression styles: 16th and triplet swing, flams, echoes, per-track length, octave and fifth doubles, loudness curves, pumping, tempo shaping, silent bars, stingers, power chords, bass approach notes, a nicer big chord panel and session helpers.</li><li><b>Version 20:</b> 90+ improvements to Export audio/video: trims, repeat, loop-ready and reverse, filters and stereo, loudness target and limiter, full MP3 tags with cover art, WAV info and chord cue points, file-name templates, subtitle/lyrics/CSV side files, wake lock, chime, ETA, history, backdrops, overlays, title cards, waveform, 20 tools and 11 presets.</li><li><b>Version 19:</b> 100+ improvements to Export all: choose items (search, leave out, order, skip, every Nth, per folder, random sample), name and folder layouts, zip naming, manifest, checksums and README, transpose, swing, tempo limits, strum, arpeggio, bass style and level controls, audio and video settings, run behaviour (keep awake, time left, stop after failures, chime), 20 tools and 10 presets.</li><li><b>Version 18:</b> 100 more UX lab improvements: 80 new switches (keyboard and screen reader, contrast, touch, reading, feedback, layout, printing and reliability, motion and text size) plus 20 tools (mark small text, small controls, unnamed controls and Tab stops, UX score, contrast, touch, keyboard and calm sets) and 9 presets. A back-to-top button, offline badge and header shadow join the page.</li><li><b>Version 17:</b> 100+ Header lab improvements: hide or shrink the header while scrolling, floating look, logo styles, button and tab styling, patterns and colour filters, more status strip items, extra quick controls (top, bottom, page zoom, link, print), auto-close menu, reading-progress line, undo and redo, 20 more tools and 10 more presets. Everything stays as it was until you change it.</li><li><b>Version 16:</b> 100+ playback improvements in the Playback lab: a new effects bus (compressor, delay with tempo sync and ping-pong, chorus, flanger, tremolo, auto-pan, auto filter, lo-fi, soft clipper), note shaping and layers, Jam Band balance and feel settings, drum feel, tab behaviour options, 20 more tools and 10 more presets. Everything stays off until you change it.</li><li><b>Version 15:</b> 100+ improvements to the mobile view (swipeable dropdown bar, bottom-sheet pickers, full-screen dialogs, bigger touch targets, landscape layout).</li><li><b>Version 14:</b> 15 more options each in Position, Fret window, Practice pattern, Tune and Export, under More options.</li><li><b>Version 13:</b> 42 more instruments (4-, 5- and 6-string banjos, ukulele sizes, mandolin family, bouzouki, balalaika, bowed strings, oud, lute, 12-string and 8-string guitars, basses and more) with 45 tuning presets. Instrument-style necks: each instrument has its own neck, fret and marker look, the banjo has its short 5th string and peg, and a better-looking nut. 15 more options each in Instrument, Play and Diagram (under More options). Picker lists fold into families, collapsed until you open them or search. Play opens by default. String fret ranges now update the fretboard as you type and work in Progressions and Explore too.</li><li><b>Version 11:</b> 38 more pages as sections (the 🧭 Library), Jam Band 5 with 100 improvements, the 📤 Export Hub (MIDI, Guitar Pro, Power Tab, ASCII tab, documents and video for every instrument), every chord progression as a demo-jam playlist, a 🔄 Reset all button, and a starting fret window of 0–4 (0–3 on the 3rd string) with an ↔️ All frets button.</li><li><b>Scale playback timing fixed:</b> scales, intervals and lesson examples are now scheduled on the audio clock, with the sounds prepared in advance. Notes land at exactly even spacing – even when the page is busy or the loop restarts – instead of wobbling by tens of milliseconds.</li><li><b>${LESSONS.length-100} more full lessons</b> (now ${LESSONS.length} in ${LES_UNITS.length} units), each with explanations, playable examples on the neck and check questions. New units: ${U.map((u,i)=>`<b>${i+11}. ${u}</b>`).join(', ')}.</li><li><b>Every chord progression has its own lesson</b> (units 24–41, one unit per group of the progression player): all 1,745 progressions, each with its Roman numerals, the chords in two keys, a playable progression, a strum, the bass line, the chord shapes and three check questions. The lessons are generated from the progression player’s own list, so new progressions added there are covered the same way.</li><li><b>Every scale has its own lesson</b> (unit 23): all 182 scales and modes in the library, from the major scale and pentatonics to the exotic and symmetrical ones – each with the formula, the notes in C, the step pattern, two fretboard positions, a one-octave run, the chord it builds and three check questions.</li><li><b>Every chord has its own lesson</b> (unit 22): 82 chord types from major, minor and power chords to 13ths, altered dominants, Lydian ♯11 and quartal chords – each with the notes and formula, a fingering on the neck, an arpeggio, a strum and two check questions.</li><li><b>Every interval has its own lesson</b> (unit 21): unison, minor and major second, minor and major third, perfect fourth, tritone, perfect fifth, minor and major sixth, minor and major seventh and the octave – with the shape on the neck, a tune or chord that uses it, and a final lesson that puts them all together.</li></ul><p class="mut">Open them with 🎓 Lessons, then pick a lesson from the list or press <kbd>N</kbd> for the next unfinished one.</p><p class="mut">Earlier: <button class="btn" data-x="new108">10.8</button> <button class="btn" data-x="new107">10.7</button> <button class="btn" data-x="new106">10.6</button> <button class="btn" data-x="new105">10.5</button></p><div class="row"><button class="btn main" data-act="closeModal">OK</button></div>`}
+function newHTML(){const U=LES_UNITS.slice(10,23);return `<h2>What's new in ManicRulesGuitar 1.00</h2><ul class="x102list"><li><b>Release 1.00:</b> the first official release. Every drum of the 1,000 library drum patterns now plays exactly as written (toms, ride bell, tambourine, claves, conga and pedal hi-hat have their own sounds, and swung or flammed hits keep their timing). The Song player (Buckethead, Carcassi, classical, Chopin and your own MIDI files) plays the drum tracks of MIDI files and can add any of the 1,000 drum patterns to any piece. Song starts and section loops are on time, and Jam Band, the Jam DAW and the Studio keep their notes scheduled ahead so a busy page does not stop a beat.</li><li><b>Version 58:</b> New: nine pattern libraries (4,500 patterns) as Jam Band demos under Patterns › … (drums, bass, guitar riffs, jazz, fingerpicking, alternating bass, banjo rolls, metal, piano) and a Pattern parts panel in Jam Band and the Jam DAW: pick a pattern for each instrument separately and merge them, for example jazz drums with a banjo roll.</li><li><b>Version 57:</b> New: Build songs – a grouped library in Jam Band, the Jam DAW and the analysis pages. Buckethead by file (sections, riffs, solos, 2-bar progressions) and Carcassi by version (whole etudes, 2-bar progressions, phrases); add them one after another to build a song. Riffs and solos are also Jam Band demos, and the demo and drum menus are grouped by artist and file.</li><li><b>Version 56:</b> New: 🎸 Buckethead Analysis and 🎼 Matteo Carcassi Analysis (sections, riffs, solos, chords, drum patterns), 305 MIDI pieces to view and edit in the Jam DAW and 930 Buckethead drum patterns (Drums › Buckethead).</li><li><b>Version 55:</b> Practice lab 3 – 12 click voices, in-beat and bar patterns, clave and a second beat (polyrhythm), count-in and start delay, practice intervals with rest and rising tempo, tempo ramps, trainer extras, five practice routines, better tap tempo, weekly and monthly goals, and a lab with settings and presets. The metronome button now always goes through the lab hooks.</li><li><b>Version 54:</b> Drills lab 2 – the quiz drill screens work again (a name clash had replaced them with the finger drill), plus 15 new drill types (fretboard, intervals, chord tones, keys, ear training), mixed and weak-spot drills, rounds with timers, 5 new flashcard decks with daily limits, 4 new learning-path levels, a better scoreboard and a lab with settings and presets.</li><li><b>Version 53:</b> Sound lab 2 – an output chain for the whole app (equaliser, saturation, tremolo, chorus, delay, stereo, reverb shaping, compressor, safety limiter), a level meter and spectrum, a recorder, test sounds, engine switches and saved sounds.</li><li><b>Version 52:</b> Theory toolkit lab 2 – 22 new theory tools (inversions, modes, diatonic chords, secondary dominants, tritone substitution, negative harmony, delay times, cents, note locator, chord scales, Nashville numbers and more) plus settings, presets and a history.</li><li><b>Version 51:</b> Standard notation lab 2 – settings, tools and presets for the notation section (transpose, order, two octaves, chord modes, names as degrees or Do Re Mi, note colours, count-in, click, loops, ABC/SVG export, print).</li><li><b>Version 50:</b> Tuner lab 2 – settings, tools and presets for the tuner (smoothing, noise gate, meter range, in-tune lock with beep, guided string-by-string tuning, string buttons, history strip, reference tones, log).</li><li><b>Version 49:</b> Chord voicings lab 2 – settings, tools and presets for the voicing diagrams and lists (dot labels, fingers, left-handed, filters, sorting, favourites, hear on hover, chord finder and more).</li><li><b>Version 48:</b> Drums now start at 100 % in every Jam Band, Jam DAW and Studio song. New: ⬆ Amplify drums (off by default, up to 500 %) and drum effects (compressor, overdrive, distortion, reverb, echo and more) in Jam Band, Jam DAW and the Studio.</li><li><b>Version 47:</b> New: 🎹 Basic MIDI Player – import MIDI, Guitar Pro and Power Tab files, make playlists and listen in the app. 🎚 Studio gets 500 improvements.</li><li><b>Version 46:</b> New: 🎚 Studio – the Jam Band as a DAW (timeline with a lane per instrument, mixer, piano roll, browser for demos, patterns and songs, new-song wizard, undo). The Jam Band pages stay as they are.</li><li><b>Version 45:</b> Fix: an instrument whose box is unchecked in Jam Band (Solo, Melody, Guitar 2, Keys, Drums) now stays off even when a song section would switch it on; songs that use such sections now show the box ticked. New: ▶ Preview in the Jam Band audio/video export (hear the first seconds as MP3 or WAV before exporting) and ▶ on every sound in 🎼 One instrument through all sounds.</li><li><b>Version 44:</b> Header buttons light up while their panel is open (Tools shows ✕ so you know a second click closes it). Better-sounding guitar for notes, intervals, chords, scales, Jam Band and exports (switch in Sound engines → Guitar tone). An engine choice for every Jam Band instrument, in every Jam Band entry point. Sound menus now stay open while you try sounds. New: Jam Band → 🎼 One instrument through all sounds, a zip of one MP3 per sound.</li><li><b>Version 43:</b> Piano and staff lab 2: 100 options and 26 tools (piano range, key sizes and colours, dot shapes and labels as names, intervals, Do Re Mi or Hz, mirrored keys; staff with treble, bass or grand staff, stems, note shapes, wrapped staves, bar lines; frame and caption; play up, down or as a chord; copy as names, MIDI, ABC or LilyPond; save SVG or PNG) plus 10 presets, behind the new ⚙ Piano and staff lab 2 button.</li><li><b>Version 42:</b> Library pages lab 2: one lab for all 38 library pages (Export Studio, Scales, Chords, Lessons, Theory Decks pages and the rest): 100 options and 31 tools (zoom, text, colour modes, reading ruler, contents panel, find, headings menu, frame, bookmarks, auto-scroll, read aloud, save and print) plus 10 presets, behind the new ⚙ Page lab 2 button on every page.</li><li><b>Version 41:</b> Controls lab 2: 100 options and 25 tools (root buttons by circle of fifths or rotating, intervals or Do Re Mi on them, colour lines, hide or dim buttons; scale row with quick scale buttons, notes and formula, name big, locks; recent keys; keys, key tour, relative and parallel key, random root and scale; layout and panel look) plus 10 presets, behind the new ⚙ Controls lab 2 button.</li><li><b>Version 40:</b> Fretboard lab 2: 100 options and 24 tools (hide notes by name, fret, string or open strings, note size and labels as intervals, numbers or fret, rings on roots, colour by octave, fret range and coloured zone, string and fret wire look, octave lines and distances in mm, crosshair, readout and copies lighting up under the mouse, play on hover, click and double-click actions, neck width and look, panel look; copy and save the neck as text or picture) plus 10 presets, behind the new ⚙ Fretboard lab 2 button.</li><li><b>Version 39:</b> Guitar tab lab 2: 76 options and 23 tools (fret number shapes, sizes and colours, note names under the numbers, staff lines, bar numbers and beat grid, stems and beat counts, cursor and playing-note look, silent guitar with click, count-in, play speed, loop count, zoom, panel look; copy and save the tab as text or picture) plus 10 presets, behind the new ⚙ Tab lab 2 button.</li><li><b>Version 38:</b> Settings lab 2: 73 options and 26 tools (hide settings you never use, columns and look of the settings page, search box, lock, day and night theme by the clock, quick theme, text, marker, tuning and sound tools, snapshots of all settings, copy and save all settings, keys) plus 10 presets, behind the new ⚙ Settings lab 2 button.</li><li><b>Version 37:</b> Favourites lab 2: 75 options and 24 tools (sort, group, filter and search favourites, pin and add notes, rename, move, copy, tour with sound, chip look, safe deleting, keys, panel look; copy and export the list) plus 10 presets, behind the new ⚙ Favourites lab 2 button.</li><li><b>Version 36:</b> Circle of fifths lab 2: 74 options and 20 tools (turn, flip and resize the circle, key signatures and roman numerals on the keys, neighbour, relative and family highlights, lines and arrows, notes and chords of the key, panel look, keys; walk round the circle, copy and save the key table) plus 10 presets, behind the new ⚙ Circle of fifths lab 2 button.</li><li><b>Version 35:</b> Information lab 2: 71 options and 20 tools (hide or fold any part, numbered headings, chip size and layout, heading look, notes box with word count and lock, panel look, keys; copy, save and print the information) plus 10 presets, behind the new ⚙ Information lab 2 button.</li><li><b>Version 34:</b> Practice lab 2: 77 options and 20 tools (own click sound, accent patterns, silent beats and bars, off-beat and swing clicks, tempo limits and words, auto speed-up, session timer, rest reminders, screen flash, keys; log and goal tools) plus 10 presets, behind the new ⚙ Practice lab 2 button.</li><li><b>Version 33:</b> Melodic Patterns lab 2: 77 options and 20 tools (change the notes: move, reverse, invert, skip, pedal, mix, rests; rhythm feels and timing; click, loop count and pauses; path, dots, labels and cursor on the neck; panel look; keys) plus 10 presets, behind the new ⚙ Patterns lab 2 button.</li><li><b>Version 32:</b> Neck Designer lab 2: 100 options and 20 tools (neck filters, wood tint, shine, grain, binding, strings, frets, nut, notes and labels, zone and fret highlights, grid, ruler, watermark, captions; surprise me, style steps, save SVG or PNG) plus 10 presets, behind the new ⚙ Designer lab 2 button.</li><li><b>Version 31:</b> Theory Decks lab 2: 76 options and 20 tools (card look and contents, lists and filters, flash-card timers, quiz and deal settings, keys; page, deck and view shortcuts, favourites, copy and CSV export) plus 10 presets, behind the new ⚙ Decks lab 2 button.</li><li><b>Version 30:</b> Neck Diagram Explorer lab 2: 85 options and 20 tools (frame, notes, fretboard, positions, behaviour; duplicate, transpose, play, copy and save diagrams as SVG or PNG) plus 10 presets, behind the new ⚙ Explorer lab 2 button in the explorer.</li><li><b>Version 29:</b> Export Hub lab 2: 78 options and 20 tools for the 📤 Export Hub (look, format buttons, sources, file names with date, time and number, multi-format export, history, keys) plus 10 presets, behind the new ⚙ Export Hub lab 2 button in the hub.</li><li><b>Version 28:</b> Tools lab 2: 74 options and 20 tools for the ⋯ Tools panel (look, quick buttons, section and page buttons with icons, numbers, pins, state dots, search, sorting, filters, jump behaviour, keyboard key, saved choices) plus 10 presets, behind the new ⚙ Tools lab 2 button in the panel.</li><li><b>Version 27:</b> Navigate lab 2: 76 options and 20 tools for the ☰ Navigate menu (look, rows, icons, groups, search, pins, recent, filters, jump behaviour, keyboard shortcuts, saved layouts) plus 10 presets, behind the new ⚙ Navigate lab 2 button in the menu.</li><li><b>Version 26:</b> Library lab 2: 81 options and 20 tools for the My library dialog (look, sorting, pins, notes, dates, search, formulas, naming rules, defaults for new scales, strums and grooves, backups, export and import options, duplicates, random makers) plus 10 presets, behind the new 📚 Library lab 2 button.</li><li><b>Version 25:</b> Video lab 2: 84 more options in 7 new groups of the 🎞 More video settings (frame and guides, fretboard helpers, text, motion and beat, timeline, picture, file names), 20 tools (random looks, slots, settings files, PNG frames, loop, estimates) and 10 presets.</li><li><b>Version 24:</b> Drill lab 2: 81 options and 20 tools for the Finger drill (which fingers, pattern length, shapes, neighbour and jump rules, fixed seeds, your own patterns, note length, rests, backwards repeats, a fret shift per string, Play all loop, auto-new and tempo steps, look, timer, rounds and goals) plus 10 presets, behind the new 🖐 Drill lab 2 button.</li><li><b>Version 23:</b> Games lab 2: 80 options and 20 tools for the Games view (lives, blitz length and time bonus, question counts, time per question, hints, skips, forgiven mistakes, missed questions coming back, shuffled answers, letters, colours, game list filters and sorting, favourites, streaks, goals, finish screen extras) plus 10 presets, behind the new 🎮 Games lab 2 button.</li><li><b>Version 22:</b> Lesson lab 2: 83 options and 20 tools for the Lessons view (reading look, layout, reading aids, notes, bookmarks, confidence stars, flags, timer, daily goal and streak, question numbering, shuffle, answer keys) plus 10 presets, behind the new 🎓 Lesson lab 2 button.</li><li><b>Version 21:</b> The Jam 5 button now opens the Jam Band page and the Jam Band 5 panel (it did nothing from the main page). Jam Band 5 gains 67 options, 20 tools, 10 quick styles and 12 more progression styles: 16th and triplet swing, flams, echoes, per-track length, octave and fifth doubles, loudness curves, pumping, tempo shaping, silent bars, stingers, power chords, bass approach notes, a nicer big chord panel and session helpers.</li><li><b>Version 20:</b> 90+ improvements to Export audio/video: trims, repeat, loop-ready and reverse, filters and stereo, loudness target and limiter, full MP3 tags with cover art, WAV info and chord cue points, file-name templates, subtitle/lyrics/CSV side files, wake lock, chime, ETA, history, backdrops, overlays, title cards, waveform, 20 tools and 11 presets.</li><li><b>Version 19:</b> 100+ improvements to Export all: choose items (search, leave out, order, skip, every Nth, per folder, random sample), name and folder layouts, zip naming, manifest, checksums and README, transpose, swing, tempo limits, strum, arpeggio, bass style and level controls, audio and video settings, run behaviour (keep awake, time left, stop after failures, chime), 20 tools and 10 presets.</li><li><b>Version 18:</b> 100 more UX lab improvements: 80 new switches (keyboard and screen reader, contrast, touch, reading, feedback, layout, printing and reliability, motion and text size) plus 20 tools (mark small text, small controls, unnamed controls and Tab stops, UX score, contrast, touch, keyboard and calm sets) and 9 presets. A back-to-top button, offline badge and header shadow join the page.</li><li><b>Version 17:</b> 100+ Header lab improvements: hide or shrink the header while scrolling, floating look, logo styles, button and tab styling, patterns and colour filters, more status strip items, extra quick controls (top, bottom, page zoom, link, print), auto-close menu, reading-progress line, undo and redo, 20 more tools and 10 more presets. Everything stays as it was until you change it.</li><li><b>Version 16:</b> 100+ playback improvements in the Playback lab: a new effects bus (compressor, delay with tempo sync and ping-pong, chorus, flanger, tremolo, auto-pan, auto filter, lo-fi, soft clipper), note shaping and layers, Jam Band balance and feel settings, drum feel, tab behaviour options, 20 more tools and 10 more presets. Everything stays off until you change it.</li><li><b>Version 15:</b> 100+ improvements to the mobile view (swipeable dropdown bar, bottom-sheet pickers, full-screen dialogs, bigger touch targets, landscape layout).</li><li><b>Version 14:</b> 15 more options each in Position, Fret window, Practice pattern, Tune and Export, under More options.</li><li><b>Version 13:</b> 42 more instruments (4-, 5- and 6-string banjos, ukulele sizes, mandolin family, bouzouki, balalaika, bowed strings, oud, lute, 12-string and 8-string guitars, basses and more) with 45 tuning presets. Instrument-style necks: each instrument has its own neck, fret and marker look, the banjo has its short 5th string and peg, and a better-looking nut. 15 more options each in Instrument, Play and Diagram (under More options). Picker lists fold into families, collapsed until you open them or search. Play opens by default. String fret ranges now update the fretboard as you type and work in Progressions and Explore too.</li><li><b>Version 11:</b> 38 more pages as sections (the 🧭 Library), Jam Band 5 with 100 improvements, the 📤 Export Hub (MIDI, Guitar Pro, Power Tab, ASCII tab, documents and video for every instrument), every chord progression as a demo-jam playlist, a 🔄 Reset all button, and a starting fret window of 0–4 (0–3 on the 3rd string) with an ↔️ All frets button.</li><li><b>Scale playback timing fixed:</b> scales, intervals and lesson examples are now scheduled on the audio clock, with the sounds prepared in advance. Notes land at exactly even spacing – even when the page is busy or the loop restarts – instead of wobbling by tens of milliseconds.</li><li><b>${LESSONS.length-100} more full lessons</b> (now ${LESSONS.length} in ${LES_UNITS.length} units), each with explanations, playable examples on the neck and check questions. New units: ${U.map((u,i)=>`<b>${i+11}. ${u}</b>`).join(', ')}.</li><li><b>Every chord progression has its own lesson</b> (units 24–41, one unit per group of the progression player): all 1,745 progressions, each with its Roman numerals, the chords in two keys, a playable progression, a strum, the bass line, the chord shapes and three check questions. The lessons are generated from the progression player’s own list, so new progressions added there are covered the same way.</li><li><b>Every scale has its own lesson</b> (unit 23): all 182 scales and modes in the library, from the major scale and pentatonics to the exotic and symmetrical ones – each with the formula, the notes in C, the step pattern, two fretboard positions, a one-octave run, the chord it builds and three check questions.</li><li><b>Every chord has its own lesson</b> (unit 22): 82 chord types from major, minor and power chords to 13ths, altered dominants, Lydian ♯11 and quartal chords – each with the notes and formula, a fingering on the neck, an arpeggio, a strum and two check questions.</li><li><b>Every interval has its own lesson</b> (unit 21): unison, minor and major second, minor and major third, perfect fourth, tritone, perfect fifth, minor and major sixth, minor and major seventh and the octave – with the shape on the neck, a tune or chord that uses it, and a final lesson that puts them all together.</li></ul><p class="mut">Open them with 🎓 Lessons, then pick a lesson from the list or press <kbd>N</kbd> for the next unfinished one.</p><p class="mut">Earlier: <button class="btn" data-x="new108">10.8</button> <button class="btn" data-x="new107">10.7</button> <button class="btn" data-x="new106">10.6</button> <button class="btn" data-x="new105">10.5</button></p><div class="row"><button class="btn main" data-act="closeModal">OK</button></div>`}
 ds(DG9,'Finger drill','Generates 8 measures of random 2-, 3- or 4-note finger patterns from fingers 1–4 in any order (1-3-2-4, 1-3, 2-1-3 …), the same on every string or different on each, with the neck, the tab and sound.','Click 🖐 Drill, choose the notes per pattern, the strings, the starting fret and the tempo, press ↻ New drill, then ▶ Play all.','When you want to build finger independence and a clean left hand.',{sel:'#x109drill',run:()=>{dHdr();dClick('#x109drill')},undo:()=>{if(document.body.classList.contains('les10'))XA.lesExit();try{document.activeElement&&document.activeElement.blur&&document.activeElement.blur()}catch(e){}}});
 
 /* ================= fretboard always first; "Under fretboard" pins a section beside it ================= */
@@ -17124,7 +17138,7 @@ if(JBPAGE)document.body.classList.add('jbpage');
  /* ---------- render ---------- */
  function dawRender(){const b=$i('dawBody'),d=$i('jamdaw');if(!b||!d||!d.open)return;
   const a=b.querySelector('#dawTlScroll'),r=b.querySelector('#dawRollScroll'),sa=a?a.scrollLeft:0,sr=r?r.scrollLeft:0,st=r?r.scrollTop:0,fk=document.activeElement&&document.activeElement.dataset&&document.activeElement.dataset.k;
-  b.innerHTML=panelHTML();const a2=b.querySelector('#dawTlScroll'),r2=b.querySelector('#dawRollScroll');if(a2)a2.scrollLeft=sa;if(r2){r2.scrollLeft=sr;r2.scrollTop=st}
+  const h60=panelHTML();if(!(b.__u60h===h60&&b.firstElementChild)){b.innerHTML=h60;b.__u60h=h60}const a2=b.querySelector('#dawTlScroll'),r2=b.querySelector('#dawRollScroll');if(a2)a2.scrollLeft=sa;if(r2){r2.scrollLeft=sr;r2.scrollTop=st}
   b.querySelectorAll('input[indeterminate]').forEach(x=>{x.indeterminate=true});
   rollDraw();bindRoll();dawStat()}
  function dawStat(){const e=$i('dawStat'),S=SG8.song;if(e&&S){let n=0;S.parts.forEach(p=>p.evs.forEach(x=>n+=(x.notes||[]).length));e.textContent=n+' notes · '+S.num+'/'+S.den+' · '+Math.round(S.bpm)+' BPM'}}
@@ -17164,7 +17178,8 @@ if(JBPAGE)document.body.classList.add('jbpage');
   mn=Math.max(0,mn-4);mx=Math.min(127,mx+4);const U=measureLen8(S);end=Math.ceil((end+U)/U)*U;return{S,mn,mx,end,U,rows:mx-mn+1}};
  const yOf=(g,m)=>(g.mx-m)*ROWH,mOf=(g,y)=>g.mx-Math.floor(y/ROWH);
  const COL=['#2a7fbd','#c2661b','#3a9a5c','#9a4fb5'];
- function rollDraw(){const cv=$i('dawRoll'),g=rollGeom();if(!cv||!g)return;const z=D.zoom,W=LEFT+g.end*z,H=g.rows*ROWH;cv.width=W;cv.height=H;cv.style.width=W+'px';cv.style.height=H+'px';
+ var RC={k:'',cv:null,x:-1,nh:0,el:null,big:0};
+ function rollDraw(){const cv=$i('dawRoll'),g=rollGeom();if(!cv||!g)return;const z=D.zoom,W=LEFT+g.end*z,H=g.rows*ROWH;RC.k='';if(cv.width!==W)cv.width=W;if(cv.height!==H)cv.height=H;cv.getContext('2d').clearRect(0,0,W,H);cv.style.width=W+'px';cv.style.height=H+'px';
   const c=cv.getContext('2d'),cs=getComputedStyle(document.body),bg=cs.getPropertyValue('--panel').trim()||'#fff',ink=cs.getPropertyValue('--txt').trim()||'#222',line=cs.getPropertyValue('--line').trim()||'#ccc';
   c.fillStyle=bg;c.fillRect(0,0,W,H);
   for(let m=g.mn;m<=g.mx;m++){const y=yOf(g,m),blk=[1,3,6,8,10].includes(m%12);c.fillStyle=blk?'rgba(0,0,0,.07)':'rgba(0,0,0,0)';c.fillRect(LEFT,y,W-LEFT,ROWH);c.strokeStyle=line;c.globalAlpha=.35;c.beginPath();c.moveTo(LEFT,y+.5);c.lineTo(W,y+.5);c.stroke();c.globalAlpha=1;
@@ -17174,7 +17189,17 @@ if(JBPAGE)document.body.classList.add('jbpage');
    if(D.drag&&sel&&D.drag.preview){t+=D.drag.dt;if(D.drag.mode==='move')m+=D.drag.dm;else d=Math.max(1,d+D.drag.dt),t=e.t}
    const x=LEFT+t*z,y=yOf(g,m);c.fillStyle=COL[pi%4];c.globalAlpha=sel?1:.78;c.fillRect(x+.5,y+1,Math.max(3,d*z-1),ROWH-2);c.globalAlpha=1;if(sel){c.strokeStyle=one?'#fff':ink;c.lineWidth=one?2:1;c.strokeRect(x+.5,y+1,Math.max(3,d*z-1),ROWH-2);c.lineWidth=1}
    if(d*z>16){c.fillStyle='#fff';c.font='9px sans-serif';c.fillText(String(n.f),x+3,y+ROWH-3)}})));
-  const sec=60/g.S.bpm/g.S.g,ph=LEFT+(SG8.pos||0)/sec*z;c.strokeStyle='#d32f2f';c.lineWidth=2;c.beginPath();c.moveTo(ph,0);c.lineTo(ph,H);c.stroke();c.lineWidth=1}
+  if(RC.nh)return;const sec=60/g.S.bpm/g.S.g,ph=LEFT+(SG8.pos||0)/sec*z;c.strokeStyle='#d32f2f';c.lineWidth=2;c.beginPath();c.moveTo(ph,0);c.lineTo(ph,H);c.stroke();c.lineWidth=1}
+ function rollTick(){const cv=$i('dawRoll'),g=rollGeom();if(!cv||!g)return;const z=D.zoom,W=LEFT+g.end*z,H=g.rows*ROWH;
+  if(D.drag){rollDraw();return}
+  if(W*H>36e6){const n=performance.now();if(n-RC.big>800){RC.big=n;rollDraw()}return}
+  const c=cv.getContext('2d');
+  if(!RC.k||RC.el!==cv||!RC.cv||RC.cv.width!==W||RC.cv.height!==H){
+   RC.nh=1;try{rollDraw()}finally{RC.nh=0}
+   const o=(RC.cv&&RC.cv.width===W&&RC.cv.height===H)?RC.cv:document.createElement('canvas');o.width=W;o.height=H;const oc=o.getContext('2d');oc.clearRect(0,0,W,H);oc.drawImage(cv,0,0);RC.cv=o;RC.el=cv;RC.k='1';RC.x=-1}
+  const sec=60/g.S.bpm/g.S.g,ph=LEFT+(SG8.pos||0)/sec*z;
+  if(RC.x>=0)c.drawImage(RC.cv,RC.x-4,0,10,H,RC.x-4,0,10,H);
+  c.strokeStyle='#d32f2f';c.lineWidth=2;c.beginPath();c.moveTo(ph,0);c.lineTo(ph,H);c.stroke();c.lineWidth=1;RC.x=Math.floor(ph)}
  function hit(g,x,y){const z=D.zoom;let best=null;g.S.parts.forEach((p,pi)=>p.evs.forEach((e,ei)=>(e.notes||[]).forEach((n,ni)=>{const rx=LEFT+e.t*z,rw=Math.max(3,Math.max(1,e.d)*z-1),ry=yOf(g,n.m);if(x>=rx&&x<=rx+rw&&y>=ry&&y<=ry+ROWH)best={pi,ei,ni,edge:x>rx+rw-6}})));return best}
  const snapV=v=>Math.round(v/D.snap)*D.snap;
  const rsnap=()=>{ru.push(JSON.stringify(SG8.song.parts.map(p=>p.evs)));if(ru.length>60)ru.shift();rr.length=0};
@@ -17218,7 +17243,7 @@ if(JBPAGE)document.body.classList.add('jbpage');
  /* ---------- section, page mode, links ---------- */
  function build(){if($i('jamdaw'))return true;const ref=$i('jamband');if(!ref)return false;
   const d=document.createElement('details');d.className='card x7 x7sec';d.id='jamdaw';d.innerHTML='<summary><span class="stt">🎛 Jam DAW – edit demo jams and demo songs</span><span class="sth"></span></summary><div id="dawBody"></div>';
-  ref.parentNode.insertBefore(d,ref.nextSibling);d.addEventListener('toggle',()=>{if(d.open){try{if(!SG8.song)songBuild8()}catch(e){}try{clLoad8()}catch(e){}dawRender()}});return true}
+  ref.parentNode.insertBefore(d,ref.nextSibling);d.addEventListener('toggle',()=>{if(d.open){try{if(!SG8.song)songBuild8()}catch(e){}try{clLoad8()}catch(e){}if(window.__flBusy&&window.__flBusy()&&window.__u59Later&&performance.now()-(window.__u59G||0)>700)window.__u59Later(dawRender);else dawRender()}});return true}
  const links=()=>{const R=document.querySelector('header.top .x8right'),H=document.querySelector('header.top');if(!H)return;
   if(JBPAGE){if(!$i('jbback')&&!JBSTAND){const a=document.createElement('a');a.id='jbback';a.className='x8b ghost';a.href=location.pathname;a.textContent='← Main page';a.style.cssText='margin-left:auto';(R||H).prepend(a)}}
   else if(!$i('jbgo')){const a=document.createElement('a');a.id='jbgo';a.className='x8b main';a.href='?page=jamband';a.textContent='🎸 Jam Band page';a.title='Jam Band, the Jam DAW, the fretboard and the Song player on their own page';(R||H).appendChild(a)}};
@@ -17226,9 +17251,9 @@ if(JBPAGE)document.body.classList.add('jbpage');
   if(JBPAGE){document.title=JBSTAND?'Jam Band & DAW (standalone) – ManicRulesGuitar':'Jam Band & DAW – ManicRulesGuitar';['sec_boardCard','jamband','jamdaw','songs8'].forEach(id=>{const e=$i(id);if(e)e.open=true});try{jbRender()}catch(e){}}};
  [0,400,1200,2600].forEach(ms=>setTimeout(()=>{start();links()},ms));
  /* follow playback: highlight the playing chord and move the roll's playhead */
- let clN=-1;setInterval(()=>{const d=$i('jamdaw');if(!d||!d.open)return;const cn=Object.keys(CLB8).length;if(cn!==clN){if(clN>=0)try{dawRender()}catch(e){}clN=cn}
+ let clN=-1,clDirty=0,clT=0;setInterval(()=>{const d=$i('jamdaw');if(!d||!d.open)return;const cn=Object.keys(CLB8).length;if(cn!==clN){if(clN>=0){clDirty=1;clT=performance.now()}clN=cn}if(clDirty&&performance.now()-clT>1200&&!(SG8.playing||JB.on)){clDirty=0;try{dawRender()}catch(e){}}
   try{const i=JB.on?(JB.cfbI>=0?JB.cfbI:JB.cur):-1;document.querySelectorAll('.dawc.play').forEach(x=>x.classList.remove('play'));if(i>=0){const e=$i('dawc'+i);if(e){e.classList.add('play');const s=$i('dawTlScroll');if(s&&(e.offsetLeft<s.scrollLeft||e.offsetLeft>s.scrollLeft+s.clientWidth-80))s.scrollLeft=Math.max(0,e.offsetLeft-40)}}
-   const b=$i('dawJbPlay');if(b)b.textContent=JB.on?'■ Stop':'▶ Play';if(SG8.playing)rollDraw()}catch(e){}},150);
+   const b=$i('dawJbPlay');if(b)b.textContent=JB.on?'■ Stop':'▶ Play';if(SG8.playing)rollTick()}catch(e){}},150);
  window.__dawRender=dawRender;
 })();
 
@@ -17958,7 +17983,7 @@ async function ixBuild(src,o,opt){opt=opt||{};const ctx=opt.ctx||{};let fmt=opt.
  if(fmt==='jpg'){const n=document.createElement('canvas');n.width=c.width;n.height=c.height;const ng=n.getContext('2d');ng.fillStyle=o.jpgBg;ng.fillRect(0,0,n.width,n.height);ng.drawImage(c,0,0);c=n}
  const mime=fmt==='jpg'?'image/jpeg':fmt==='webp'?'image/webp':'image/png';let blob=await ixBlob(c,mime,o.q/100);if(!blob)throw new Error('The browser could not create the picture.');
  let ext=fmt;if(blob.type&&blob.type!==mime){ext=blob.type==='image/png'?'png':ext}
- if(ext==='png'&&!opt.preview&&(z.dpi>0||o.meta)){const T=ixTok(o.title,ctx)||ctx.label||ctx.name||'';let by=new Uint8Array(await blob.arrayBuffer());by=ixPngMeta(by,z.dpi,o.meta?[['Title',T],['Author',o.author],['Description',ixTok(o.caption,ctx)||o.altText],['Software','ManicRulesGuitar 12'],['Creation Time',new Date().toISOString()]]:[]);blob=new Blob([by],{type:'image/png'})}
+ if(ext==='png'&&!opt.preview&&(z.dpi>0||o.meta)){const T=ixTok(o.title,ctx)||ctx.label||ctx.name||'';let by=new Uint8Array(await blob.arrayBuffer());by=ixPngMeta(by,z.dpi,o.meta?[['Title',T],['Author',o.author],['Description',ixTok(o.caption,ctx)||o.altText],['Software','ManicRulesGuitar 1.00'],['Creation Time',new Date().toISOString()]]:[]);blob=new Blob([by],{type:'image/png'})}
  else if(ext==='jpg'&&z.dpi>0&&!opt.preview){blob=new Blob([ixJpgDpi(new Uint8Array(await blob.arrayBuffer()),z.dpi)],{type:'image/jpeg'})}
  return{blob,ext,w:c.width,h:c.height}}
 function ixName(base,o,res,scLab){const d=new Date(),p=n=>String(n).padStart(2,'0'),ymd=d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate()),hm=p(d.getHours())+p(d.getMinutes());
@@ -18231,7 +18256,7 @@ function xtText(t,name,ext,o){
  const d=new Date(),tok=s=>String(s).replace(/\{name\}/g,name).replace(/\{date\}/g,d.toLocaleDateString()).replace(/\{time\}/g,d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}));
  t=String(t).replace(/^﻿/,'');
  if(json){try{let v=JSON.parse(t);const srt=x=>Array.isArray(x)?x.map(srt):x&&typeof x==='object'?Object.keys(x).sort().reduce((a,k)=>(a[k]=srt(x[k]),a),{}):x;if(o.jsonSort)v=srt(v);
-   if(o.jsonMeta&&v&&typeof v==='object'&&!Array.isArray(v))v=Object.assign({_export:{app:'ManicRulesGuitar 12',name,date:d.toISOString()}},v);
+   if(o.jsonMeta&&v&&typeof v==='object'&&!Array.isArray(v))v=Object.assign({_export:{app:'ManicRulesGuitar 1.00',name,date:d.toISOString()}},v);
    const ind=o.jsonIndent;t=ind==='min'?JSON.stringify(v):JSON.stringify(v,null,ind==='keep'?(/\n\s/.test(t)?(/\n\t/.test(t)?'\t':(/\n {4}\S/.test(t)?4:/\n {2}\S/.test(t)?2:1)):0):ind==='tab'?'\t':+ind)}catch(e){}}
  if(data&&(o.csvDelim!=='keep'||o.csvQuote!=='keep'||!o.csvHead)){const d0=E==='tsv'?'\t':(t.split('\n')[0].split(';').length>t.split('\n')[0].split(',').length?';':','),rows=xtCsvParse(t,d0).filter(r=>!(r.length===1&&r[0]===''));if(!o.csvHead)rows.shift();const dl=o.csvDelim==='keep'?d0:o.csvDelim,q=o.csvQuote;
   const enc=v=>{v=String(v);const need=v.includes(dl)||/["\n\r]/.test(v);return q==='all'||(need&&q!=='keep')||(q==='keep'&&need)?'"'+v.replace(/"/g,'""')+'"':v};t=rows.map(r=>r.map(enc).join(dl)).join('\n')}
@@ -18253,7 +18278,7 @@ function xtText(t,name,ext,o){
   if(o.banner&&L.length){const w=Math.max(...L.slice(0,1).map(l=>l.length));L=['='.repeat(w),L[0],'='.repeat(w),...L.slice(1)]}
   if(o.lineNum){const w=String(L.length).length;L=L.map((l,i)=>String(i+1).padStart(w)+'  '+l)}
   const top=[],bot=[];if(o.header)top.push(tok(o.header));if(o.dateLine)top.push(d.toLocaleDateString());if(top.length)top.push('');
-  if(o.footer)bot.push(tok(o.footer));if(o.credit)bot.push('Made with ManicRulesGuitar 12');if(bot.length)bot.unshift('');
+  if(o.footer)bot.push(tok(o.footer));if(o.credit)bot.push('Made with ManicRulesGuitar 1.00');if(bot.length)bot.unshift('');
   L=[...top,...L,...bot];t=L.join('\n')}
  if(prose||data||json||markup){t=t.replace(/\r\n?/g,'\n');if(o.finalNL&&!t.endsWith('\n'))t+='\n';
   if(o.eol==='crlf')t=t.replace(/\n/g,'\r\n');else if(o.eol==='cr')t=t.replace(/\n/g,'\r');else if(o.eol==='keep'&&0)t=t}
@@ -18313,7 +18338,7 @@ async function xeHandle(blob,name,saver){
  const o=Object.assign({},XE),m=/\.([A-Za-z0-9]+)$/.exec(name),ext=m?m[1]:'',base=name.replace(/\.[^.]+$/,'');
  let out=await xeConvert(blob,base,ext.toLowerCase(),o),full=xeName(base,ext,o),kindExt=ext.toLowerCase();
  if(o.zipOne&&kindExt!=='zip'){const folder=o.zipFolder?o.zipFolder.replace(/[\\:*?"<>|]+/g,'-').replace(/^\/+|\/+$/g,'')+'/':'',files=[{name:folder+full,data:new Uint8Array(await out.arrayBuffer())}];
-  if(o.readme)files.push({name:folder+'README.txt',data:new TextEncoder().encode(`Made with ManicRulesGuitar 12\n${new Date().toLocaleString()}\n\n${full} (${xeSize(out.size)})\n`)});
+  if(o.readme)files.push({name:folder+'README.txt',data:new TextEncoder().encode(`Made with ManicRulesGuitar 1.00\n${new Date().toLocaleString()}\n\n${full} (${xeSize(out.size)})\n`)});
   out=new Blob([await makeZip(files,true)],{type:'application/zip'});full=full.replace(/\.[^.]+$/,'')+'.zip'}
  else if(o.readme&&kindExt==='zip'){/* keep as made */}
  if(o.big>0&&out.size>o.big*1024&&!confirm(full+' is '+xeSize(out.size)+'. Save it anyway?'))return;
@@ -20589,7 +20614,7 @@ function s14Report(){const a=AC,L=['ManicRulesGuitar playback report','Audio: '+
  const ch=Object.keys(S14D).filter(k=>S14X[k]!==S14D[k]);L.push(ch.length?ch.map(k=>'  '+k+' = '+S14X[k]).join('\n'):'  none');return L.join('\n')}
 /* ---- hooks: output chain, reverb, jam feel, drum mix, note processing ---- */
 const s14Rnd=()=>Math.random();
-function s14IR(sr,len,decay,tone){const L=Math.floor(sr*len),ir=AC.createBuffer(2,L,sr),a=tone>=100?1:0.04+0.96*Math.pow(tone/100,2);
+function s14IR(sr,len,decay,tone){const L=Math.floor(sr*len*((navigator.maxTouchPoints>0&&(navigator.hardwareConcurrency||8)<=4)?0.6:1)),ir=AC.createBuffer(2,L,sr),a=tone>=100?1:0.04+0.96*Math.pow(tone/100,2);
  for(let c=0;c<2;c++){const d=ir.getChannelData(c);let seed=12345+c*777,y=0;for(let i=0;i<L;i++){seed=(seed*1664525+1013904223)>>>0;let x=((seed/4294967296)*2-1)*Math.pow(1-i/L,decay);if(a<1){y+=a*(x-y);x=y}d[i]=x}}return ir}
 function s14Build(){const n={};const sr=AC.sampleRate;
  n.hp=AC.createBiquadFilter();n.hp.type='highpass';n.lo=AC.createBiquadFilter();n.lo.type='lowshelf';n.mid=AC.createBiquadFilter();n.mid.type='peaking';n.hi=AC.createBiquadFilter();n.hi.type='highshelf';n.lp=AC.createBiquadFilter();n.lp.type='lowpass';
@@ -21344,7 +21369,7 @@ function s15Expand(el){if(!el||!el.dataset||el.dataset.s15l===undefined)return;c
 /* 4. Jam Band start: the notes of the chosen sound are prepared in small slices while the count-in plays */
 function s15Warm(force){const W=S15P.warm;clearTimeout(W.tm);if(!AC)return;const tb=state.timbre;if(tb==='synth'||tb==='organ'||(typeof NEWV!=='undefined'&&NEWV.has(tb)))return;
  const order=[];for(let m=36;m<=84;m++)order.push(m);order.sort((a,b)=>Math.abs(a-55)-Math.abs(b-55));let i=0;
- const step=()=>{if((!force&&!JB.on)||!AC||state.timbre!==tb)return;const t0=performance.now();while(i<order.length&&performance.now()-t0<5){const m=order[i++],key=[m,tb,state.sustain,AC.sampleRate,state.a4].join('_');if(!bufCache.has(key)){bufCache.set(key,makePluck(m,tb));W.n++}}if(i<order.length)W.tm=setTimeout(step,12)};
+ const step=()=>{if((!force&&!JB.on)||!AC||state.timbre!==tb)return;if(window.__flBusy&&window.__flBusy()){W.tm=setTimeout(step,500);return}const t0=performance.now();while(i<order.length&&performance.now()-t0<5){const m=order[i++],key=[m,tb,state.sustain,AC.sampleRate,state.a4].join('_');if(!bufCache.has(key)){bufCache.set(key,makePluck(m,tb));W.n++}}if(i<order.length)W.tm=setTimeout(step,12)};
  W.tm=setTimeout(step,0)}
 (function(){const _s=jbStart;jbStart=function(){const r=_s.apply(this,arguments);try{s15Warm()}catch(e){}return r}})();
 setTimeout(()=>Object.assign(window.__fretlab,{S15P,s15Warm,s15Expand}),0);
@@ -21538,7 +21563,7 @@ document.addEventListener('keydown',e=>{if(e.key!=='Tab'||!S16X.dlgTrap)return;c
  const a=document.activeElement,first=f[0],last=f[f.length-1];if(!b.contains(a)){e.preventDefault();first.focus()}else if(e.shiftKey&&a===first){e.preventDefault();last.focus()}else if(!e.shiftKey&&a===last){e.preventDefault();first.focus()}},true);
 /* names for unnamed fields */
 const S16SEEN=new WeakSet();/* each field is looked at once: re-scanning every field (and cloning its parent) every 0.5 s made the Jam Band stutter */
-function s16Labels(){if(!S16X.fieldLabels||(typeof JB!=='undefined'&&JB.on))return;document.querySelectorAll('input,select,textarea').forEach(e=>{if(S16SEEN.has(e))return;S16SEEN.add(e);if(e.type==='hidden'||e.dataset.ux16l||e.getAttribute('aria-label')||e.getAttribute('aria-labelledby')||e.title||(e.labels&&e.labels.length))return;
+function s16Labels(){if(!S16X.fieldLabels||(typeof JB!=='undefined'&&JB.on)||(window.__flBusy&&window.__flBusy()))return;let m60=0;const t60=performance.now();let Q60=window.__u60q;if(!Q60||!Q60.length)Q60=[...document.querySelectorAll('input,select,textarea')];Q60.forEach(e=>{if(S16SEEN.has(e))return;if(m60||performance.now()-t60>10){m60=1;return}S16SEEN.add(e);if(e.type==='hidden'||e.dataset.ux16l||e.getAttribute('aria-label')||e.getAttribute('aria-labelledby')||e.title||(e.labels&&e.labels.length))return;
   let t='';const lb=e.closest('label');
   if(lb){const loc=[];let n=e.previousSibling;while(n&&!(n.nodeType===1&&/^(INPUT|SELECT|TEXTAREA)$/.test(n.tagName))){if(n.nodeType===3||(n.nodeType===1&&n.tagName!=='BUTTON'))loc.unshift(n.textContent);n=n.previousSibling}
    const local=loc.join('').replace(/\s+/g,' ').trim();let first='';for(const c of lb.childNodes){if(c.nodeType===1&&/^(INPUT|SELECT|TEXTAREA)$/.test(c.tagName)&&c!==lb.querySelector('input[type=checkbox],input[type=radio]'))break;if(c.nodeType===3||(c.nodeType===1&&!/^(INPUT|SELECT|TEXTAREA|BUTTON)$/.test(c.tagName)))first+=c.textContent}first=first.replace(/\s+/g,' ').trim();
@@ -21546,7 +21571,7 @@ function s16Labels(){if(!S16X.fieldLabels||(typeof JB!=='undefined'&&JB.on))retu
   if(!t){const p=e.previousElementSibling;if(p&&(p.tagName==='SPAN'||p.tagName==='LABEL'||p.tagName==='B'||p.tagName==='SMALL')&&p.textContent.trim())t=p.textContent.trim()}
   if(!t&&e.parentElement){const c=e.parentElement.cloneNode(true);c.querySelectorAll('input,select,textarea,button').forEach(x=>x.remove());t=c.textContent.trim()}
   if(!t)t=e.placeholder||(e.id||e.name||e.dataset.xi||'').replace(/^(num|sel|chk|rng|x_|x10)/,'').replace(/([A-Z])/g,' $1').replace(/[_-]+/g,' ').trim();
-  if(t){e.setAttribute('aria-label',t.replace(/\s+/g,' ').slice(0,60));e.dataset.ux16l='1'}})}
+  if(t){e.setAttribute('aria-label',t.replace(/\s+/g,' ').slice(0,60));e.dataset.ux16l='1'}});window.__u60q=m60?Q60.filter(e=>!S16SEEN.has(e)&&e.isConnected):null;if(m60)setTimeout(s16Labels,150)}
 document.addEventListener('keydown',e=>{
  if(S16X.tabArrows&&(e.key==='ArrowRight'||e.key==='ArrowLeft')){const t=e.target;if(t&&t.classList&&t.classList.contains('tab')&&t.closest('#tabs')){const L=[...document.querySelectorAll('#tabs .tab')],i=L.indexOf(t),n=L[(i+(e.key==='ArrowRight'?1:-1)+L.length)%L.length];if(n){e.preventDefault();e.stopPropagation();n.focus()}}}
  if(S16X.escField&&e.key==='Escape'){const t=e.target;if(t&&/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)&&!t.closest('#modal')&&t.blur)t.blur()}
@@ -21811,7 +21836,7 @@ function x17MP3Local(){return new Promise((res,rej)=>{if(x17MP3Fn)return res(x17
  sc.onload=()=>{URL.revokeObjectURL(u);sc.remove();x17MP3Fn=window.__fretlabMp3;delete window.__fretlabMp3;x17MP3Fn?res(x17MP3Fn):rej(new Error('MP3 encoder did not start'))};
  sc.onerror=()=>{URL.revokeObjectURL(u);sc.remove();rej(new Error('MP3 encoder could not be loaded'))};sc.src=u;document.head.appendChild(sc)})}
 
-/* ================= ManicRulesGuitar 12: Jam Band export lab (WAV · MP3 · MP4 · FLV) ================= */
+/* ================= ManicRulesGuitar 1.00: Jam Band export lab (WAV · MP3 · MP4 · FLV) ================= */
 const X17D={fmt:'wav',src:'current',saved:0,demo:0,reps:2,mode:'reps',mins:1,secs:30,song:1,count:'auto',lead:0.1,tail:3,fade:0,
  sr:44100,ch:2,bits:16,dither:true,kbps:192,norm:true,peak:-1,gain:0,name:'',id3:true,artist:'ManicRulesGuitar',
  vres:'720p',vw:1280,vh:720,fps:30,vbr:4,abr:160,vtheme:'dark',vbg:'#14110d',vfg:'#f4ece0',vacc:'#ffb300',vfont:'sans',
@@ -25744,7 +25769,7 @@ function act(a){const st=store();S0.uses++;st.uses++;
   case 'snapSave':{st.snaps[slot()]=getAll();save();say('Settings saved to slot '+slot()+' ('+Object.keys(st.snaps[slot()]).length+' controls)')}break;
   case 'snapLoad':{const s=st.snaps[slot()];if(!s){out('Slot '+slot()+' is empty');break}const n=putAll(s);say('Loaded '+n+' settings from slot '+slot())}break;
   case 'copyAll':{const o=getAll(),t=CTL.map(([id,l])=>l+': '+(o[id]===true?'on':o[id]===false?'off':o[id])).join('\n');copyText(t);out(CTL.length+' settings copied')}break;
-  case 'saveFile':{download(new Blob([JSON.stringify({app:'ManicRulesGuitar 12',settings:getAll()},null,1)],{type:'application/json'}),'manicrulesguitar-settings.json');out('Saved manicrulesguitar-settings.json')}break;
+  case 'saveFile':{download(new Blob([JSON.stringify({app:'ManicRulesGuitar 1.00',settings:getAll()},null,1)],{type:'application/json'}),'manicrulesguitar-settings.json');out('Saved manicrulesguitar-settings.json')}break;
   case 'clearLab':if(conf('clr','Reset all lab choices?')){Object.assign(X,D);saveS();refresh();labOpen();out('Lab choices reset (the app\'s own settings were not touched)')}break;
   case 'saveA':st.slots.A=Object.assign({},X);save();out('Lab choices A saved ('+changed().length+' changed)');break;
   case 'loadA':{if(!st.slots.A){out('Lab choices A are empty');break}Object.assign(X,D,st.slots.A);saveS();load();refresh();labOpen();out('Lab choices A loaded');break}
@@ -27088,17 +27113,17 @@ async function loadFile(id,keep){const it=st().lib.find(x=>x.id===id);if(!it)ret
 function msg(t){P.msg=t;const e=document.getElementById('l47msg');if(e)e.textContent=t}
 /* ---------- playback ---------- */
 const fmt=s=>{s=Math.max(0,Math.round(s));return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')};
-function playNow(e,S){const dm=S.mute[P.id+':'+e.i];if(dm)return;const tp=S.tr|0,vol=S.vol/100;
- if(e.dr){if(!S.drums)return;const k=GMK[e.m];if(k){try{drumHit(k,AC.currentTime,Math.min(1,e.v)*vol)}catch(er){}}return}
- const m=e.m+tp;try{V8DUR=Math.min(e.d,4);pluck(m,e.v*.85*vol)}catch(er){}finally{V8DUR=0}}
-function tick(){if(!P.on)return;const S=st(),pct=S.tempo/100,now=(AC.currentTime-P.t0)*pct;P.pos=now;let n=0;const due=[];
- while(P.idx<P.ev.length&&P.ev[P.idx].t<=now+.02){const e=P.ev[P.idx++];if(now-e.t>.35)continue;due.push(e)}
- if(due.length>8)due.sort((a,b)=>b.v-a.v).length=8;due.forEach(e=>playNow(e,S));
+function playNow(e,S,at){const dm=S.mute[P.id+':'+e.i];if(dm)return;const tp=S.tr|0,vol=S.vol/100,T=at||AC.currentTime;
+ if(e.dr){if(!S.drums)return;const k=window.__gmKind?window.__gmKind(e.m):GMK[e.m];if(k){try{drumHit(k,T,Math.min(1,e.v)*vol)}catch(er){}}return}
+ const m=e.m+tp;try{V8DUR=Math.min(e.d,4);if(at&&typeof jbAtDo==='function')jbAtDo(at,()=>pluck(m,e.v*.85*vol));else pluck(m,e.v*.85*vol)}catch(er){}finally{V8DUR=0}}
+function tick(){if(!P.on)return;const S=st(),pct=S.tempo/100;if(P._fresh){P._fresh=false;const e0=P.ev[P.idx];if(e0){const a0=P.t0+e0.t/pct;if(a0<AC.currentTime+0.03)P.t0+=AC.currentTime+0.03-a0}}const now=(AC.currentTime-P.t0)*pct;P.pos=Math.max(0,now);let n=0;const due=[],LA=(document.hidden?1:.15)*pct;
+ while(P.idx<P.ev.length&&P.ev[P.idx].t<=now+LA){const e=P.ev[P.idx++];if(now-e.t>.35)continue;due.push(e)}
+ if(due.length>48)due.sort((a,b)=>b.v-a.v).length=48;const rn=AC.currentTime;due.forEach(e=>playNow(e,S,Math.max(rn+0.005,P.t0+e.t/pct)));
  if(P.idx>=P.ev.length&&now>P.len+.3){ended()}}
 function start(from){if(!P.sc){return}try{if(!audio())return}catch(e){return}try{stopAll()}catch(e){}const S=st();if(from!==undefined)P.pos=from;if(P.pos>=P.len-.05)P.pos=0;
- P.idx=Math.max(0,P.ev.findIndex(e=>e.t>=P.pos-.001));if(P.idx<0)P.idx=P.ev.length;P.t0=AC.currentTime-P.pos/(S.tempo/100);P.on=true;clearInterval(P.timer);P.timer=setInterval(tick,15);ui();loop()}
-function pause(){P.on=false;clearInterval(P.timer);P.timer=0;ui()}
-function stop(quiet){P.on=false;clearInterval(P.timer);P.timer=0;P.pos=0;P.idx=0;if(!quiet)ui()}
+ P.idx=Math.max(0,P.ev.findIndex(e=>e.t>=P.pos-.001));if(P.idx<0)P.idx=P.ev.length;P.t0=AC.currentTime+0.08-P.pos/(S.tempo/100);P._fresh=true;P.on=true;clearInterval(P.timer);P.timer=setInterval(tick,15);ui();loop()}
+function pause(){if(P.on&&window.__u100cut)window.__u100cut();P.on=false;clearInterval(P.timer);P.timer=0;ui()}
+function stop(quiet){if(P.on&&window.__u100cut)window.__u100cut();P.on=false;clearInterval(P.timer);P.timer=0;P.pos=0;P.idx=0;if(!quiet)ui()}
 function seek(sec){const was=P.on;P.pos=Math.max(0,Math.min(P.len,sec));if(was){start(P.pos)}else{P.idx=Math.max(0,P.ev.findIndex(e=>e.t>=P.pos-.001));ui()}}
 function curList(){const S=st();if(S.plId){const pl=S.pl.find(p=>p.id===S.plId);if(pl)return pl.items.filter(id=>S.lib.some(x=>x.id===id))}return S.lib.map(x=>x.id)}
 function order(){const S=st(),L=curList();if(!S.shuf)return L;const a=L.slice(),seed=P.order.length===L.length&&L.every(x=>P.order.includes(x))?P.order:null;if(seed)return seed;for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}P.order=a;return a}
@@ -31312,7 +31337,7 @@ function x12GifWork(o){const W=o.W,H=o.H,pal=gifPalette(o.samples),cache=new Map
  const SL={};SLOTS.forEach(s=>SL[s.id]=s);
  const NOTEN=['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B'];
  /* ---------- data ---------- */
- function patLoad(){if(patP)return patP;patP=__flLazy('jbpat').then(D=>{if(!D)throw new Error('no data');PAT=D;D.cats.forEach(c=>CATN[c.k]=c);try{jbDemos()}catch(e){}try{renderP()}catch(e){}try{jbRender()}catch(e){}dawRefresh();return D}).catch(e=>{patP=null;throw e});return patP}
+ function patLoad(){if(patP)return patP;patP=__flLazy('jbpat').then(D=>{if(!D)throw new Error('no data');PAT=D;D.cats.forEach(c=>CATN[c.k]=c);const after=()=>{try{jbDemos()}catch(e){}setTimeout(()=>{try{renderP()}catch(e){}setTimeout(()=>{try{jbRender()}catch(e){}setTimeout(dawRefresh,30)},30)},30)};if(window.__flBusy&&window.__flBusy()&&window.__u59Later)window.__u59Later(after);else after();return D}).catch(e=>{patP=null;throw e});return patP}
  function dawRefresh(){try{const d=document.getElementById('jamdaw');if(d&&d.open)d.dispatchEvent(new Event('toggle'))}catch(e){}}
  const itemOf=c=>{const k=CATN[c&&c.c];return k&&k.items[c.i]};
  const trackOf=(c,it)=>it&&it.tr&&it.tr[c.t];
@@ -31323,6 +31348,7 @@ function x12GifWork(o){const W=o.W,H=o.H,pal=gifPalette(o.samples),cache=new Map
   return p+delta+(r2-r)}
  function patEvents(b,C){const J=C.J,P=J.pt;if(!P||!PAT)return[];const out=[];let ch=null,T=null;
   SLOTS.forEach(S=>{const c=P[S.id];if(!c||!c.on)return;const it=itemOf(c),tr=trackOf(c,it);if(!tr)return;const Ln=it.L,p0=((b%Ln)+Ln)%Ln,vol=(c.vol==null?80:c.vol)/100;
+   if(S.id==='drum'&&tr.e&&window.__gmKind){const lo=p0*960,hi=lo+960,E=tr.e;for(let n=0;n<E.length;n++){const h=E[n];if(h[0]<lo||h[0]>=hi)continue;out.push({g:'drum',k:'drum',x:window.__gmKind(h[1]),m:h[1],off:(h[0]-lo)/960,d:.25,v:Math.min(1,h[2]/127*vol*1.1),pt:1,sl:'drum'})}return}
    if(S.id==='drum'){const per=tr.p,base=Math.round(p0*per);for(let j=0;j<per;j++){const i=base+j;for(const k in tr.d){const d=tr.d[k].charCodeAt(i)-48;if(d>0&&d<=9)out.push({g:'drum',k:'drum',x:k,m:GMD[k],off:j/per,d:.25,v:Math.min(1,d/9*vol*1.1),pt:1,sl:'drum'})}}return}
    if(!ch){const A=jbAt(C,b);ch=C.L[A.i];T=chordTones(ch)}
    const lo=Math.round(p0*48),hi=lo+48,sg=it.sg,ins=c.ins||S.def||'steel';
@@ -31410,6 +31436,276 @@ function x12GifWork(o){const W=o.W,H=o.H,pal=gifPalette(o.samples),cache=new Map
  function cssP(){if(document.getElementById('flU58css'))return;const s=document.createElement('style');s.id='flU58css';s.textContent='.u58f{margin:8px 0}.u58s{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:4px 0;border-bottom:1px solid var(--line,#c9c0b2)}.u58s select{max-width:210px}.u58n{min-width:150px;display:flex;gap:4px;align-items:center}.u58v{display:flex;gap:4px;align-items:center}.u58v input{width:90px}.u58k{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:8px 0 0}@media(max-width:640px){.u58s select{max-width:100%;flex:1 1 140px}}';document.head.appendChild(s)}
  cssP();
  try{Object.assign(window.__fretlab,{u58:{patLoad,patEvents,SLOTS,itemOf,get PAT(){return PAT}}})}catch(e){}
+})();
+
+/* u59: smooth playback – notes are prepared before play and scheduled ahead, so a busy page can no longer make a beat stop */
+(function(){
+ if(window.__u59)return;window.__u59=1;
+ const U={warmed:0,holds:0,holdMs:0,sched:0};
+ const noWarm=tb=>tb==='synth'||tb==='organ'||tb==='bowed'||tb==='cello'||(typeof NEWV!=='undefined'&&NEWV.has(tb))||(typeof KBX_P!=='undefined'&&KBX_P[tb]);
+ const kOf=(m,tb)=>[m,tb,state.sustain,AC.sampleRate,state.a4].join('_');
+ /* one prepared copy of every plucked note, shared by the normal path and the sound-engine path (which used to build its own copy while the music played) */
+ const MP=new Map(),_mkp=makePluck;
+ makePluck=function(m,tb){
+  if(arguments.length>2||!AC)return _mkp.apply(this,arguments);
+  const key=kOf(m,tb);let b=MP.get(key);
+  if(b){MP.delete(key);MP.set(key,b);return b}
+  b=_mkp.apply(this,arguments);MP.set(key,b);while(MP.size>200)MP.delete(MP.keys().next().value);return b};
+ {const _bc=bufCache.clear;bufCache.clear=function(){MP.clear();return _bc.apply(this,arguments)}}
+ /* make the plucked notes in small slices; calls done(true) when all are ready, done(false) when the time budget ran out */
+ function warmPairs(pairs,done,maxMs){
+  const t00=performance.now();let i=0;
+  const step=()=>{const t0=performance.now();
+   while(i<pairs.length&&performance.now()-t0<6){const p=pairs[i++],key=kOf(p[0],p[1]);if(!bufCache.has(key)){try{bufCache.set(key,makePluck(p[0],p[1]));U.warmed++}catch(e){}}}
+   if(i<pairs.length&&performance.now()-t00<maxMs)setTimeout(step,3);else done(i>=pairs.length)};
+  step()}
+ window.__u59W={warmPairs,noWarm,kOf};
+ function missing(count){ /* count: Map "m|tb" -> uses */
+  const a=[];count.forEach((n,k)=>{const j=k.indexOf('|'),m=+k.slice(0,j),tb=k.slice(j+1);if(!(m>=12&&m<=108)||noWarm(tb))return;if(!bufCache.has(kOf(m,tb)))a.push([m,tb,n])});
+  a.sort((x,y)=>y[2]-x[2]);return a.slice(0,200)}
+ const add=(c,m,tb)=>{m=Math.round(m);const k=m+'|'+tb;c.set(k,(c.get(k)||0)+1)};
+ /* ---------- Songs player (also used by Buckethead, Carcassi and the Jam DAW) ---------- */
+ const _ss=songStart8;
+ songStart8=function(){
+  SG8.hold=null;const r=_ss.apply(this,arguments);
+  try{if(SG8.playing&&SG8.evs&&SG8.evs.length&&AC&&!noWarm(state.timbre)){
+   const c=new Map(),tb=state.timbre;
+   for(let i=Math.max(0,SG8.idx);i<SG8.evs.length;i++){const e=SG8.evs[i],ns=e.notes;if(!ns)continue;for(let k=0;k<ns.length;k++)add(c,ns[k].m,tb)}
+   const need=missing(c);
+   if(need.length){const h={t:AC.currentTime};SG8.hold=h;U.holds++;
+    warmPairs(need,()=>{if(SG8.hold!==h)return;SG8.hold=null;const d=AC.currentTime-h.t;U.holdMs+=d*1000;if(SG8.playing)SG8.t0+=d},2500)}}}catch(e){console.warn('u59 song warm',e)}
+  return r};
+ let drawRaf=0;
+ songTick8=function(){
+  if(!SG8.playing||SG8.hold)return;const now=AC.currentTime-SG8.t0;if(now<-0.18)return;SG8.pos=Math.max(0,now);const v=sv9(),s=SG8.song;let changed=false;
+  const LA=document.hidden?1:0.2;
+  if(v.click){const beat=60/s.bpm*4/s.den;if(SG8.nextBeat==null)SG8.nextBeat=Math.ceil(now/beat-1e-6);let g=0;while(g++<8){const tb=SG8.nextBeat*beat;if(tb>now+LA)break;clickAt9(SG8.t0+tb,SG8.nextBeat%s.num===0);SG8.nextBeat++}}
+  let lim=now+LA;
+  if(v.loop){const a=Math.max(1,Math.min(SG8.bars,v.la)),b=Math.max(a,Math.min(SG8.bars,v.lb)),end=b>=SG8.bars?SG8.len:SG8.barSec(b+1);
+   if(now>=end-0.1){/* the loop turns over a little early, so the first notes of the next round are scheduled ahead and the join is seamless */const tEnd=SG8.t0+end;if(v.trainer&&v.tempo<200){v.tempo=Math.min(200,v.tempo+5);save();songBuild8();toast('Speed trainer: '+v.tempo+'%')}
+    const st=SG8.barSec(a);SG8.t0=Math.max(tEnd,AC.currentTime+0.02)-st;SG8.pos=Math.max(0,AC.currentTime-SG8.t0);SG8.idx=SG8.evs.findIndex(e=>e.t>=st-0.001);if(SG8.idx<0)SG8.idx=0;SG8.nextBeat=null;if(window.__u100loop)try{window.__u100loop()}catch(e){}return}
+   if(lim>end)lim=end}
+  while(SG8.idx<SG8.evs.length&&SG8.evs[SG8.idx].t<=lim+0.01){const e=SG8.evs[SG8.idx++];if(now-e.t>0.6)continue;
+   const muted=v.solo>=0?e.part!==v.solo:!!v.mute[e.part];
+   if(!muted){const vel=e.part?0.62:0.8,d=e.d,at=SG8.t0+e.t;V8DUR=d;try{jbAtDo(at,()=>{e.notes.forEach(n=>pluck(n.m,(n.v?n.v/110:1)*vel))});U.sched++}finally{V8DUR=0}}
+   changed=true}
+  if(changed&&!drawRaf){drawRaf=requestAnimationFrame(()=>{drawRaf=0;if(SG8.playing)try{songDraw8()}catch(e){}})}
+  if(performance.now()-SG8.lastUI>250){SG8.lastUI=performance.now();const r=$('#songs8Body [data-xi=songSeek8]');if(r&&document.activeElement!==r)r.value=now.toFixed(1);const t=$('#x8time');if(t)t.textContent=fmtT8(now)+' / '+fmtT8(SG8.len);const bb=$('#x9bar');if(bb){const b=barAt9(now);bb.textContent=`Bar ${b}/${SG8.bars}`;$$('#songs8Body .x9ch').forEach((c,i)=>c.classList.toggle('on',i+1===b))}}
+  if(!v.loop&&SG8.idx>=SG8.evs.length&&now>SG8.len+0.5){songStop8();songRender8()}
+ };
+ songDraw8=function(){
+  const v=sv9(),s=SG8.song;if(!s){OV8_EXTRA=[];ovRender8();return}const now=SG8.pos,act=[];
+  for(let i=Math.max(0,SG8.idx-400);i<SG8.evs.length&&SG8.evs[i].t<=now+0.02;i++){const e=SG8.evs[i];if(e.t+Math.max(e.d,0.12)<now)continue;
+   if(v.show[e.part]===false)continue;if(v.solo>=0&&e.part!==v.solo)continue;e.board.forEach(n=>act.push({s:n.s,f:n.f,part:e.part}))}
+  OV8_EXTRA=act;ovRender8()};
+ /* ---------- Jam Band ---------- */
+ const _js=jbStart,_jt=jbTick;
+ jbTick=function(){if(JB.hold)return;return _jt.apply(this,arguments)};
+ jbStart=function(){
+  let need=[];
+  try{if(audio()){
+   const J=jbS(),C=jbCtx(),c=new Map(),n=Math.min(C.total,256),INS={g1:J.chordInst,g2:J.g2Inst,g3:J.g3Inst,kb:J.kbInst,kb2:J.kb2Inst,kb3:J.kb3Inst,mel:J.melInst,mel2:J.mel2Inst,mel3:J.mel3Inst,solo:J.soloInst};
+   for(let b=0;b<n;b++){
+    jbEvents(b,C).forEach(e=>{if(e.pt||e.k==='mute'||!(e.m>=12))return;
+     if(e.g==='bass'||e.g==='bass2'){const bs=e.g==='bass'?J.bassSnd:J.bass2Snd;if(bs!=='synth')add(c,e.m,bs);return}
+     add(c,e.m,INS[e.g]||'steel')});
+    try{const pe=window.__fretlab&&window.__fretlab.u58&&J.pt&&window.__fretlab.u58.patEvents;if(pe)pe(b,C).forEach(e=>{if(e.g==='drum')return;if(e.sl==='bass'&&e.ins==='synth')return;add(c,e.m,e.ins)})}catch(x){}}
+   need=missing(c)}}catch(e){need=[]}
+  if(!need.length)return _js.apply(this,arguments);
+  JB.hold=true;U.holds++;U.starting=true;
+  let r;try{r=_js.apply(this,arguments)}finally{U.starting=false}
+  const el=document.getElementById('jbNow');if(el)el.textContent='Preparing sounds…';
+  const t0=performance.now();
+  warmPairs(need,()=>{if(!JB.hold)return;JB.hold=false;U.holdMs+=performance.now()-t0;if(JB.on&&AC){JB.next=AC.currentTime+0.12;try{jbTick()}catch(e){console.warn(e)}}},2500);
+  return r};
+ const _jstop=jbStop;jbStop=function(){if(!U.starting)JB.hold=false;const r=_jstop.apply(this,arguments);try{setTimeout(()=>{try{runLater()}catch(e){}},50)}catch(e){}return r};
+ /* a list that finishes loading in the background no longer rebuilds the Songs panel in the middle of a beat; it is redrawn when the music stops or pauses */
+ let lastG=0;['pointerdown','keydown','input','change','click'].forEach(t=>addEventListener(t,()=>{lastG=window.__u59G=performance.now()},true));
+ const later=new Set();window.__u59Later=fn=>{later.add(fn)};
+ const runLater=()=>{if(window.__flBusy()||!later.size)return;const l=[...later];later.clear();l.forEach(f=>setTimeout(()=>{try{f()}catch(e){console.error(e)}},0))};
+ setInterval(runLater,3000);
+ let dirty=false;const _sr=songRender8;
+ songRender8=function(){if(SG8.playing&&performance.now()-lastG>700){dirty=true;return}dirty=false;return _sr.apply(this,arguments)};
+ const flush=()=>{if(dirty&&!SG8.playing){dirty=false;setTimeout(()=>{try{songRender8()}catch(e){}},0)}runLater()};
+ const _sstop=songStop8;songStop8=function(){const r=_sstop.apply(this,arguments);flush();return r};
+ if(typeof songPause8==='function'){const _sp=songPause8;songPause8=function(){SG8.hold=null;const r=_sp.apply(this,arguments);flush();return r}}
+ /* applying button types and similar page-wide touch-ups changes styles for the whole page, so it waits while music plays */
+ if(typeof mark7==='function'){const _m7=mark7;let mt=0;mark7=function(){if(window.__flBusy()){if(!mt)mt=setTimeout(()=>{mt=0;mark7()},2500);return}return _m7.apply(this,arguments)}}
+ try{window.__fretlab.u59=U}catch(e){}
+ /* the page-wide label check waits while music plays (it re-reads every field of the page) */
+ window.__flBusy=()=>!!((typeof JB!=='undefined'&&JB.on)||(typeof SG8!=='undefined'&&SG8.playing));
+})();
+
+
+/* u60: calmer app – no automatic root note on selection, no scary error toasts, notes prepared in the background, steadier audio on touch devices */
+(function(){
+ if(window.__u60)return;window.__u60=1;
+ /* 1. the automatic "something went wrong" notices are not shown any more (the details stay in About > Diagnostics) */
+ {const _t=toast;toast=function(t){if(typeof t==='string'&&/^(Something went wrong|A background task did not finish)/.test(t))return;return _t.apply(this,arguments)}}
+ /* 2. the most used notes (low E up to the top of the first position) are prepared in small slices while the page is quiet, so the first play does not wait */
+ const NOTES=[];for(let m=40;m<=64;m++)NOTES.push(m);
+ function idleWarm(){
+  if(window.__u60w)return;window.__u60w=1;
+  const W=window.__u59W;let i=0,last='';
+  const step=()=>{
+   try{
+    if(!AC||!W){window.__u60w=0;return}
+    if(document.hidden||(window.__flBusy&&window.__flBusy())){setTimeout(step,1500);return}
+    const tb=state.timbre;if(W.noWarm(tb)){setTimeout(step,3000);return}
+    const key=[tb,state.sustain,AC.sampleRate,state.a4].join('_');if(key!==last){last=key;i=0}
+    if(i>=NOTES.length){setTimeout(step,5000);return}
+    const t0=performance.now();
+    while(i<NOTES.length&&performance.now()-t0<4){const m=NOTES[i++],k=W.kOf(m,tb);if(!bufCache.has(k)){try{bufCache.set(k,makePluck(m,tb))}catch(e){}}}
+    setTimeout(step,i<NOTES.length?40:5000)
+   }catch(e){window.__u60w=0}};
+  setTimeout(step,1200)}
+ /* the audio engine is started by the first touch or key (this is also what phones need to allow sound), then the notes are prepared */
+ const first=()=>{['pointerdown','keydown','touchstart'].forEach(n=>document.removeEventListener(n,first,true));try{audio()}catch(e){}try{idleWarm()}catch(e){}};
+ ['pointerdown','keydown','touchstart'].forEach(n=>document.addEventListener(n,first,{capture:true,passive:true}));
+ /* 3. very long drop-down lists (the DAW has thousands of entries) are filled in only when someone touches the list: the page builds a few hundred times fewer elements */
+ {const LZ=new Map(),INV=new Map();let lzN=0;
+  const lazySel=h=>h.replace(/<select\b[^>]*>[\s\S]*?<\/select>/g,m=>{
+   if(m.length<8000)return m;
+   const i=m.indexOf('>')+1,open=m.slice(0,i),inner=m.slice(i,-9);
+   let om=inner.match(/<option\b[^>]*\bselected\b[^>]*>[\s\S]*?<\/option>/);if(!om)om=inner.match(/<option\b[\s\S]*?<\/option>/);
+   if(!om)return m;
+   let k=INV.get(inner);if(!k){k=++lzN;if(LZ.size>150){LZ.clear();INV.clear()}LZ.set(k,inner);INV.set(inner,k)}
+   return open.replace(/^<select/,'<select data-u60k="'+k+'"')+om[0]+'</select>'});
+  const fill=s=>{const k=s&&s.dataset&&s.dataset.u60k;if(!k)return;const inner=LZ.get(+k);delete s.dataset.u60k;if(inner==null)return;const v=s.value;s.innerHTML=inner;try{s.value=v}catch(e){}};
+  ['pointerdown','mousedown','touchstart','focusin','keydown'].forEach(n=>document.addEventListener(n,e=>{const t=e.target;if(t&&t.tagName==='SELECT'&&t.dataset&&t.dataset.u60k)fill(t)},{capture:true,passive:true}));
+  const d=Object.getOwnPropertyDescriptor(Element.prototype,'innerHTML');
+  if(d&&d.set)Object.defineProperty(Element.prototype,'innerHTML',{get:d.get,set:function(v){if(typeof v==='string'&&v.length>40000&&this.tagName!=='SELECT'&&v.indexOf('<select')>=0)v=lazySel(v);return d.set.call(this,v)},configurable:true,enumerable:d.enumerable});
+  window.__u60fill=fill}
+ window.__u60={v:1};
+})();
+
+
+/* u61: lighter playback – the lit-note flash no longer forces a page layout on every beat, and a slow or touch device gets a cheaper flash while music plays */
+(function(){
+ if(window.__u61)return;window.__u61=1;
+ const de=document.documentElement;
+ const st=document.createElement('style');st.id='flU61css';
+ st.textContent='html.u61lite .mk.hit{animation:none!important;transform:scale(1.3)}html.u61lite .mk,html.u61lite .jsc,html.u61lite .jsb,html.u61lite .jsb i,html.u61lite #fb .cell{transition:none!important}';
+ document.head.appendChild(st);
+ let slow=false;const recent=[];
+ try{new PerformanceObserver(l=>{const n=performance.now();l.getEntries().forEach(e=>{if(e.duration>=80)recent.push(n)});while(recent.length&&n-recent[0]>6000)recent.shift();if(recent.length>=3)slow=true}).observe({entryTypes:['longtask']})}catch(e){}
+ const coarse=(()=>{try{return navigator.maxTouchPoints>0&&matchMedia('(pointer:coarse)').matches}catch(e){return false}})();
+ setInterval(()=>{try{const busy=!!(window.__flBusy&&window.__flBusy());const on=busy&&(coarse||slow);if(de.classList.contains('u61lite')!==on)de.classList.toggle('u61lite',on)}catch(e){}},1000);
+ /* the same error notices that the automatic handlers raise are also kept quiet when they repeat */
+ {const _t=toast;const seen={};toast=function(t){if(typeof t==='string'&&/^(Could not save your library|Could not load the classical songs)/.test(t)){const n=Date.now();if(seen[t]&&n-seen[t]<60000)return;seen[t]=n}return _t.apply(this,arguments)}}
+})();
+
+
+/* u62: marker only – the reverb tail of low-end touch devices is shortened in audio() (see patch62) */
+(function(){window.__u62=1})();
+
+
+/* u100: release 1.00 – every drum of the supplied pattern library, drums in the Song player, steadier song starts */
+(function(){
+ if(window.__u100)return;window.__u100=1;
+ const rt=()=>{try{return Object.getOwnPropertyDescriptor(BaseAudioContext.prototype,'currentTime').get.call(AC)}catch(e){return AC.currentTime}};
+ /* ---------- 1. General MIDI drum map: every drum note has a sound ---------- */
+ const GMK={35:'k',36:'k',37:'x',38:'s',39:'c',40:'s',41:'l',42:'h',43:'u',44:'p',45:'m',46:'o',47:'t',48:'n',49:'y',50:'n',51:'r',52:'y',53:'e',54:'a',55:'y',56:'b',57:'y',58:'v',59:'r',
+  60:'g',61:'g',62:'g',63:'g',64:'g',65:'g',66:'g',67:'b',68:'b',69:'w',70:'w',71:'v',72:'v',73:'v',74:'v',75:'v',76:'v',77:'v',78:'g',79:'g',80:'e',81:'e',82:'w',27:'x',28:'s',31:'x',33:'x',34:'e'};
+ const gmKind=m=>GMK[m]||(m<35?'x':m>81?'w':'h');window.__gmKind=gmKind;
+ try{Object.assign(GMD,{l:41,m:45,n:50,e:53,a:54,v:75,g:63,p:44});Object.assign(GMDN,{l:'Low tom',m:'Mid tom',n:'High tom',e:'Ride bell',a:'Tambourine',v:'Claves',g:'Conga',p:'Pedal hi-hat'})}catch(e){}
+ try{Object.assign(JB_DSTR,{l:5,m:5,n:5,e:3,a:6,v:6,g:6,p:2})}catch(e){}
+ /* the eight drums the built-in kit did not have: toms, ride bell, tambourine, claves, conga, pedal hi-hat */
+ const NEWK='lmneavgp';
+ const _d10=drumHit10;
+ drumHit10=function(kind,t,v){
+  if(typeof kind!=='string'||NEWK.indexOf(kind)<0)return _d10.apply(this,arguments);
+  const out=backBus();v=typeof v==='number'?v:1;
+  const nz=(type,freq,q,dur,gain,at)=>{at=at||t;const s=AC.createBufferSource();s.buffer=noise();const f=AC.createBiquadFilter();f.type=type;f.frequency.value=freq;f.Q.value=q;const g=AC.createGain();g.gain.setValueAtTime(gain*v,at);g.gain.exponentialRampToValueAtTime(0.0008,at+dur);s.connect(f);f.connect(g);g.connect(out);s.start(at);s.stop(at+dur+0.02)};
+  const osc=(type,f0,f1,dur,gain)=>{const o=AC.createOscillator(),g=AC.createGain();o.type=type;o.frequency.setValueAtTime(f0,t);if(f1)o.frequency.exponentialRampToValueAtTime(f1,t+dur);g.gain.setValueAtTime(gain*v,t);g.gain.exponentialRampToValueAtTime(0.0008,t+dur);o.connect(g);g.connect(out);o.start(t);o.stop(t+dur+0.02)};
+  if(kind==='l')osc('sine',110,66,0.46,0.8);
+  else if(kind==='m')osc('sine',175,105,0.34,0.7);
+  else if(kind==='n')osc('sine',300,190,0.25,0.62);
+  else if(kind==='e'){osc('square',740,0,0.5,0.05);osc('square',1110,0,0.45,0.035);nz('bandpass',6200,3,0.3,0.1)}
+  else if(kind==='a'){[0,0.012,0.024].forEach(d=>nz('highpass',8500,0.9,0.16,0.14,t+d))}
+  else if(kind==='v')osc('sine',2500,0,0.06,0.42);
+  else if(kind==='g'){osc('sine',370,320,0.22,0.6);nz('bandpass',1800,2,0.03,0.12)}
+  else if(kind==='p')nz('highpass',6000,0.7,0.035,0.16);
+  return true};
+ /* ---------- 2. Song player: the start is scheduled a moment ahead, so the first notes are on time ---------- */
+ {const _s=songStart8;songStart8=function(){const r=_s.apply(this,arguments);try{if(SG8.playing){SG8.t0+=0.1;SG8._fresh=true}}catch(e){}return r}}
+ /* on the first tick after a start (or after the notes were prepared), a slow page may have used up the head start: the whole piece then moves a few milliseconds later, so no note of the first beat is late */
+ function slip(){try{if(!SG8.playing||!AC)return;if(SG8.hold){SG8._wasHold=true;return}if(!SG8._fresh&&!SG8._wasHold)return;SG8._fresh=false;SG8._wasHold=false;
+  const e=SG8.evs&&SG8.evs[SG8.idx];const real=rt();let first=e?SG8.t0+e.t:Infinity;
+  if(SG8.dr&&SG8.dr.length){const i=seekD(Math.max(0,AC.currentTime-SG8.t0));const h=SG8.dr[i];if(h)first=Math.min(first,SG8.t0+h.t)}
+  if(first<real+0.03)SG8.t0+=real+0.03-first}catch(x){}}
+ /* ---------- 3. Song player drums: the drum tracks of imported MIDI files, or any of the 1,000 library drum patterns ---------- */
+ const V=()=>XS8().song;
+ {const _c=curScore9;curScore9=function(){const r=_c.apply(this,arguments);SG8._sc=r||null;return r}}
+ let PD=null,pdP=null;
+ const loadPD=()=>pdP||(pdP=__flLazy('jbpat').then(D=>{PD=D;return D}).catch(e=>{pdP=null;throw e}));
+ const catOf=k=>PD&&PD.cats.find(c=>c.k===k);
+ /* the song builder leaves drum tracks out (they are not played on the neck), so they are read once per file, separately */
+ const DRC=new WeakMap();
+ function midOf(){const v=V();try{if(v.id==='__imp'&&SG8.imp&&SG8.imp.kind==='midi')return SG8.imp.mid;if(v.id==='__user'&&SG8.user)return SG8.user;if(SG8.libMid&&SG8.libMid._id===v.id)return SG8.libMid}catch(e){}return null}
+ function fileDrums(){const mid=midOf();if(!mid||typeof mid!=='object')return[];let r=DRC.get(mid);if(r)return r;r=[];
+  try{const hasDr=(mid.tracks||[]).some(t=>t.drums);if(hasDr){const d=midiScore9(mid,{transpose:0,skipDrums:false});d.tracks.forEach(t=>{if(t.drums&&t.notes)t.notes.forEach(n=>r.push(n))})}}catch(e){r=[]}
+  DRC.set(mid,r);return r}
+ function songEndU(s){let u=0;s.parts.forEach(p=>p.evs.forEach(e=>{if(e.t+e.d>u)u=e.t+e.d}));return u}
+ function sdBuild(){
+  SG8.dr=[];SG8.dGen=(SG8.dGen||0)+1;const s=SG8.song;if(!s)return;const v=V(),mode=v.sd==null?'auto':v.sd;const out=[];
+  const fd=fileDrums();SG8.fileDrumN=fd.length;
+  if((mode==='auto'||mode==='file')&&fd.length){const sc=SG8._sc||{num:s.num,den:s.den},barQ=sc.num*4/sc.den,q0=((v.from||1)-1)*barQ,q1=v.to?v.to*barQ:1e9;
+   fd.forEach(n=>{if(n.q<q0-1e-9||n.q>=q1)return;out.push({t:u2s9(s,(n.q-q0)*s.g),k:gmKind(n.m),v:Math.max(0.05,Math.min(1,(n.v||100)/120))})})}
+  else if(mode.startsWith('p:')){
+   if(!PD){loadPD().then(()=>{try{sdBuild()}catch(e){}}).catch(()=>{});return}
+   const [,ck,ix]=mode.split(':'),cat=catOf(ck),it=cat&&cat.items[+ix];const tr=it&&it.tr&&it.tr.drum;if(!tr)return;
+   const Lq=it.L,endU=songEndU(s);if(!(Lq>0)||!(endU>0))return;
+   let hits=tr.e;if(!hits){hits=[];const per=tr.p;for(const k in tr.d){const st=tr.d[k];for(let i=0;i<st.length;i++){const d=st.charCodeAt(i)-48;if(d>0&&d<=9)hits.push([i/per*960,GMD[k]||36,d/9*127])}}}
+   for(let rep=0;rep*Lq*s.g<endU;rep++)for(const h of hits){const u=(rep*Lq+h[0]/960)*s.g;if(u>=endU)continue;out.push({t:u2s9(s,u),k:gmKind(h[1]),v:Math.max(0.05,Math.min(1,h[2]/127))})}}
+  out.sort((a,b)=>a.t-b.t);SG8.dr=out;SG8.dIdx=-1;try{document.querySelectorAll('.u100sdInfo').forEach(x=>{x.textContent=out.length?out.length+' drum hits':'no drums'})}catch(e){}}
+ {const _f=songFlat8;songFlat8=function(){const r=_f.apply(this,arguments);try{sdBuild()}catch(e){SG8.dr=[]}return r}}
+ const seekD=lo=>{const a=SG8.dr;let l=0,h=a.length;while(l<h){const m=(l+h)>>1;if(a[m].t<lo-0.001)l=m+1;else h=m}return l};
+ window.__u100loop=()=>{SG8.dIdx=-1};
+ {const _t=songTick8;songTick8=function(){slip();const r=_t.apply(this,arguments);
+  try{const a=SG8.dr;if(!SG8.playing||SG8.hold||!a||!a.length||!AC)return r;const v=V();if(v.solo>=0||v.sdMute)return r;
+   const now=AC.currentTime-SG8.t0;if(now<-0.18)return r;const LA=document.hidden?1:0.2;let lim=now+LA,ls=0;
+   if(v.loop){const A=Math.max(1,Math.min(SG8.bars,v.la)),B=Math.max(A,Math.min(SG8.bars,v.lb)),end=B>=SG8.bars?SG8.len:SG8.barSec(B+1);ls=SG8.barSec(A);if(lim>end)lim=end}
+   if(SG8.dIdx<0||SG8.dT0!==SG8.t0){SG8.dIdx=seekD(Math.max(now,ls));SG8.dT0=SG8.t0}
+   const vol=(v.sdv==null?80:+v.sdv)/100,real=rt();
+   while(SG8.dIdx<a.length&&a[SG8.dIdx].t<=lim){const h=a[SG8.dIdx++];if(now-h.t>0.05)continue;const at=SG8.t0+h.t;try{drumHit(h.k,Math.max(at,real+0.005),h.v*vol)}catch(e){}}
+  }catch(e){}return r}}
+ /* the Drums row in the Song player (and the Jam DAW piece player, which uses the same engine) */
+ let OPTS=null;
+ function optsHTML(){if(OPTS)return OPTS;if(!PD)return '';let h='';
+  [['drum','Drum patterns'],['metal','Metal patterns – drums']].forEach(([ck,nm])=>{const c=catOf(ck);if(!c)return;let g=null;c.items.forEach((it,i)=>{if(it.g!==g){if(g!==null)h+='</optgroup>';g=it.g;h+='<optgroup label="'+xmlEsc(nm+' › '+g)+'">'}h+='<option value="p:'+ck+':'+i+'">'+xmlEsc(it.g+' · '+it.n+' · '+it.bpm+' BPM')+'</option>'});if(g!==null)h+='</optgroup>'});
+  return OPTS=h}
+ function curLabel(v){const m=v.sd==null?'auto':v.sd;if(m==='off')return 'Off';if(m==='auto')return SG8.fileDrumN?'From the file (automatic)':'Off (automatic)';if(m==='file')return 'From the file';return v.sdn||'Pattern'}
+ function rowHTML(id){id=id||'u100sd';const v=V(),m=v.sd==null?'auto':v.sd,fd=SG8.fileDrumN||0;
+  const base='<option value="auto"'+(m==='auto'?' selected':'')+'>Automatic (the file’s drums when it has them)</option><option value="off"'+(m==='off'?' selected':'')+'>Off</option>'+(fd?'<option value="file"'+(m==='file'?' selected':'')+'>From the file ('+fd+' hits)</option>':'');
+  const cur=m.startsWith('p:')?'<option value="'+xmlEsc(m)+'" selected>'+xmlEsc(curLabel(v))+'</option>':'';
+  return '<div class="row" id="'+id+'"><label>🥁 Drums <select data-xi="u100sd" data-u100lazy="1" style="max-width:340px" aria-label="Drums for this piece">'+base+cur+'<option value="" disabled>More: 1,000 drum patterns – open the list</option></select></label> <label>Level <input type="range" min="0" max="100" step="5" data-xi="u100sdv" value="'+(v.sdv==null?80:v.sdv)+'" aria-label="Drum level"></label> <span class="mut u100sdInfo">'+(SG8.dr&&SG8.dr.length?SG8.dr.length+' drum hits':'no drums')+'</span></div>'}
+ function fill(sel){if(!sel||sel.dataset.u100lazy!=='1')return;if(!PD){loadPD().then(()=>fill(sel)).catch(()=>{});return}
+  const v=V(),m=v.sd==null?'auto':v.sd;sel.dataset.u100lazy='0';const fd=SG8.fileDrumN||0;
+  sel.innerHTML='<option value="auto">Automatic (the file’s drums when it has them)</option><option value="off">Off</option>'+(fd?'<option value="file">From the file ('+fd+' hits)</option>':'')+optsHTML();try{sel.value=m}catch(e){}}
+ ['pointerdown','mousedown','touchstart','focusin','keydown'].forEach(n=>document.addEventListener(n,e=>{const t=e.target;if(t&&t.tagName==='SELECT'&&t.dataset&&t.dataset.u100lazy==='1')fill(t)},{capture:true,passive:true}));
+ XA.u100sd=el=>{const v=V(),val=el.value;if(val==='')return;v.sd=val;if(val.startsWith('p:')){const o=el.options[el.selectedIndex];v.sdn=o?o.textContent:''}save();try{sdBuild()}catch(e){}SG8.dIdx=-1;const info=t=>document.querySelectorAll('.u100sdInfo').forEach(x=>{x.textContent=t});info(SG8.dr&&SG8.dr.length?SG8.dr.length+' drum hits':(val.startsWith('p:')&&!PD?'loading…':'no drums'));document.querySelectorAll('select[data-xi="u100sd"]').forEach(x=>{if(x!==el){x.dataset.u100lazy='1';x.innerHTML=el.innerHTML;x.value=el.value}});
+  if(val.startsWith('p:')&&!PD)loadPD().then(()=>{sdBuild();info(SG8.dr.length+' drum hits')}).catch(()=>{})};
+ XA.u100sdv=el=>{V().sdv=+el.value;save()};
+ function mount(){const b=document.getElementById('songs8Body');if(b&&b.firstElementChild&&!document.getElementById('u100sd'))b.insertAdjacentHTML('afterbegin',rowHTML());
+  const ds=document.querySelector('#dawBody select[data-xi="dawSong"]');if(ds&&!document.getElementById('u100sdD')){const row=ds.closest('.row');if(row)row.insertAdjacentHTML('afterend',rowHTML('u100sdD'))}}
+ {const _r=songRender8;songRender8=function(){const r=_r.apply(this,arguments);try{mount()}catch(e){}return r}}
+ try{new MutationObserver(()=>{try{mount()}catch(e){}}).observe(document.body,{childList:true,subtree:true})}catch(e){}
+ /* ---------- 5. Stop and Pause also cancel the notes that were already scheduled ahead (they used to sound for up to half a second after Stop) ---------- */
+ {const FUT=[];const RG=(()=>{try{return Object.getOwnPropertyDescriptor(BaseAudioContext.prototype,'currentTime').get}catch(e){return null}})();
+  const real=c=>RG?RG.call(c):c.currentTime;
+  const OFF=window.OfflineAudioContext;
+  [AudioScheduledSourceNode.prototype,window.AudioBufferSourceNode&&AudioBufferSourceNode.prototype,window.OscillatorNode&&OscillatorNode.prototype,window.ConstantSourceNode&&ConstantSourceNode.prototype].forEach(P=>{if(!P||!Object.prototype.hasOwnProperty.call(P,'start'))return;const o=P.start;
+   P.start=function(w){try{const cx=this.context;if(cx&&!(OFF&&cx instanceof OFF)&&typeof w==='number'){const n=real(cx);if(w>n+0.01){FUT.push([this,w,cx]);if(FUT.length>600){let k=0;while(k<FUT.length&&FUT[k][1]<real(FUT[k][2])-0.5)k++;if(k)FUT.splice(0,k);if(FUT.length>600)FUT.splice(0,FUT.length-600)}}}}catch(e){}return o.apply(this,arguments)}});
+  window.__u100F=FUT;const cut1=()=>{let c=0;const n0=FUT.length;for(let i=FUT.length-1;i>=0;i--){const [nd,w,cx]=FUT[i];if(w>real(cx)+0.003){try{nd.stop(0);c++}catch(e){}}FUT.splice(i,1)}return c};
+  window.__u100cut=()=>{try{const c=cut1();setTimeout(()=>{try{cut1()}catch(e){}},30);return c}catch(e){return 0}};
+  /* the panel redraw that Stop does is moved just after the next screen update: the sound stops at once and the button responds at once */
+  let dfr=0,pend=0;const _jr=jbRender;jbRender=function(){if(dfr){if(!pend){pend=1;requestAnimationFrame(()=>setTimeout(()=>{pend=0;try{jbRender()}catch(e){}},0))}return}return _jr.apply(this,arguments)};
+  {const _js=jbStop;jbStop=function(){if(typeof JB!=='undefined'&&JB.on)window.__u100cut();dfr++;try{return _js.apply(this,arguments)}finally{dfr--}}}
+  {const _p=songPause8;songPause8=function(){if(SG8.playing)window.__u100cut();return _p.apply(this,arguments)}}
+  {const _q=songStop8;songStop8=function(){if(SG8.playing)window.__u100cut();return _q.apply(this,arguments)}}}
+ /* ---------- 4. version ---------- */
+ try{window.__fretlab=window.__fretlab||{};window.__fretlab.version='1.00'}catch(e){}
 })();
 
 })();
