@@ -1,1 +1,1 @@
-window.DL_SIZES={"ManicRulesGuitar-12-Android-Project.zip": 28900260, "ManicRulesGuitar-12-Beta.html": 19124501, "ManicRulesGuitar-12-Linux.zip": 39912523, "ManicRulesGuitar-12-Mac.zip": 40087063, "ManicRulesGuitar-12-Windows.zip": 39971762, "ManicRulesGuitar-JamBand-DAW.html": 19124542};
+window.DL_SIZES={"ManicRulesGuitar-12-Android-Project.zip": 28945581, "ManicRulesGuitar-12-Beta.html": 19699177, "ManicRulesGuitar-12-Linux.zip": 39979554, "ManicRulesGuitar-12-Mac.zip": 40154303, "ManicRulesGuitar-12-Windows.zip": 40038741, "ManicRulesGuitar-JamBand-DAW.html": 19699218}
