@@ -1160,3 +1160,70 @@
 ## Update 39 additions
 
 - **Guitar tab lab 2:** 76 options, 23 tools and 10 presets (fret numbers, staff, rhythm marks, cursor and playing note, practice playback, zoom, panel look, save as text or picture).
+
+## Update 40 additions
+
+- **Fretboard lab 2:** 100 options, 24 tools and 10 presets (which notes show, note look, frets and strings, hover and click, neck look, panel look, save as picture).
+
+## Update 41 additions
+
+- **Controls lab 2:** 100 options, 25 tools and 10 presets (root buttons, scale row with quick scales and locks, recent keys, keys and key tour, layout, panel look).
+
+## Update 42 additions
+
+- **Library pages lab 2:** 100 options, 31 tools and 10 presets applied to all 38 library pages (look, colours, reading ruler, contents, find, frame, bookmarks), behind the ⚙ Page lab 2 button on each page.
+
+## Update 43 additions
+
+- **Piano and staff lab 2:** 100 options, 26 tools and 10 presets (piano range, keys, dots and labels; treble, bass or grand staff, stems, wrapped staves; play, copy as ABC or LilyPond, save SVG or PNG).
+
+## Update 44 additions
+
+- **Better guitar tone, engine per Jam Band instrument, persistent sound menus, header button highlight, and one instrument through all sounds (zip of MP3 files).**
+
+## Update 45 additions
+
+- **Jam Band: unchecked instruments stay off; ▶ Preview in the audio export and in the one-instrument-through-all-sounds export.**
+
+## Update 46 additions
+
+- **🎚 Studio: the Jam Band as a DAW (another way to create and load songs, demos and patterns) and ⚡ Fast draft export in 3 levels.**
+
+## Update 47 additions
+
+- **🎹 Basic MIDI Player (MIDI, Guitar Pro, Power Tab, playlists) and 🧰 Studio lab (726 additions to the 🎚 Studio).**
+
+## Update 48 additions
+
+- **Drums default to 100 %, with ⬆ Amplify drums (off by default) and drum effects in Jam Band, Jam DAW and Studio.**
+
+## Update 49 additions
+
+- **Chord voicings lab 2: 100 settings, 30 tools, 10 presets, favourites, hear-on-hover, chord finder.**
+
+## Update 50 additions
+
+- **Tuner lab 2: 101 settings, 28 tools, 10 presets, guided string-by-string tuning, history strip, log.**
+
+## Update 51 additions
+
+- **Notation lab 2: 100 settings, 25 tools, 10 presets, ABC/SVG export, print, count-in and click.**
+
+## Update 52 additions
+
+- **Theory toolkit lab 2: 22 new tools, 101 settings, 24 lab tools, 10 presets, history.**
+
+## Update 53 additions
+
+- **Sound lab 2: output chain (EQ, saturation, chorus, delay, stereo, reverb, compressor, limiter), meter, spectrum, recorder, 25 tools, 10 presets.**
+
+## Update 54 additions
+
+- **Drills lab 2: quiz drills fixed, 17 new drills incl. ear training, rounds, flashcard decks, learning-path levels, scoreboard, 107 settings, 24 tools, 10 presets.**
+- **Sound lab 2: output chain (EQ, saturation, chorus, delay, stereo, reverb, compressor, limiter), meter, spectrum, recorder, 25 tools, 10 presets.**
+
+## Update 55 additions
+
+- **Practice lab 3: click voices, patterns, polyrhythm, count-in, practice intervals, routines, goals, 117 settings, 25 tools, 10 presets.**
+- **Drills lab 2: quiz drills fixed, 17 new drills incl. ear training, rounds, flashcard decks, learning-path levels, scoreboard, 107 settings, 24 tools, 10 presets.**
+- **Sound lab 2: output chain (EQ, saturation, chorus, delay, stereo, reverb, compressor, limiter), meter, spectrum, recorder, 25 tools, 10 presets.**
