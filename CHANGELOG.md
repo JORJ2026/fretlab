@@ -1,5 +1,18 @@
 # ManicRulesGuitar changelog
 
+## 1.10 – menus, header, mobile, playback, look
+
+- Change: one header. Mode tabs (Scales, Chords, Intervals, Progressions, Explore, Quiz), Play, Stop (appears while anything plays), light/dark and one Menu button replace the four rows of header buttons.
+- Change: one Menu with search. Play & jam, Learn, Library & export, View, Settings & help, every section, and Reset all. The old Navigate and Tools lists are folded into it. `?classic=1` in the address shows the old header.
+- Change: Buckethead and Carcassi (pages, header buttons, 930 drum patterns, demos, DAW pieces) are off by default. Turn them on in Settings > Optional content or Menu > Optional content; the page reloads.
+- Change: mobile layout rebuilt. Scrolling mode tabs, a bottom-sheet menu, round Play and Stop buttons within thumb reach, a compact welcome banner, and the old floating Mobile switch is gone (Menu > Mobile view still has the old pinned-section dock).
+- Change: visual refresh. Rounded cards and buttons, softer shadows, an amber accent, a gold-on-dark header.
+- Fix: playback. The Play button, chord strums, interval, explore, ear-training, tab and practice sounds now start on the audio clock instead of a timer, so notes keep their spacing on a slow phone; flashes on the neck, the Studio playhead and the beat display follow what you hear (output latency is taken into account). The metronome looks further ahead.
+- Fix: the Studio (Jam DAW) no longer redraws the whole page underneath on every chord change; main-thread stalls during playback dropped about ten times in a throttled test.
+- Fix: one Stop (button, Esc) stops the fretboard, metronome, Jam Band, Studio, Song player, MIDI player, lessons, drone and tuner tone.
+- Fix: a section opened in the first five seconds after the page loads is no longer closed again by the start-up restore.
+- Fix: iOS keeps playing with the silent switch on; audio wakes after a call or tab switch.
+
 ## 1.00 – official release
 
 - New: the supplied pattern collection is complete in every place patterns play. All 4,500 patterns were checked note by note against the supplied MIDI files: every melodic part was already identical; the drums of 20 drum patterns and of all 500 metal patterns had lost hits (toms, ride bell, tambourine, claves, conga, pedal hi-hat and swung or flammed hits did not fit the old drum grid). All 40,863 drum hits now play exactly as written.
